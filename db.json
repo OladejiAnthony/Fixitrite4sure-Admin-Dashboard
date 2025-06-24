@@ -1,0 +1,256 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "name": "Admin User",
+      "email": "admin@fixit.com",
+      "password": "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+      "role": "admin",
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "lastLogin": "2025-06-23T19:17:45.108Z",
+      "isActive": true
+    }
+  ],
+  "dashboardStats": {
+    "totalCustomers": 1250,
+    "totalRepairers": 85,
+    "totalBookings": 342,
+    "totalRevenue": 125000,
+    "monthlyGrowth": 12.5,
+    "activeRepairs": 45,
+    "completedRepairs": 297,
+    "pendingOrders": 23
+  },
+  "customers": [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "email": "john@example.com",
+      "phone": "+1234567890",
+      "address": "123 Main St, City, State",
+      "joinDate": "2024-01-15",
+      "totalBookings": 5,
+      "status": "active"
+    },
+    {
+      "id": 2,
+      "name": "Jane Smith",
+      "email": "jane@example.com",
+      "phone": "+1234567891",
+      "address": "456 Oak Ave, City, State",
+      "joinDate": "2024-02-20",
+      "totalBookings": 3,
+      "status": "active"
+    }
+  ],
+  "repairers": [
+    {
+      "id": 1,
+      "name": "Mike Johnson",
+      "email": "mike@example.com",
+      "phone": "+1234567892",
+      "specialization": "Electronics",
+      "rating": 4.8,
+      "completedJobs": 156,
+      "status": "active",
+      "location": "Downtown"
+    },
+    {
+      "id": 2,
+      "name": "Sarah Wilson",
+      "email": "sarah@example.com",
+      "phone": "+1234567893",
+      "specialization": "Appliances",
+      "rating": 4.9,
+      "completedJobs": 203,
+      "status": "active",
+      "location": "Uptown"
+    }
+  ],
+  "vendors": [
+    {
+      "id": 1,
+      "name": "TechParts Supply",
+      "email": "contact@techparts.com",
+      "phone": "+1234567894",
+      "category": "Electronics",
+      "productsCount": 450,
+      "rating": 4.7,
+      "status": "active"
+    },
+    {
+      "id": 2,
+      "name": "Home Appliance Store",
+      "email": "info@homeappliance.com",
+      "phone": "+1234567895",
+      "category": "Appliances",
+      "productsCount": 320,
+      "rating": 4.6,
+      "status": "active"
+    }
+  ],
+  "repairCompanies": [
+    {
+      "id": 1,
+      "name": "QuickFix Solutions",
+      "email": "info@quickfix.com",
+      "phone": "+1234567896",
+      "address": "789 Business Blvd, City, State",
+      "employeeCount": 25,
+      "specializations": [
+        "Electronics",
+        "Appliances"
+      ],
+      "rating": 4.8,
+      "status": "active"
+    },
+    {
+      "id": 2,
+      "name": "Reliable Repairs Inc",
+      "email": "contact@reliablerepairs.com",
+      "phone": "+1234567897",
+      "address": "321 Service St, City, State",
+      "employeeCount": 18,
+      "specializations": [
+        "HVAC",
+        "Plumbing"
+      ],
+      "rating": 4.7,
+      "status": "active"
+    }
+  ],
+  "repairBookings": [
+    {
+      "id": 1,
+      "customerId": 1,
+      "customerName": "John Doe",
+      "repairerId": 1,
+      "repairerName": "Mike Johnson",
+      "service": "Laptop Screen Repair",
+      "status": "in-progress",
+      "bookingDate": "2024-01-20",
+      "scheduledDate": "2024-01-22",
+      "estimatedCost": 150,
+      "actualCost": null,
+      "description": "Cracked laptop screen needs replacement"
+    },
+    {
+      "id": 2,
+      "customerId": 2,
+      "customerName": "Jane Smith",
+      "repairerId": 2,
+      "repairerName": "Sarah Wilson",
+      "service": "Washing Machine Repair",
+      "status": "completed",
+      "bookingDate": "2024-01-18",
+      "scheduledDate": "2024-01-20",
+      "estimatedCost": 200,
+      "actualCost": 180,
+      "description": "Washing machine not draining properly"
+    }
+  ],
+  "productOrders": [
+    {
+      "id": 1,
+      "customerId": 1,
+      "customerName": "John Doe",
+      "vendorId": 1,
+      "vendorName": "TechParts Supply",
+      "products": [
+        {
+          "name": "Laptop Screen",
+          "quantity": 1,
+          "price": 120
+        },
+        {
+          "name": "Keyboard",
+          "quantity": 1,
+          "price": 45
+        }
+      ],
+      "totalAmount": 165,
+      "status": "shipped",
+      "orderDate": "2024-01-19",
+      "shippingAddress": "123 Main St, City, State"
+    }
+  ],
+  "transactions": [
+    {
+      "id": 1,
+      "type": "repair_payment",
+      "amount": 180,
+      "customerId": 2,
+      "customerName": "Jane Smith",
+      "repairerId": 2,
+      "repairerName": "Sarah Wilson",
+      "date": "2024-01-21",
+      "status": "completed",
+      "paymentMethod": "credit_card"
+    },
+    {
+      "id": 2,
+      "type": "product_payment",
+      "amount": 165,
+      "customerId": 1,
+      "customerName": "John Doe",
+      "vendorId": 1,
+      "vendorName": "TechParts Supply",
+      "date": "2024-01-19",
+      "status": "completed",
+      "paymentMethod": "paypal"
+    }
+  ],
+  "invoices": [
+    {
+      "id": 1,
+      "invoiceNumber": "INV-2024-001",
+      "customerId": 2,
+      "customerName": "Jane Smith",
+      "amount": 180,
+      "issueDate": "2024-01-21",
+      "dueDate": "2024-02-21",
+      "status": "paid",
+      "items": [
+        {
+          "description": "Washing Machine Repair",
+          "quantity": 1,
+          "price": 180
+        }
+      ]
+    }
+  ],
+  "logistics": [
+    {
+      "id": 1,
+      "orderId": 1,
+      "customerName": "John Doe",
+      "pickupAddress": "TechParts Supply Warehouse",
+      "deliveryAddress": "123 Main St, City, State",
+      "status": "in_transit",
+      "trackingNumber": "TRK123456789",
+      "estimatedDelivery": "2024-01-23",
+      "driver": "Bob Driver",
+      "driverPhone": "+1234567898"
+    }
+  ],
+  "content": [
+    {
+      "id": 1,
+      "type": "banner",
+      "title": "Welcome to FixIt",
+      "content": "Your trusted repair service platform",
+      "status": "active",
+      "createdDate": "2024-01-15",
+      "lastModified": "2024-01-20"
+    },
+    {
+      "id": 2,
+      "type": "faq",
+      "title": "How to book a repair?",
+      "content": "You can book a repair by selecting a service and choosing a repairer...",
+      "status": "active",
+      "createdDate": "2024-01-16",
+      "lastModified": "2024-01-18"
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+//components/layout/app-sidebar.tsx
 "use client";
 
 import { useState } from "react";
@@ -17,6 +18,8 @@ import {
   Truck,
   UserCheck,
   Shield,
+  Settings,
+  ShoppingBag,
 } from "lucide-react";
 
 import {
@@ -39,17 +42,52 @@ import {
 import { LogoutDialog } from "@/components/ui/logout-dialog";
 import Image from "next/image";
 
-const navigationItems = [
+type NavigationItem = {
+  title: string;
+  url?: string;
+  hasDropdown?: boolean;
+  subItems?: Array<{
+    title: string;
+    url: string;
+    icon: string | React.ComponentType<{ className?: string }>;
+  }>;
+  icon: string | React.ComponentType<{ className?: string }>;
+};
+
+const navigationItems: NavigationItem[] = [
   {
-    title: "Dashboard",
+    title: "HOME",
     icon: Home,
     url: "/dashboard",
   },
   {
-    title: "Content Management",
-    icon: FileText,
-    url: "/content-management",
+    title: "MEMBERS",
+    icon: Users,
+    url: "/members",
   },
+  {
+    title: "SERVICES",
+    icon: Settings,
+    hasDropdown: true,
+    subItems: [
+      {
+        title: "E-Commerce",
+        icon: ShoppingBag,
+        url: "/e-commerce",
+      },
+      {
+        title: "E-Repair",
+        icon: "/images/e-repair.png",
+        url: "/e-repair",
+      },
+      {
+        title: "Content Management",
+        icon: "/images/content.png",
+        url: "/content-management",
+      },
+    ],
+  },
+
   {
     title: "Super Admin",
     icon: Shield,
@@ -132,7 +170,7 @@ export function AppSidebar() {
   return (
     <div className="bg-[#1A3B6F]">
       <Sidebar className="bg-[#1A3B6F] border-r-0">
-        <SidebarHeader className="p-6 border-b border-red h-[112px]">
+        <SidebarHeader className="p-6  h-[112px]">
           <div className="flex items-center justify-center">
             <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-red text-[#1A3B6F]">
               <Wrench className="h-6 w-6 text-white" />
@@ -152,11 +190,11 @@ export function AppSidebar() {
             <SidebarGroupContent>
               <SidebarMenu className="space-y-1">
                 {navigationItems.map((item) => (
-                  <SidebarMenuItem key={item.title}>
+                  <SidebarMenuItem key={item.title} className="  ">
                     {item.hasDropdown ? (
                       <Collapsible>
                         <CollapsibleTrigger asChild>
-                          <SidebarMenuButton className="w-full justify-between text-white hover:bg-[#2A4B7F] hover:text-white data-[state=open]:bg-[#2A4B7F] data-[state=open]:text-white py-3 px-4 text-sm font-medium">
+                          <SidebarMenuButton className="w-full h-[48px] justify-between text-white hover:bg-[#2A4B7F] hover:text-white data-[state=open]:bg-[#2A4B7F] data-[state=open]:text-white py-3 px-4 text-sm font-medium">
                             <div className="flex items-center gap-3">
                               <item.icon className="h-4 w-4" />
                               <span className="text-left">{item.title}</span>
@@ -173,14 +211,23 @@ export function AppSidebar() {
                                     onClick={() =>
                                       handleNavigation(subItem.url)
                                     }
-                                    className={`w-full text-left py-2 px-4 text-sm font-medium transition-colors cursor-pointer ${
+                                    className={`w-full h-[42px] gap-2  text-left py-2 px-4 text-sm font-medium transition-colors cursor-pointer ${
                                       pathname === subItem.url
                                         ? "bg-white text-[#1A3B6F] hover:bg-white hover:text-[#1A3B6F]"
                                         : "text-white hover:bg-[#2A4B7F] hover:text-white"
                                     }`}
                                   >
                                     <div className="flex items-center gap-3">
-                                      <subItem.icon className="h-4 w-4" />
+                                      {typeof subItem.icon === "string" ? (
+                                        <Image
+                                          src={subItem.icon}
+                                          alt="icon"
+                                          width={16}
+                                          height={16}
+                                        />
+                                      ) : (
+                                        <subItem.icon className="h-4 w-4" />
+                                      )}
                                       <span>{subItem.title}</span>
                                     </div>
                                   </SidebarMenuButton>
@@ -193,7 +240,7 @@ export function AppSidebar() {
                     ) : item.url ? (
                       <SidebarMenuButton
                         onClick={() => handleNavigation(item.url!)}
-                        className={`w-full py-3 px-4 text-sm font-medium cursor-pointer ${
+                        className={`w-full  py-3 px-3 text-sm font-medium cursor-pointer ${
                           pathname === item.url
                             ? "bg-white text-[#1A3B6F] hover:bg-white hover:text-[#1A3B6F]"
                             : "text-white hover:bg-[#2A4B7F] hover:text-white"

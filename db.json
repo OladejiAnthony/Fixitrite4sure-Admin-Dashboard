@@ -4,10 +4,30 @@
       "id": 1,
       "name": "Admin User",
       "email": "admin@fixit.com",
-      "password": "$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi",
+      "password": "password123",
       "role": "admin",
       "createdAt": "2024-01-01T00:00:00.000Z",
-      "lastLogin": "2025-06-23T19:17:45.108Z",
+      "lastLogin": "2025-07-12T14:21:22.578Z",
+      "isActive": true
+    },
+    {
+      "id": 2,
+      "name": "Oladeji Anthony",
+      "email": "oladejianthony4@gmail.com",
+      "password": "Tdwonder1",
+      "role": "admin",
+      "createdAt": "2025-06-27T07:53:49.915Z",
+      "lastLogin": "2025-06-27T07:53:56.581Z",
+      "isActive": true
+    },
+    {
+      "id": 3,
+      "name": "Itel A33 Plus",
+      "email": "oladejianthony98@gmail.com",
+      "password": "Tdwonder2",
+      "role": "admin",
+      "createdAt": "2025-06-27T07:54:41.678Z",
+      "lastLogin": "2025-06-27T07:57:35.546Z",
       "isActive": true
     }
   ],
@@ -235,22 +255,166 @@
   ],
   "content": [
     {
-      "id": 1,
-      "type": "banner",
-      "title": "Welcome to FixIt",
-      "content": "Your trusted repair service platform",
-      "status": "active",
-      "createdDate": "2024-01-15",
-      "lastModified": "2024-01-20"
+      "id": "CM001",
+      "name": "John Smith",
+      "email": "john.smith@example.com",
+      "contentType": "Blog Post",
+      "properties": "Tech Review",
+      "status": "approved",
+      "datePosted": "2024-01-15T10:30:00Z",
+      "engagement": 1250,
+      "title": "Latest Smartphone Review",
+      "description": "Comprehensive review of the latest smartphone features, performance, and value for money. This detailed analysis covers camera quality, battery life, and overall user experience.",
+      "image": "/placeholder.svg?height=200&width=300",
+      "tags": [
+        "technology",
+        "smartphone",
+        "review",
+        "gadgets"
+      ],
+      "contentOverview": {
+        "wordCount": 1500,
+        "readTime": "7 min",
+        "category": "Technology",
+        "author": "John Smith",
+        "publishDate": "2024-01-15",
+        "lastModified": "2024-01-20"
+      }
     },
     {
-      "id": 2,
-      "type": "faq",
-      "title": "How to book a repair?",
-      "content": "You can book a repair by selecting a service and choosing a repairer...",
-      "status": "active",
-      "createdDate": "2024-01-16",
-      "lastModified": "2024-01-18"
+      "id": "CM002",
+      "name": "Sarah Johnson",
+      "email": "sarah.j@example.com",
+      "contentType": "Video",
+      "properties": "Tutorial",
+      "status": "pending",
+      "datePosted": "2024-01-18T14:20:00Z",
+      "engagement": 890,
+      "title": "DIY Home Repair Guide",
+      "description": "Step-by-step video tutorial showing common home repair techniques that anyone can master. Includes tools needed, safety tips, and troubleshooting advice.",
+      "image": "/placeholder.svg?height=200&width=300",
+      "tags": [
+        "diy",
+        "home repair",
+        "tutorial",
+        "maintenance"
+      ],
+      "contentOverview": {
+        "duration": "15 min",
+        "views": 890,
+        "category": "Home & Garden",
+        "author": "Sarah Johnson",
+        "publishDate": "2024-01-18",
+        "lastModified": "2024-01-18"
+      }
+    },
+    {
+      "id": "CM003",
+      "name": "Mike Davis",
+      "email": "mike.davis@example.com",
+      "contentType": "Article",
+      "properties": "News",
+      "status": "rejected",
+      "datePosted": "2024-01-20T09:15:00Z",
+      "engagement": 340,
+      "title": "Industry News Update",
+      "description": "Latest developments in the repair industry, including new regulations, market trends, and emerging technologies that are shaping the future of repair services.",
+      "image": "/placeholder.svg?height=200&width=300",
+      "tags": [
+        "news",
+        "industry",
+        "trends",
+        "regulations"
+      ],
+      "contentOverview": {
+        "wordCount": 800,
+        "readTime": "4 min",
+        "category": "Industry News",
+        "author": "Mike Davis",
+        "publishDate": "2024-01-20",
+        "lastModified": "2024-01-22"
+      }
+    },
+    {
+      "id": "CM004",
+      "name": "Emily Chen",
+      "email": "emily.chen@example.com",
+      "contentType": "Infographic",
+      "properties": "Educational",
+      "status": "approved",
+      "datePosted": "2024-01-22T11:45:00Z",
+      "engagement": 2100,
+      "title": "Repair Cost Comparison",
+      "description": "Visual comparison of repair costs across different device categories, helping users make informed decisions about repair vs replacement options.",
+      "image": "/placeholder.svg?height=200&width=300",
+      "tags": [
+        "infographic",
+        "costs",
+        "comparison",
+        "education"
+      ],
+      "contentOverview": {
+        "format": "PNG",
+        "size": "2MB",
+        "category": "Educational",
+        "author": "Emily Chen",
+        "publishDate": "2024-01-22",
+        "lastModified": "2024-01-22"
+      }
+    },
+    {
+      "id": "CM005",
+      "name": "David Wilson",
+      "email": "david.w@example.com",
+      "contentType": "Podcast",
+      "properties": "Interview",
+      "status": "pending",
+      "datePosted": "2024-01-25T16:30:00Z",
+      "engagement": 650,
+      "title": "Expert Interview Series",
+      "description": "In-depth interview with industry experts discussing the future of repair services, sustainability, and customer service excellence in the digital age.",
+      "image": "/placeholder.svg?height=200&width=300",
+      "tags": [
+        "podcast",
+        "interview",
+        "expert",
+        "sustainability"
+      ],
+      "contentOverview": {
+        "duration": "45 min",
+        "listens": 650,
+        "category": "Interview",
+        "author": "David Wilson",
+        "publishDate": "2024-01-25",
+        "lastModified": "2024-01-25"
+      }
+    },
+    {
+      "id": "CM006",
+      "name": "Lisa Anderson",
+      "email": "lisa.a@example.com",
+      "contentType": "Guide",
+      "properties": "How-to",
+      "status": "approved",
+      "datePosted": "2024-01-28T13:20:00Z",
+      "engagement": 1800,
+      "title": "Complete Maintenance Guide",
+      "description": "Comprehensive guide covering preventive maintenance techniques for various electronic devices and appliances to extend their lifespan and performance.",
+      "image": "/placeholder.svg?height=200&width=300",
+      "tags": [
+        "guide",
+        "maintenance",
+        "prevention",
+        "electronics"
+      ],
+      "contentOverview": {
+        "wordCount": 2200,
+        "readTime": "12 min",
+        "category": "Maintenance",
+        "author": "Lisa Anderson",
+        "publishDate": "2024-01-28",
+        "lastModified": "2024-01-30"
+      }
     }
   ]
 }

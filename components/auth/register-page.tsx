@@ -1,17 +1,24 @@
-"use client"
+//components/auth/register-page.tsx
+"use client";
 
-import { useState } from "react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { z } from "zod"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { toast } from "sonner"
-import { authService } from "@/lib/auth-service"
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { toast } from "sonner";
+import { authService } from "@/lib/auth-service";
 
 const registerSchema = z
   .object({
@@ -23,13 +30,13 @@ const registerSchema = z
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
     path: ["confirmPassword"],
-  })
+  });
 
-type RegisterForm = z.infer<typeof registerSchema>
+type RegisterForm = z.infer<typeof registerSchema>;
 
 export function RegisterPage() {
-  const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
   const {
     register,
@@ -37,52 +44,86 @@ export function RegisterPage() {
     formState: { errors },
   } = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
-  })
+  });
 
   const onSubmit = async (data: RegisterForm) => {
-    setIsLoading(true)
+    setIsLoading(true);
+    console.log("Registration data:", data);
 
     try {
       await authService.register({
         name: data.name,
         email: data.email,
         password: data.password,
-      })
+      });
+      console.log({ authService: authService.register });
 
-      toast.success("Registration successful! Please login with your credentials.")
-      router.push("/login")
+      toast.success(
+        "Registration successful! Please login with your credentials."
+      );
+      router.push("/login");
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : "Registration failed. Please try again."
-      toast.error(errorMessage)
+      const errorMessage =
+        error instanceof Error
+          ? error.message
+          : "Registration failed. Please try again.";
+      toast.error(errorMessage);
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Create Account</CardTitle>
-        <CardDescription>Register for a new admin account</CardDescription>
+        <CardTitle className="text-center text-[#202224] font-nunito-sans text-[32px] font-bold tracking-[-0.114px]">
+          Create Account
+        </CardTitle>
+        <CardDescription className="text-center text-primary font-nunito-sans text-[18px] font-medium tracking-[-0.064px]">
+          Register for a new admin account
+        </CardDescription>
       </CardHeader>
+
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="name">Full Name</Label>
-            <Input id="name" placeholder="Enter your full name" {...register("name")} />
-            {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
+            <Input
+              id="name"
+              placeholder="Enter your full name"
+              {...register("name")}
+            />
+            {errors.name && (
+              <p className="text-sm text-destructive">{errors.name.message}</p>
+            )}
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
-            <Input id="email" type="email" placeholder="Enter your email" {...register("email")} />
-            {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
+            <Input
+              id="email"
+              type="email"
+              placeholder="Enter your email"
+              {...register("email")}
+            />
+            {errors.email && (
+              <p className="text-sm text-destructive">{errors.email.message}</p>
+            )}
           </div>
 
           <div className="space-y-2">
             <Label htmlFor="password">Password</Label>
-            <Input id="password" type="password" placeholder="Create a password" {...register("password")} />
-            {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
+            <Input
+              id="password"
+              type="password"
+              placeholder="Create a password"
+              {...register("password")}
+            />
+            {errors.password && (
+              <p className="text-sm text-destructive">
+                {errors.password.message}
+              </p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -93,10 +134,18 @@ export function RegisterPage() {
               placeholder="Confirm your password"
               {...register("confirmPassword")}
             />
-            {errors.confirmPassword && <p className="text-sm text-destructive">{errors.confirmPassword.message}</p>}
+            {errors.confirmPassword && (
+              <p className="text-sm text-destructive">
+                {errors.confirmPassword.message}
+              </p>
+            )}
           </div>
 
-          <Button type="submit" className="w-full" disabled={isLoading}>
+          <Button
+            type="submit"
+            className="w-full bg-[#0586CF] text-white hover:bg-[#046FA2] transition-colors rounded-xl py-4"
+            disabled={isLoading}
+          >
             {isLoading ? "Creating account..." : "Create Account"}
           </Button>
         </form>
@@ -109,5 +158,5 @@ export function RegisterPage() {
         </div>
       </CardContent>
     </Card>
-  )
+  );
 }

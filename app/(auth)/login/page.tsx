@@ -1,5 +1,11 @@
-import { LoginPage } from "@/components/auth/login-page"
+// app/(auth)/login/page.tsx
+import { LoginPage } from "@/components/auth/login-page";
+import { AuthLayout } from "@/components/layout/auth-layout";
 
 export default function Login() {
-  return <LoginPage />
+  return (
+    <AuthLayout>
+      <LoginPage />
+    </AuthLayout>
+  );
 }

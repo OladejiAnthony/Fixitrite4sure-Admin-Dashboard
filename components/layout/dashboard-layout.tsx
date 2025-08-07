@@ -27,7 +27,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
       <AppSidebar />
       <SidebarInset>
         <Header />
-        <main className="flex-1 p-6">{children}</main>
+        <main className="flex-1 p-6 bg-[#FAFAFA]">{children}</main>
       </SidebarInset>
     </SidebarProvider>
   );

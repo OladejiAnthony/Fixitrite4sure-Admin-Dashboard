@@ -46,29 +46,39 @@ export function LoginPage() {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = async (data: LoginForm) => {
-    setIsLoading(true);
-    dispatch(loginStart());
-    console.log("Login data:", data);
+  // app/login/page.tsx
+  // Update the login success handler
+ const onSubmit = async (data: LoginForm) => {
+   console.log("Login started with data:", data); // Debug log
+   setIsLoading(true);
+   dispatch(loginStart());
 
-    try {
-      const response = await authService.login(data);
-      console.log("Login response:", response);
-      localStorage.setItem("auth-token", response.token);
-      dispatch(loginSuccess(response));
-      toast.success("Login successful!");
-      router.push("/dashboard");
-    } catch (error: unknown) {
-      dispatch(loginFailure());
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Login failed. Please try again.";
-      toast.error(errorMessage);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+   try {
+     const response = await authService.login(data);
+     localStorage.setItem("auth-token", response.token);
+
+     // Make sure this matches exactly what your authReducer expects
+     dispatch(
+       loginSuccess({
+         user: {
+           id: response.user.id,
+           name: response.user.name,
+           email: response.user.email,
+           role: response.user.role,
+         },
+         token: response.token,
+       })
+     );
+
+     toast.success("Login successful!");
+     router.push("/dashboard");
+   } catch (error) {
+     dispatch(loginFailure());
+     toast.error("Login failed. Please try again.");
+   } finally {
+     setIsLoading(false);
+   }
+ };
 
   return (
     <Card className="h-full">
@@ -124,7 +134,7 @@ export function LoginPage() {
 
           <Button
             type="submit"
-            className="w-full bg-[#0586CF] text-white hover:bg-[#046FA2] transition-colors rounded-xl py-4"
+            className="w-full bg-[#0586CF] text-white hover:bg-[#046FA2] transition-colors rounded-xl py-6"
             disabled={isLoading}
           >
             {isLoading ? "Signing in..." : "Sign In"}

@@ -58,12 +58,58 @@ const navigationItems: NavigationItem[] = [
   {
     title: "HOME",
     icon: Home,
-    url: "/dashboard",
+    hasDropdown: true,
+    subItems: [
+      {
+        title: "Dashboard",
+        icon: ShoppingBag,
+        url: "/dashboard",
+      },
+      {
+        title: "Analytics",
+        icon: "/images/e-repair.png",
+        url: "/analytics",
+      },
+      {
+        title: "Onboarding",
+        icon: "/images/content.png",
+        url: "/onboarding",
+      },
+    ],
+    //url: "/dashboard",
   },
   {
     title: "MEMBERS",
     icon: Users,
-    url: "/members",
+    //url: "/members",
+    hasDropdown: true,
+    subItems: [
+      {
+        title: "Admin",
+        icon: ShoppingBag,
+        url: "/admin",
+      },
+      {
+        title: "Customers",
+        icon: "/images/e-repair.png",
+        url: "/customers",
+      },
+      {
+        title: "Repairers",
+        icon: "/images/content.png",
+        url: "/repairers",
+      },
+      {
+        title: "Repair Companies",
+        icon: "/images/e-repair.png",
+        url: "/repair-companies",
+      },
+      {
+        title: "Vendors",
+        icon: "/images/content.png",
+        url: "/vendors",
+      },
+    ],
   },
   {
     title: "SERVICES",

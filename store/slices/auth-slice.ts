@@ -35,7 +35,7 @@ const authSlice = createSlice({
     ) => {
       state.isLoading = false;
       state.isAuthenticated = true;
-      state.user = action.payload.user;
+      state.user = action.payload.user; // This should set the user
       state.token = action.payload.token;
     },
     loginFailure: (state) => {

@@ -58,6 +58,7 @@ export const authService = {
   },
 
   async login(credentials: z.infer<typeof loginSchema>) {
+    console.log("AuthService.login called with:", credentials); // Debug log
     const validatedData = loginSchema.parse(credentials);
 
     try {
@@ -83,6 +84,8 @@ export const authService = {
       await axios.patch(`${API_BASE_URL}/users/${user.id}`, {
         lastLogin: new Date().toISOString(),
       });
+
+      console.log("AuthService returning:", { user, token }); // Debug log
 
       return {
         user: {

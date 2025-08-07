@@ -2,13 +2,19 @@
   "users": [
     {
       "id": 1,
-      "name": "Admin User",
+      "name": "Admin Admin Admin",
       "email": "admin@fixit.com",
       "password": "password123",
       "role": "admin",
       "createdAt": "2024-01-01T00:00:00.000Z",
-      "lastLogin": "2025-07-12T14:21:22.578Z",
-      "isActive": true
+      "lastLogin": "2025-08-07T06:37:21.348Z",
+      "isActive": true,
+      "phone": "08137459380",
+      "country": "Nigeria",
+      "state": "Abuja",
+      "city": "Ilorin",
+      "postalCode": "240242",
+      "bio": "hello"
     },
     {
       "id": 2,
@@ -18,7 +24,14 @@
       "role": "admin",
       "createdAt": "2025-06-27T07:53:49.915Z",
       "lastLogin": "2025-06-27T07:53:56.581Z",
-      "isActive": true
+      "isActive": true,
+      "phone": "+2348099999999",
+      "country": "Nigeria",
+      "state": "Lagos",
+      "city": "Lagos",
+      "postalCode": "100001",
+      "bio": "This is my short bio...",
+      "profileImage": "/path/to/image.jpg"
     },
     {
       "id": 3,
@@ -41,6 +54,118 @@
     "completedRepairs": 297,
     "pendingOrders": 23
   },
+  "activities": [
+    {
+      "id": 2,
+      "adminName": "Sultan Manno",
+      "activityDescription": "Approved a user content",
+      "dateTime": "2025-08-02T04:14:00.000Z",
+      "status": "Success"
+    },
+    {
+      "adminName": "Lukeman",
+      "activityDescription": "Lorem ipsum",
+      "dateTime": "2025-08-07T05:07:39.639Z",
+      "status": "Success",
+      "id": 3
+    },
+    {
+      "adminName": "Helen",
+      "activityDescription": "Lorem ipsum donor atet lorem ipsum ",
+      "dateTime": "2025-08-07T05:43:18.433Z",
+      "status": "Success",
+      "id": 4
+    },
+    {
+      "adminName": "helpo",
+      "activityDescription": "showing",
+      "dateTime": "2025-08-07T05:48:47.205Z",
+      "status": "Success",
+      "id": 5
+    },
+    {
+      "adminName": "helpo ",
+      "activityDescription": "poniyu",
+      "dateTime": "2025-08-07T05:49:06.067Z",
+      "status": "Success",
+      "id": 6
+    },
+    {
+      "adminName": "jane",
+      "activityDescription": "jodac",
+      "dateTime": "2025-08-07T05:49:17.807Z",
+      "status": "Success",
+      "id": 7
+    },
+    {
+      "adminName": "jaedial",
+      "activityDescription": "oreinr",
+      "dateTime": "2025-08-07T05:49:27.715Z",
+      "status": "Success",
+      "id": 8
+    },
+    {
+      "adminName": "kilomo",
+      "activityDescription": "knasd",
+      "dateTime": "2025-08-07T05:49:36.574Z",
+      "status": "Success",
+      "id": 9
+    },
+    {
+      "adminName": "kil",
+      "activityDescription": "kikelomo",
+      "dateTime": "2025-08-07T05:49:47.779Z",
+      "status": "Success",
+      "id": 10
+    },
+    {
+      "adminName": "helen",
+      "activityDescription": "indo loki",
+      "dateTime": "2025-08-07T05:50:00.975Z",
+      "status": "Success",
+      "id": 11
+    },
+    {
+      "adminName": "gig",
+      "activityDescription": "gigabyte",
+      "dateTime": "2025-08-07T05:50:22.446Z",
+      "status": "Success",
+      "id": 12
+    },
+    {
+      "adminName": "helori",
+      "activityDescription": "Lorem ipsum donor atet lorem ipsum dont go helo",
+      "dateTime": "2025-08-07T05:50:33.538Z",
+      "status": "Success",
+      "id": 13
+    }
+  ],
+  "notifications": [
+    {
+      "id": 1,
+      "type": "New User Alert",
+      "message": "Salami Rako just created a repairer account.",
+      "createdAt": "2025-08-07T04:00:00Z"
+    },
+    {
+      "id": 2,
+      "type": "Content Approval",
+      "message": "Salami just posted content.",
+      "createdAt": "2025-08-07T03:00:00Z"
+    },
+    {
+      "id": 3,
+      "type": "New User Alert",
+      "message": "Salami Rako just created another repairer account.",
+      "createdAt": "2025-08-06T04:00:00Z"
+    },
+    {
+      "id": 4,
+      "type": "New User Alert",
+      "message": "Salami Rako opened a repairer account.",
+      "createdAt": "2025-08-05T04:00:00Z"
+    }
+  ],
   "customers": [
     {
       "id": 1,

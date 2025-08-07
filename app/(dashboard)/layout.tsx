@@ -1,10 +1,10 @@
-import type React from "react"
-import { DashboardLayout } from "@/components/layout/dashboard-layout"
+import type React from "react";
+import { DashboardLayout } from "@/components/layout/dashboard-layout";
 
 export default function DashboardLayoutPage({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
-  return <DashboardLayout>{children}</DashboardLayout>
+  return <DashboardLayout>{children}</DashboardLayout>;
 }

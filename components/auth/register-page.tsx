@@ -143,7 +143,7 @@ export function RegisterPage() {
 
           <Button
             type="submit"
-            className="w-full bg-[#0586CF] text-white hover:bg-[#046FA2] transition-colors rounded-xl py-4"
+            className="w-full bg-[#0586CF] text-white hover:bg-[#046FA2] transition-colors rounded-xl py-6"
             disabled={isLoading}
           >
             {isLoading ? "Creating account..." : "Create Account"}

@@ -49,7 +49,7 @@ export function Header() {
 
   const goToSettings = () => {
     setOpen(false);
-    router.push("/settings");
+    router.push("/general-settings");
   };
 
   return (

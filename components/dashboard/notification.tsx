@@ -4,19 +4,7 @@ import { useNotifications } from "@/hooks/useNotifications";
 import { format } from "date-fns";
 import { useSearchParams } from "next/navigation";
 import { cn } from "@/lib/utils";
-
-// Define a type for the notification object
-type Notification = {
-  id: number;
-  message: string;
-  createdAt: string;
-};
-
-const grouped = {
-  today: [] as Notification[],
-  yesterday: [] as Notification[],
-  earlier: [] as Notification[],
-};
+import { User } from "lucide-react"; // For avatar icon
 
 export default function NotificationsPage() {
   const { data, isLoading } = useNotifications();
@@ -46,38 +34,61 @@ export default function NotificationsPage() {
   });
 
   return (
-    <div className="p-6 space-y-6 ">
+    <div className="p-6 space-y-8 ">
+      <h1 className="text-xl font-bold">NOTIFICATIONS</h1>
       {["today", "yesterday", "earlier"].map(
         (section) =>
           grouped[section as keyof typeof grouped].length > 0 && (
-            <div key={section}>
-              <h3 className="text-lg font-semibold capitalize mb-3">
+            <div key={section} className="bg-white pb-2">
+              <h3 className="text-lg font-semibold capitalize mb-4">
                 {section}
               </h3>
-              <ul className="space-y-2">
-                {grouped[section as keyof typeof grouped].map(
-                  (n: Notification) => (
-                    <li
-                      key={n.id}
-                      className={cn(
-                        "border p-3 rounded",
-                        highlightId === n.id.toString()
-                          ? "border-primary bg-muted"
-                          : "hover:bg-muted cursor-pointer"
-                      )}
-                      onClick={() => {
-                        // optionally handle click
-                      }}
-                    >
-                      <div className="flex justify-between items-center">
-                        <p>{n.message}</p>
+              <ul className="space-y-3">
+                {grouped[section as keyof typeof grouped].map((n) => (
+                  <li
+                    key={n.id}
+                    className={cn(
+                      "flex items-start gap-3 p-3 rounded-md hover:bg-muted hover:m-2",
+                      highlightId === n.id.toString() && "bg-muted m-2"
+                    )}
+                  >
+                    {/* Avatar */}
+                    <div className="flex-shrink-0 mt-1">
+                      <div className="bg-muted rounded-full p-2">
+                        <User className="w-5 h-5 text-muted-foreground" />
+                        {/*
+                          <Image
+  src="/path/to/avatar.jpg"
+  alt="User Avatar"
+  width={32}
+  height={32}
+  className="rounded-full"
+/>
+
+                        */}
+                      </div>
+                    </div>
+
+                    {/* Notification Text */}
+                    <div className="flex flex-col flex-1">
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm font-medium">{n.type}:</p>
                         <span className="text-xs text-muted-foreground">
                           {format(new Date(n.createdAt), "p")}
                         </span>
                       </div>
-                    </li>
-                  )
-                )}
+                      <div className="text-sm text-muted-foreground">
+                        {n.message}{" "}
+                        <button
+                          className=" underline ml-1 text-[#333] font-bold"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          View details
+                        </button>
+                      </div>
+                    </div>
+                  </li>
+                ))}
               </ul>
             </div>
           )

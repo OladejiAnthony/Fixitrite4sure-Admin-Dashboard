@@ -1,26 +1,43 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Plus, Search, Phone, Mail, MapPin, Calendar } from "lucide-react"
-import { useCustomers } from "@/hooks/use-customers"
+import { useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Plus, Search, Phone, Mail, MapPin, Calendar } from "lucide-react";
+import { useCustomers } from "@/hooks/use-customers";
+
+interface Customer {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  status: "active" | "inactive";
+  totalBookings: number;
+  joinDate: string;
+}
 
 export function Customers() {
-  const { data: customers, isLoading } = useCustomers()
-  const [searchTerm, setSearchTerm] = useState("")
+  const { data: customers, isLoading } = useCustomers();
+  const [searchTerm, setSearchTerm] = useState("");
 
   const filteredCustomers = customers?.filter(
-    (customer) =>
+    (customer: Customer) =>
       customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      customer.email.toLowerCase().includes(searchTerm.toLowerCase()),
-  )
+      customer.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   if (isLoading) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
 
   return (
@@ -28,7 +45,9 @@ export function Customers() {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">Customers</h1>
-          <p className="text-muted-foreground">Manage customer accounts and information</p>
+          <p className="text-muted-foreground">
+            Manage customer accounts and information
+          </p>
         </div>
         <Button>
           <Plus className="h-4 w-4 mr-2" />
@@ -55,7 +74,7 @@ export function Customers() {
       </Card>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {filteredCustomers?.map((customer) => (
+        {filteredCustomers?.map((customer: Customer) => (
           <Card key={customer.id}>
             <CardHeader>
               <div className="flex items-center space-x-4">
@@ -67,14 +86,22 @@ export function Customers() {
                   <CardTitle className="text-lg">{customer.name}</CardTitle>
                   <CardDescription>Customer</CardDescription>
                 </div>
-                <Badge variant={customer.status === "active" ? "default" : "secondary"}>{customer.status}</Badge>
+                <Badge
+                  variant={
+                    customer.status === "active" ? "default" : "secondary"
+                  }
+                >
+                  {customer.status}
+                </Badge>
               </div>
             </CardHeader>
             <CardContent>
               <div className="space-y-3">
                 <div className="flex items-center space-x-2">
                   <Calendar className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">{customer.totalBookings} bookings</span>
+                  <span className="text-sm">
+                    {customer.totalBookings} bookings
+                  </span>
                 </div>
 
                 <div className="flex items-center space-x-2">
@@ -113,10 +140,12 @@ export function Customers() {
       {filteredCustomers?.length === 0 && (
         <Card>
           <CardContent className="text-center py-8">
-            <p className="text-muted-foreground">No customers found matching your search.</p>
+            <p className="text-muted-foreground">
+              No customers found matching your search.
+            </p>
           </CardContent>
         </Card>
       )}
     </div>
-  )
+  );
 }

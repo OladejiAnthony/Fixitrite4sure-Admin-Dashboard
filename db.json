@@ -7,14 +7,28 @@
       "password": "password123",
       "role": "admin",
       "createdAt": "2024-01-01T00:00:00.000Z",
-      "lastLogin": "2025-08-07T06:37:21.348Z",
+      "lastLogin": "2025-08-09T09:48:07.401Z",
       "isActive": true,
       "phone": "08137459380",
       "country": "Nigeria",
       "state": "Abuja",
       "city": "Ilorin",
       "postalCode": "240242",
-      "bio": "hello"
+      "bio": "hello",
+      "profileImage": "/path/to/image.jpg",
+      "activityStatus": "Active",
+      "loginHistory": [
+        {
+          "date": "2025-08-01T08:32:00Z",
+          "ip": "192.168.0.12"
+        },
+        {
+          "date": "2025-08-02T15:45:00Z",
+          "ip": "192.168.0.11"
+        }
+      ],
+      "messageNotification": true,
+      "feedbackNotification": true
     },
     {
       "id": 2,
@@ -31,7 +45,18 @@
       "city": "Lagos",
       "postalCode": "100001",
       "bio": "This is my short bio...",
-      "profileImage": "/path/to/image.jpg"
+      "profileImage": "/path/to/image.jpg",
+      "activityStatus": "Inactive",
+      "loginHistory": [
+        {
+          "date": "2025-08-01T08:32:00Z",
+          "ip": "192.168.0.12"
+        },
+        {
+          "date": "2025-08-02T15:45:00Z",
+          "ip": "192.168.0.11"
+        }
+      ]
     },
     {
       "id": 3,
@@ -41,7 +66,25 @@
       "role": "admin",
       "createdAt": "2025-06-27T07:54:41.678Z",
       "lastLogin": "2025-06-27T07:57:35.546Z",
-      "isActive": true
+      "isActive": true,
+      "phone": "+2348099999999",
+      "country": "Nigeria",
+      "state": "Lagos",
+      "city": "Lagos",
+      "postalCode": "100001",
+      "bio": "This is my history bio...",
+      "profileImage": "/path/to/image.jpg",
+      "activityStatus": "Suspended",
+      "loginHistory": [
+        {
+          "date": "2025-08-01T08:32:00Z",
+          "ip": "192.168.0.12"
+        },
+        {
+          "date": "2025-08-02T15:45:00Z",
+          "ip": "192.168.0.11"
+        }
+      ]
     }
   ],
   "dashboardStats": {
@@ -60,9 +103,13 @@
       "adminName": "Sultan Manno",
       "activityDescription": "Approved a user content",
       "dateTime": "2025-08-02T04:14:00.000Z",
-      "status": "Success"
+      "status": "Success",
+      "accountType": "Repairer",
+      "activityType": "Purchase"
     },
     {
+      "accountType": "Repairer",
+      "activityType": "Purchase",
       "adminName": "Lukeman",
       "activityDescription": "Lorem ipsum",
       "dateTime": "2025-08-07T05:07:39.639Z",
@@ -70,6 +117,8 @@
       "id": 3
     },
     {
+      "accountType": "Repairer",
+      "activityType": "Content Posting",
       "adminName": "Helen",
       "activityDescription": "Lorem ipsum donor atet lorem ipsum ",
       "dateTime": "2025-08-07T05:43:18.433Z",
@@ -77,6 +126,8 @@
       "id": 4
     },
     {
+      "accountType": "Repairer",
+      "activityType": "Login",
       "adminName": "helpo",
       "activityDescription": "showing",
       "dateTime": "2025-08-07T05:48:47.205Z",
@@ -84,6 +135,8 @@
       "id": 5
     },
     {
+      "accountType": "Repairer",
+      "activityType": "Content Posting",
       "adminName": "helpo ",
       "activityDescription": "poniyu",
       "dateTime": "2025-08-07T05:49:06.067Z",
@@ -91,6 +144,8 @@
       "id": 6
     },
     {
+      "accountType": "Repairer",
+      "activityType": "Content Posting",
       "adminName": "jane",
       "activityDescription": "jodac",
       "dateTime": "2025-08-07T05:49:17.807Z",
@@ -98,6 +153,8 @@
       "id": 7
     },
     {
+      "accountType": "Repairer",
+      "activityType": "Login",
       "adminName": "jaedial",
       "activityDescription": "oreinr",
       "dateTime": "2025-08-07T05:49:27.715Z",
@@ -105,6 +162,8 @@
       "id": 8
     },
     {
+      "accountType": "Customer",
+      "activityType": "Login",
       "adminName": "kilomo",
       "activityDescription": "knasd",
       "dateTime": "2025-08-07T05:49:36.574Z",
@@ -112,6 +171,8 @@
       "id": 9
     },
     {
+      "accountType": "Customer",
+      "activityType": "Login",
       "adminName": "kil",
       "activityDescription": "kikelomo",
       "dateTime": "2025-08-07T05:49:47.779Z",
@@ -119,6 +180,8 @@
       "id": 10
     },
     {
+      "accountType": "Vendor",
+      "activityType": "Service Request",
       "adminName": "helen",
       "activityDescription": "indo loki",
       "dateTime": "2025-08-07T05:50:00.975Z",
@@ -126,6 +189,8 @@
       "id": 11
     },
     {
+      "accountType": "Vendor",
+      "activityType": "Service Request",
       "adminName": "gig",
       "activityDescription": "gigabyte",
       "dateTime": "2025-08-07T05:50:22.446Z",
@@ -133,6 +198,8 @@
       "id": 12
     },
     {
+      "accountType": "Vendor",
+      "activityType": "Service Request",
       "adminName": "helori",
       "activityDescription": "Lorem ipsum donor atet lorem ipsum dont go helo",
       "dateTime": "2025-08-07T05:50:33.538Z",
@@ -166,6 +233,28 @@
       "createdAt": "2025-08-05T04:00:00Z"
     }
   ],
+  "settings": {
+    "adminName": "Eysed Inc.",
+    "adminEmail": "admin@eysed.com",
+    "passwordPolicy": "Minimum 8 characters, 1 uppercase, 1 number",
+    "ipWhitelist": "192.168.1.1, 192.168.1.2",
+    "firewallEnabled": true,
+    "apiKeys": "sk_test_1234567890abcdfg",
+    "language": {
+      "default": "en",
+      "supported": [
+        "Spanish",
+        "French",
+        "Chinese"
+      ]
+    },
+    "currency": {
+      "default": "GBP",
+      "supported": [
+        "British Pound (£)"
+      ]
+    }
+  },
   "customers": [
     {
       "id": 1,

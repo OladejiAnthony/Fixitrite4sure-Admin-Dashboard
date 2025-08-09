@@ -198,6 +198,62 @@ const navigationItems: NavigationItem[] = [
     icon: Truck,
     url: "/logistics",
   },
+  {
+    title: "Settings and Utilities",
+    icon: Home,
+    hasDropdown: true,
+    subItems: [
+      {
+        title: "General Settings",
+        icon: ShoppingBag,
+        url: "/general-settings",
+      },
+      {
+        title: "Currency Settings",
+        icon: "/images/e-repair.png",
+        url: "/currency-settings",
+      },
+      {
+        title: "Language Settings",
+        icon: "/images/content.png",
+        url: "/language-settings",
+      },
+      {
+        title: "Send Push Notifications",
+        icon: "/images/content.png",
+        url: "/send-push-notifications",
+      },
+      {
+        title: "Terms & Conditions",
+        icon: "/images/content.png",
+        url: "/terms-and-conditions",
+      },
+    ],
+    //url: "/dashboard",
+  },
+  {
+    title: "MANAGE PAGE",
+    icon: Home,
+    hasDropdown: true,
+    subItems: [
+      {
+        title: "Rules",
+        icon: ShoppingBag,
+        url: "/rules",
+      },
+      {
+        title: "FAQ",
+        icon: "/images/e-repair.png",
+        url: "/faq",
+      },
+      {
+        title: "Help",
+        icon: "/images/content.png",
+        url: "/help",
+      },
+    ],
+    //url: "/dashboard",
+  },
 ];
 
 export function AppSidebar() {
@@ -305,7 +361,7 @@ export function AppSidebar() {
           </SidebarGroup>
         </SidebarContent>
 
-        <SidebarFooter className="p-4 border-t border-[#2A4B7F]">
+        {/* <SidebarFooter className="p-4 border-t border-[#2A4B7F]">
           <SidebarMenu>
             <SidebarMenuItem>
               <SidebarMenuButton
@@ -319,14 +375,14 @@ export function AppSidebar() {
               </SidebarMenuButton>
             </SidebarMenuItem>
           </SidebarMenu>
-        </SidebarFooter>
+        </SidebarFooter> */}
         <SidebarRail />
       </Sidebar>
 
-      <LogoutDialog
+      {/* <LogoutDialog
         open={isLogoutDialogOpen}
         onOpenChange={setIsLogoutDialogOpen}
-      />
+      /> */}
     </div>
   );
 }

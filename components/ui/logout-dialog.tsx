@@ -41,7 +41,7 @@ export function LogoutDialog({ open, onOpenChange }: LogoutDialogProps) {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={handleLogout}>Logout</AlertDialogAction>
+          <AlertDialogAction onClick={handleLogout} className="bg-[#5D92E4]">Logout</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

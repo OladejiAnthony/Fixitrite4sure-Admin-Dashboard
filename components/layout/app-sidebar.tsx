@@ -194,9 +194,31 @@ const navigationItems: NavigationItem[] = [
     url: "/invoices",
   },
   {
-    title: "Logistics",
+    title: "Promotion & Marketing Tool",
+    icon: Home,
+    hasDropdown: true,
+    subItems: [
+      {
+        title: "Advertisement & Banners",
+        icon: ShoppingBag,
+        url: "/advertisement-banners",
+      },
+      {
+        title: "Newsletter Subscribers",
+        icon: "/images/e-repair.png",
+        url: "/newsletter-subscribers",
+      },
+      {
+        title: "News",
+        icon: "/images/content.png",
+        url: "/news",
+      },
+    ],
+  },
+  {
+    title: "Support System",
     icon: Truck,
-    url: "/logistics",
+    url: "/support-sytem",
   },
   {
     title: "Settings and Utilities",

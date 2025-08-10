@@ -7,7 +7,7 @@
       "password": "password123",
       "role": "admin",
       "createdAt": "2024-01-01T00:00:00.000Z",
-      "lastLogin": "2025-08-09T09:48:07.401Z",
+      "lastLogin": "2025-08-10T01:29:27.608Z",
       "isActive": true,
       "phone": "08137459380",
       "country": "Nigeria",
@@ -242,19 +242,424 @@
     "apiKeys": "sk_test_1234567890abcdfg",
     "language": {
       "default": "en",
-      "supported": [
-        "Spanish",
-        "French",
-        "Chinese"
-      ]
+      "supported": ["Spanish", "French", "Chinese"]
     },
     "currency": {
       "default": "GBP",
-      "supported": [
-        "British Pound (£)"
-      ]
+      "supported": ["British Pound (£)"]
     }
   },
+  "adverts": [
+    {
+      "id": 1,
+      "dateTime": "2025-08-01T05:50:51.000Z",
+      "advertiser": "Marie Smart",
+      "category": "Business advert",
+      "amountPaid": 45.404,
+      "status": "Approved",
+      "imageUrl": "/images/sample-ad.png",
+      "content": "I Know What That Content Contains And Lorem Ipsum...",
+      "postedBy": "Marie Smart",
+      "amount": 4050
+    },
+    {
+      "id": 2,
+      "dateTime": "2025-07-28T11:20:12.000Z",
+      "advertiser": "Acme Corp",
+      "category": "Banner advert",
+      "amountPaid": 120,
+      "status": "Approved",
+      "imageUrl": "/images/sample-ad.png",
+      "content": "I Know What That Content Contains And Lorem Ipsum...",
+      "postedBy": "Marie Smart",
+      "amount": 4050
+    },
+    {
+      "id": 3,
+      "dateTime": "2025-07-25T09:10:05.000Z",
+      "advertiser": "SmallBiz Ltd",
+      "category": "Promotional advert",
+      "amountPaid": 60.5,
+      "status": "Rejected",
+      "imageUrl": "/images/sample-ad.png",
+      "content": "I Know What That Content Contains And Lorem Ipsum...",
+      "postedBy": "Marie Smart",
+      "amount": 4050
+    },
+    {
+      "id": 4,
+      "dateTime": "2025-07-20T07:05:00.000Z",
+      "advertiser": "Marie Smart",
+      "category": "Business advert",
+      "amountPaid": 45.404,
+      "status": "Pending",
+      "imageUrl": "/images/sample-ad.png",
+      "content": "I Know What That Content Contains And Lorem Ipsum...",
+      "postedBy": "Marie Smart",
+      "amount": 4050
+    },
+    {
+      "id": 5,
+      "dateTime": "2025-08-01T05:50:51.000Z",
+      "advertiser": "Malon Smart",
+      "category": "Business advert",
+      "amountPaid": 45.404,
+      "status": "Rejected",
+      "imageUrl": "/images/sample-ad.png",
+      "content": "I Know What That Content Contains And Lorem Ipsum...",
+      "postedBy": "Marie Smart",
+      "amount": 4050
+    },
+    {
+      "id": 6,
+      "dateTime": "2025-07-28T11:20:12.000Z",
+      "advertiser": "Acmen Corp",
+      "category": "Banner advert",
+      "amountPaid": 120,
+      "status": "Approved",
+      "imageUrl": "/images/sample-ad.png",
+      "content": "I Know What That Content Contains And Lorem Ipsum...",
+      "postedBy": "Marie Smart",
+      "amount": 4050
+    },
+    {
+      "id": 7,
+      "dateTime": "2025-07-25T09:10:05.000Z",
+      "advertiser": "SmallLiz Ltd",
+      "category": "Promotional advert",
+      "amountPaid": 60.5,
+      "status": "Rejected",
+      "imageUrl": "/images/sample-ad.png",
+      "content": "I Know What That Content Contains And Lorem Ipsum...",
+      "postedBy": "Marie Smart",
+      "amount": 4050
+    },
+    {
+      "id": 8,
+      "dateTime": "2025-07-20T07:05:00.000Z",
+      "advertiser": "Marion Smart",
+      "category": "Business advert",
+      "amountPaid": 45.404,
+      "status": "Pending",
+      "imageUrl": "/images/sample-ad.png",
+      "content": "I Know What That Content Contains And Lorem Ipsum...",
+      "postedBy": "Marie Smart",
+      "amount": 4050
+    },
+    {
+      "id": 9,
+      "dateTime": "2025-08-01T05:50:51.000Z",
+      "advertiser": "Mariejane Smart",
+      "category": "Business advert",
+      "amountPaid": 45.404,
+      "status": "Pending",
+      "imageUrl": "/images/sample-ad.png",
+      "content": "I Know What That Content Contains And Lorem Ipsum...",
+      "postedBy": "Marie Smart",
+      "amount": 4050
+    },
+    {
+      "id": 10,
+      "dateTime": "2025-07-28T11:20:12.000Z",
+      "advertiser": "Acne Corp",
+      "category": "Banner advert",
+      "amountPaid": 120,
+      "status": "Approved",
+      "imageUrl": "/images/sample-ad.png",
+      "content": "I Know What That Content Contains And Lorem Ipsum...",
+      "postedBy": "Marie Smart",
+      "amount": 4050
+    },
+    {
+      "id": 11,
+      "dateTime": "2025-07-25T09:10:05.000Z",
+      "advertiser": "Small Ltd",
+      "category": "Promotional advert",
+      "amountPaid": 60.5,
+      "status": "Rejected",
+      "imageUrl": "/images/sample-ad.png",
+      "content": "I Know What That Content Contains And Lorem Ipsum...",
+      "postedBy": "Marie Smart",
+      "amount": 4050
+    },
+    {
+      "id": 12,
+      "dateTime": "2025-07-20T07:05:00.000Z",
+      "advertiser": "Mary Smart",
+      "category": "Business advert",
+      "amountPaid": 45.404,
+      "status": "Pending",
+      "imageUrl": "/images/sample-ad.png",
+      "content": "I Know What That Content Contains And Lorem Ipsum...",
+      "postedBy": "Marie Smart",
+      "amount": 4050
+    }
+  ],
+
+  "news": [
+    {
+      "id": 1,
+      "title": "I Know What That Content Contains",
+      "postedBy": "Marie Smart",
+      "dateTime": "2025-08-08T10:15:00Z",
+      "imageUrl": "/images/sample-ad.png",
+      "body": "I Know What That Content Contains And Lorem IpsumI Know What That Content Contains And Lorem Ipsum Know What That Content Contains And Lorem Ipsum... (repeat to create long paragraph to match screenshot)",
+      "analytics": {
+        "openedNewsletter": 20210404,
+        "clickedLink": 53508,
+        "didNotOpen": 53508425
+      }
+    },
+    {
+      "id": 2,
+      "title": "Community Outreach Success",
+      "postedBy": "CSR Team",
+      "dateTime": "2025-07-28T16:45:00Z",
+      "imageUrl": "/images/sample-ad.png",
+      "body": "Community outreach recap and highlights. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia...",
+      "analytics": {
+        "openedNewsletter": 150000,
+        "clickedLink": 34000,
+        "didNotOpen": 120000
+      }
+    },
+    {
+      "id": 3,
+      "title": "Product Launch Next Week",
+      "postedBy": "Marketing Dept",
+      "dateTime": "2025-08-01T09:00:00Z",
+      "imageUrl": "/images/sample-ad.png",
+      "body": "We're launching a product next week. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque habitant...",
+      "analytics": {
+        "openedNewsletter": 90000,
+        "clickedLink": 15000,
+        "didNotOpen": 760000
+      }
+    },
+    {
+      "id": 4,
+      "title": "Communal Outreach Success",
+      "postedBy": "CSR Team",
+      "dateTime": "2025-07-28T16:45:00Z",
+      "imageUrl": "/images/sample-ad.png",
+      "body": "Community outreach recap and highlights. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia...",
+      "analytics": {
+        "openedNewsletter": 150000,
+        "clickedLink": 34000,
+        "didNotOpen": 120000
+      }
+    },
+    {
+      "id": 5,
+      "title": "Product Display Next Week",
+      "postedBy": "Marketing Dept",
+      "dateTime": "2025-08-01T09:00:00Z",
+      "imageUrl": "/images/sample-ad.png",
+      "body": "We're launching a product next week. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque habitant...",
+      "analytics": {
+        "openedNewsletter": 90000,
+        "clickedLink": 15000,
+        "didNotOpen": 760000
+      }
+    },
+    {
+      "id": 6,
+      "title": "Outreach Success",
+      "postedBy": "CSR Team",
+      "dateTime": "2025-07-28T16:45:00Z",
+      "imageUrl": "/images/sample-ad.png",
+      "body": "Community outreach recap and highlights. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus lacinia...",
+      "analytics": {
+        "openedNewsletter": 150000,
+        "clickedLink": 34000,
+        "didNotOpen": 120000
+      }
+    },
+    {
+      "id": 7,
+      "title": "Product Launch Next Week",
+      "postedBy": "Marketing Dept",
+      "dateTime": "2025-08-01T09:00:00Z",
+      "imageUrl": "/images/sample-ad.png",
+      "body": "We're launching a product next week. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque habitant...",
+      "analytics": {
+        "openedNewsletter": 90000,
+        "clickedLink": 15000,
+        "didNotOpen": 760000
+      }
+    }
+  ],
+
+  "newsletter": [
+    {
+      "id": 1,
+      "month": "April",
+      "year": 2000,
+      "totalSubscribers": 40654,
+      "activeSubscribers": 40654,
+      "unsubscribers": 40654,
+      "openRate": "45%",
+      "clickThroughRate": "45%",
+      "name": "Seye Manji",
+      "email": "seyemanji@gmail.com",
+      "subscriptionDate": "12-04-2000",
+      "status": "InActive"
+    },
+    {
+      "id": 2,
+      "month": "May",
+      "year": 2025,
+      "totalSubscribers": 51234,
+      "activeSubscribers": 49876,
+      "unsubscribers": 1358,
+      "openRate": "52%",
+      "clickThroughRate": "38%",
+      "name": "Seye Manji",
+      "email": "seyemanji@gmail.com",
+      "subscriptionDate": "12-04-2000",
+      "status": "Active"
+    },
+    {
+      "id": 3,
+      "month": "June",
+      "year": 2025,
+      "totalSubscribers": 51234,
+      "activeSubscribers": 49876,
+      "unsubscribers": 1358,
+      "openRate": "52%",
+      "clickThroughRate": "38%",
+      "name": "Seye Manji",
+      "email": "seyemanji@gmail.com",
+      "subscriptionDate": "12-04-2000",
+      "status": "InActive"
+    },
+    {
+      "id": 4,
+      "month": "July",
+      "year": 2025,
+      "totalSubscribers": 51234,
+      "activeSubscribers": 49876,
+      "unsubscribers": 1358,
+      "openRate": "52%",
+      "clickThroughRate": "38%",
+      "name": "Seye Manji",
+      "email": "seyemanji@gmail.com",
+      "subscriptionDate": "12-04-2000",
+      "status": "InActive"
+    },
+    {
+      "id": 5,
+      "month": "August",
+      "year": 2025,
+      "totalSubscribers": 51234,
+      "activeSubscribers": 49876,
+      "unsubscribers": 1358,
+      "openRate": "52%",
+      "clickThroughRate": "38%",
+      "name": "Seye Manji",
+      "email": "seyemanji@gmail.com",
+      "subscriptionDate": "12-04-2000",
+      "status": "Active"
+    },
+    {
+      "id": 6,
+      "month": "September",
+      "year": 2025,
+      "totalSubscribers": 51234,
+      "activeSubscribers": 49876,
+      "unsubscribers": 1358,
+      "openRate": "52%",
+      "clickThroughRate": "38%",
+      "name": "Seye Manji",
+      "email": "seyemanji@gmail.com",
+      "subscriptionDate": "12-04-2000",
+      "status": "InActive"
+    },
+    {
+      "id": 7,
+      "month": "October",
+      "year": 2025,
+      "totalSubscribers": 51234,
+      "activeSubscribers": 49876,
+      "unsubscribers": 1358,
+      "openRate": "52%",
+      "clickThroughRate": "38%",
+      "name": "Shola Manji",
+      "email": "seyemanji@gmail.com",
+      "subscriptionDate": "12-04-2000",
+      "status": "InActive"
+    },
+    {
+      "id": 8,
+      "month": "November",
+      "year": 2025,
+      "totalSubscribers": 51234,
+      "activeSubscribers": 49876,
+      "unsubscribers": 1358,
+      "openRate": "52%",
+      "clickThroughRate": "38%",
+      "name": "Holed Manji",
+      "email": "seyemanji@gmail.com",
+      "subscriptionDate": "12-04-2000",
+      "status": "Active"
+    },
+    {
+      "id": 9,
+      "month": "December",
+      "year": 2025,
+      "totalSubscribers": 51234,
+      "activeSubscribers": 49876,
+      "unsubscribers": 1358,
+      "openRate": "52%",
+      "clickThroughRate": "38%",
+      "name": "Linson Manji",
+      "email": "seyemanji@gmail.com",
+      "subscriptionDate": "12-04-2000",
+      "status": "Active"
+    },
+    {
+      "id": 10,
+      "month": "January",
+      "year": 2026,
+      "totalSubscribers": 51234,
+      "activeSubscribers": 49876,
+      "unsubscribers": 1358,
+      "openRate": "52%",
+      "clickThroughRate": "38%",
+      "name": "Lodac Manji",
+      "email": "seyemanji@gmail.com",
+      "subscriptionDate": "12-04-2000",
+      "status": "Active"
+    },
+    {
+      "id": 11,
+      "month": "February",
+      "year": 2026,
+      "totalSubscribers": 51234,
+      "activeSubscribers": 49876,
+      "unsubscribers": 1358,
+      "openRate": "52%",
+      "clickThroughRate": "38%",
+      "name": "Shina Manji",
+      "email": "seyemanji@gmail.com",
+      "subscriptionDate": "12-04-2000",
+      "status": "Active"
+    },
+    {
+      "id": 12,
+      "month": "March",
+      "year": 2026,
+      "totalSubscribers": 51234,
+      "activeSubscribers": 49876,
+      "unsubscribers": 1358,
+      "openRate": "52%",
+      "clickThroughRate": "38%",
+      "name": "Shegun Manji",
+      "email": "seyemanji@gmail.com",
+      "subscriptionDate": "12-04-2000",
+      "status": "Active"
+    }
+  ],
   "customers": [
     {
       "id": 1,
@@ -331,10 +736,7 @@
       "phone": "+1234567896",
       "address": "789 Business Blvd, City, State",
       "employeeCount": 25,
-      "specializations": [
-        "Electronics",
-        "Appliances"
-      ],
+      "specializations": ["Electronics", "Appliances"],
       "rating": 4.8,
       "status": "active"
     },
@@ -345,10 +747,7 @@
       "phone": "+1234567897",
       "address": "321 Service St, City, State",
       "employeeCount": 18,
-      "specializations": [
-        "HVAC",
-        "Plumbing"
-      ],
+      "specializations": ["HVAC", "Plumbing"],
       "rating": 4.7,
       "status": "active"
     }
@@ -480,12 +879,7 @@
       "title": "Latest Smartphone Review",
       "description": "Comprehensive review of the latest smartphone features, performance, and value for money. This detailed analysis covers camera quality, battery life, and overall user experience.",
       "image": "/placeholder.svg?height=200&width=300",
-      "tags": [
-        "technology",
-        "smartphone",
-        "review",
-        "gadgets"
-      ],
+      "tags": ["technology", "smartphone", "review", "gadgets"],
       "contentOverview": {
         "wordCount": 1500,
         "readTime": "7 min",
@@ -507,12 +901,7 @@
       "title": "DIY Home Repair Guide",
       "description": "Step-by-step video tutorial showing common home repair techniques that anyone can master. Includes tools needed, safety tips, and troubleshooting advice.",
       "image": "/placeholder.svg?height=200&width=300",
-      "tags": [
-        "diy",
-        "home repair",
-        "tutorial",
-        "maintenance"
-      ],
+      "tags": ["diy", "home repair", "tutorial", "maintenance"],
       "contentOverview": {
         "duration": "15 min",
         "views": 890,
@@ -534,12 +923,7 @@
       "title": "Industry News Update",
       "description": "Latest developments in the repair industry, including new regulations, market trends, and emerging technologies that are shaping the future of repair services.",
       "image": "/placeholder.svg?height=200&width=300",
-      "tags": [
-        "news",
-        "industry",
-        "trends",
-        "regulations"
-      ],
+      "tags": ["news", "industry", "trends", "regulations"],
       "contentOverview": {
         "wordCount": 800,
         "readTime": "4 min",
@@ -561,12 +945,7 @@
       "title": "Repair Cost Comparison",
       "description": "Visual comparison of repair costs across different device categories, helping users make informed decisions about repair vs replacement options.",
       "image": "/placeholder.svg?height=200&width=300",
-      "tags": [
-        "infographic",
-        "costs",
-        "comparison",
-        "education"
-      ],
+      "tags": ["infographic", "costs", "comparison", "education"],
       "contentOverview": {
         "format": "PNG",
         "size": "2MB",
@@ -588,12 +967,7 @@
       "title": "Expert Interview Series",
       "description": "In-depth interview with industry experts discussing the future of repair services, sustainability, and customer service excellence in the digital age.",
       "image": "/placeholder.svg?height=200&width=300",
-      "tags": [
-        "podcast",
-        "interview",
-        "expert",
-        "sustainability"
-      ],
+      "tags": ["podcast", "interview", "expert", "sustainability"],
       "contentOverview": {
         "duration": "45 min",
         "listens": 650,
@@ -615,12 +989,7 @@
       "title": "Complete Maintenance Guide",
       "description": "Comprehensive guide covering preventive maintenance techniques for various electronic devices and appliances to extend their lifespan and performance.",
       "image": "/placeholder.svg?height=200&width=300",
-      "tags": [
-        "guide",
-        "maintenance",
-        "prevention",
-        "electronics"
-      ],
+      "tags": ["guide", "maintenance", "prevention", "electronics"],
       "contentOverview": {
         "wordCount": 2200,
         "readTime": "12 min",

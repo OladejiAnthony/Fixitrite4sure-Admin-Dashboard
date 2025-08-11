@@ -7,7 +7,7 @@
       "password": "password123",
       "role": "admin",
       "createdAt": "2024-01-01T00:00:00.000Z",
-      "lastLogin": "2025-08-10T01:29:27.608Z",
+      "lastLogin": "2025-08-10T13:22:06.113Z",
       "isActive": true,
       "phone": "08137459380",
       "country": "Nigeria",
@@ -395,7 +395,6 @@
       "amount": 4050
     }
   ],
-
   "news": [
     {
       "id": 1,
@@ -489,7 +488,6 @@
       }
     }
   ],
-
   "newsletter": [
     {
       "id": 1,
@@ -660,6 +658,374 @@
       "status": "Active"
     }
   ],
+  "sosRequests": [
+    {
+      "id": "00001",
+      "username": "Marie Smart",
+      "location": "Marilin Yaba",
+      "time": "01:45:54",
+      "status": "Resolved",
+      "issueDescription": "Failed Transaction",
+      "attachedFile": ""
+    },
+    {
+      "id": "00002",
+      "username": "Marie Smart",
+      "location": "Marilin Yaba",
+      "time": "01:45:54",
+      "status": "Resolved",
+      "issueDescription": "Failed Transaction",
+      "attachedFile": ""
+    },
+    {
+      "id": "00003",
+      "username": "Marie Smart",
+      "location": "Marilin Yaba",
+      "time": "01:45:54",
+      "status": "In Progress",
+      "issueDescription": "Failed Transaction",
+      "attachedFile": ""
+    },
+    {
+      "id": "00004",
+      "username": "Marie Smart",
+      "location": "Marilin Yaba",
+      "time": "01:45:54",
+      "status": "Pending",
+      "issueDescription": "Failed Transaction",
+      "attachedFile": ""
+    },
+    {
+      "id": "00005",
+      "username": "Marie Smart",
+      "location": "Marilin Yaba",
+      "time": "01:45:54",
+      "status": "In Progress",
+      "issueDescription": "Failed Transaction",
+      "attachedFile": ""
+    },
+    {
+      "id": "00006",
+      "username": "Marie Smart",
+      "location": "Marilin Yaba",
+      "time": "01:45:54",
+      "status": "Resolved",
+      "issueDescription": "Failed Transaction",
+      "attachedFile": ""
+    },
+    {
+      "id": "00007",
+      "username": "Marie Smart",
+      "location": "Marilin Yaba",
+      "time": "01:45:54",
+      "status": "Closed",
+      "issueDescription": "Failed Transaction",
+      "attachedFile": ""
+    },
+    {
+      "id": "00008",
+      "username": "John Doe",
+      "location": "Lagos Mainland",
+      "time": "02:30:15",
+      "status": "Pending",
+      "issueDescription": "Failed Transaction",
+      "attachedFile": ""
+    },
+    {
+      "id": "00009",
+      "username": "Jane Smith",
+      "location": "Victoria Island",
+      "time": "03:15:22",
+      "status": "In Progress",
+      "issueDescription": "Failed Transaction",
+      "attachedFile": ""
+    },
+    {
+      "id": "00010",
+      "username": "Mike Johnson",
+      "location": "Ikeja",
+      "time": "04:45:10",
+      "status": "Resolved",
+      "issueDescription": "Failed Transaction",
+      "attachedFile": ""
+    }
+  ],
+  "logistics": [
+    {
+      "id": "1",
+      "vendorLecId": "FN-0000001",
+      "vendorId": "Sultan Marroe",
+      "lecPartners": "State and City name",
+      "shippingCostKg": 4.5,
+      "maxPackageWeight": 4.5,
+      "shippingDays": 3,
+      "handlingFee": 10
+    },
+    {
+      "id": "2",
+      "vendorLecId": "FN-0000002",
+      "vendorId": "Surve Marroe",
+      "lecPartners": "State and City name",
+      "shippingCostKg": 4.5,
+      "maxPackageWeight": 4.5,
+      "shippingDays": 3,
+      "handlingFee": 10
+    },
+    {
+      "id": "3",
+      "vendorLecId": "FN-0000001",
+      "vendorId": "Sud Marroe",
+      "lecPartners": "State and City name",
+      "shippingCostKg": 4.5,
+      "maxPackageWeight": 4.5,
+      "shippingDays": 3,
+      "handlingFee": 10
+    },
+    {
+      "id": "4",
+      "vendorLecId": "FN-0000001",
+      "vendorId": "Soda Marroe",
+      "lecPartners": "State and City name",
+      "shippingCostKg": 4.5,
+      "maxPackageWeight": 4.5,
+      "shippingDays": 3,
+      "handlingFee": 10
+    },
+    {
+      "id": "5",
+      "vendorLecId": "FN-0000001",
+      "vendorId": "Supra Marroe",
+      "lecPartners": "State and City name",
+      "shippingCostKg": 4.5,
+      "maxPackageWeight": 4.5,
+      "shippingDays": 3,
+      "handlingFee": 10
+    }
+  ],
+  "shipments": [
+    {
+      "id": "1",
+      "shipmentId": "SH-00001",
+      "orderId": "ORD-0002",
+      "carrierId": "CR-0002",
+      "trackingNumber": "TRK123456",
+      "shipmentDate": "2024-02-12",
+      "eta": "2024-02-15"
+    },
+    {
+      "id": "2",
+      "shipmentId": "SH-00002",
+      "orderId": "ORD-0002",
+      "carrierId": "CR-0002",
+      "trackingNumber": "TRK123456",
+      "shipmentDate": "2024-02-12",
+      "eta": "2024-02-15"
+    },
+    {
+      "id": "3",
+      "shipmentId": "SH-00003",
+      "orderId": "ORD-0003",
+      "carrierId": "CR-0003",
+      "trackingNumber": "TRK123456",
+      "shipmentDate": "2024-02-12",
+      "eta": "2024-02-15"
+    },
+    {
+      "id": "4",
+      "shipmentId": "SH-00004",
+      "orderId": "ORD-0004",
+      "carrierId": "CR-0004",
+      "trackingNumber": "TRK123456",
+      "shipmentDate": "2024-02-12",
+      "eta": "2024-02-15"
+    },
+    {
+      "id": "5",
+      "shipmentId": "SH-00005",
+      "orderId": "ORD-0005",
+      "carrierId": "CR-0005",
+      "trackingNumber": "TRK123456",
+      "shipmentDate": "2024-02-12",
+      "eta": "2024-02-15"
+    },
+    {
+      "id": "6",
+      "shipmentId": "SH-00006",
+      "orderId": "ORD-0006",
+      "carrierId": "CR-0006",
+      "trackingNumber": "TRK123456",
+      "shipmentDate": "2024-02-12",
+      "eta": "2024-02-15"
+    }
+  ],
+  "carriers": [
+    {
+      "id": "1",
+      "carrierId": "CR-0001",
+      "carrierName": "Fast Delivery Inc.",
+      "contactName": "Bob Smith",
+      "address": "123 Shipping Lane, Logistics City",
+      "trackingUrl": "https://track.fastdelivery.com"
+    },
+    {
+      "id": "2",
+      "carrierId": "CR-0002",
+      "carrierName": "Fast Delivery Inc.",
+      "contactName": "John Smith",
+      "address": "123 Shipping Lane, Logistics City",
+      "trackingUrl": "https://track.fastdelivery.com"
+    },
+    {
+      "id": "3",
+      "carrierId": "CR-0003",
+      "carrierName": "Fast Delivery Inc.",
+      "contactName": "Jane Smith",
+      "address": "123 Shipping Lane, Logistics City",
+      "trackingUrl": "https://track.fastdelivery.com"
+    },
+    {
+      "id": "4",
+      "carrierId": "CR-0004",
+      "carrierName": "Fast Delivery Inc.",
+      "contactName": "Jordan Smith",
+      "address": "123 Shipping Lane, Logistics City",
+      "trackingUrl": "https://track.fastdelivery.com"
+    },
+    {
+      "id": "5",
+      "carrierId": "CR-0005",
+      "carrierName": "Fast Delivery Inc.",
+      "contactName": "Jick Smith",
+      "address": "123 Shipping Lane, Logistics City",
+      "trackingUrl": "https://track.fastdelivery.com"
+    },
+    {
+      "id": "6",
+      "carrierId": "CR-0006",
+      "carrierName": "Fast Delivery Inc.",
+      "contactName": "John Smith",
+      "address": "123 Shipping Lane, Logistics City",
+      "trackingUrl": "https://track.fastdelivery.com"
+    }
+  ],
+  "tracking": [
+    {
+      "id": "1",
+      "trackingId": "TRK-0001",
+      "shipmentId": "SH-00001",
+      "status": "In Transit",
+      "updateDate": "2024-02-13 10:30",
+      "location": "Distribution Center"
+    },
+    {
+      "id": "2",
+      "trackingId": "TRK-0002",
+      "shipmentId": "SH-00002",
+      "status": "Out Of Delivery",
+      "updateDate": "2024-02-13 10:30",
+      "location": "Distribution Center"
+    },
+    {
+      "id": "3",
+      "trackingId": "TRK-0003",
+      "shipmentId": "SH-00003",
+      "status": "Shipped",
+      "updateDate": "2024-02-13 10:30",
+      "location": "Distribution Center"
+    },
+    {
+      "id": "4",
+      "trackingId": "TRK-0004",
+      "shipmentId": "SH-00004",
+      "status": "OUT FOR DELIVERY",
+      "updateDate": "2024-02-13 10:30",
+      "location": "Distribution Center"
+    }
+  ],
+  "content": [
+    {
+      "id": "1",
+      "name": "Mushin Yaba",
+      "datePosted": "2000-02-13T04:00:00Z",
+      "status": "rejected",
+      "reason": "hello",
+      "contentText": "I Know What That Content Contains And Lorem Ipsum Know What That Content Contains And Lorem Ipsum Know What That Content Contains And Lorem Ipsum Know What That Content Contains And Lorem Ipsum Know What That Content Contains And Lorem Ipsum Know What That Content Contains And Lorem Ipsum Know What That Content Contains And Lorem Ipsum Know What That Content Contains And Lorem Ipsum Know What That Content Contains And Lorem Ipsum Know What That Content Contains And Lorem Ipsum",
+      "imageUrl": "/images/sample-ad.png",
+      "adminName": "John Doe"
+    },
+    {
+      "id": "2",
+      "name": "Koke Yaba",
+      "datePosted": "2000-02-13T04:00:00Z",
+      "status": "approved",
+      "contentText": "Another example content text with different information about the posted content.",
+      "imageUrl": "/images/sample-ad.png",
+      "adminName": "John Doe"
+    },
+    {
+      "id": "3",
+      "name": "Lukmon Yaba",
+      "datePosted": "2000-02-13T04:00:00Z",
+      "status": "rejected",
+      "contentText": "Another example content text with different information about the posted content.",
+      "imageUrl": "/images/sample-ad.png",
+      "adminName": "John Doe"
+    },
+    {
+      "id": "4",
+      "name": "Inda Yaba",
+      "datePosted": "2000-02-13T04:00:00Z",
+      "status": "pending",
+      "contentText": "Another example content text with different information about the posted content.",
+      "imageUrl": "/images/sample-ad.png",
+      "adminName": "John Doe"
+    },
+    {
+      "id": "5",
+      "name": "Mushin Yaba",
+      "datePosted": "2000-02-13T04:00:00Z",
+      "status": "approved",
+      "contentText": "Another example content text with different information about the posted content.",
+      "imageUrl": "/images/sample-ad.png",
+      "adminName": "John Doe"
+    },
+    {
+      "id": "6",
+      "name": "Mushin Yaba",
+      "datePosted": "2000-02-13T04:00:00Z",
+      "status": "rejected",
+      "contentText": "Another example content text with different information about the posted content.",
+      "imageUrl": "/images/sample-ad.png",
+      "adminName": "John Doe"
+    },
+    {
+      "id": "7",
+      "name": "Mushin Yaba",
+      "datePosted": "2000-02-13T04:00:00Z",
+      "status": "pending",
+      "contentText": "Another example content text with different information about the posted content.",
+      "imageUrl": "/images/sample-ad.png",
+      "adminName": "John Doe"
+    },
+    {
+      "id": "8",
+      "name": "Mushin Yaba",
+      "datePosted": "2000-02-13T04:00:00Z",
+      "status": "approved",
+      "contentText": "Another example content text with different information about the posted content.",
+      "imageUrl": "/images/sample-ad.png",
+      "adminName": "John Doe"
+    },
+    {
+      "id": "9",
+      "name": "Mushin Yaba",
+      "datePosted": "2000-02-13T04:00:00Z",
+      "status": "rejected",
+      "contentText": "Another example content text with different information about the posted content.",
+      "imageUrl": "/images/sample-ad.png",
+      "adminName": "John Doe"
+    }
+  ],
   "customers": [
     {
       "id": 1,
@@ -669,7 +1035,9 @@
       "address": "123 Main St, City, State",
       "joinDate": "2024-01-15",
       "totalBookings": 5,
-      "status": "active"
+      "status": "active",
+      "issueDescription": "Failed Transaction",
+      "attachedFile": ""
     },
     {
       "id": 2,
@@ -679,7 +1047,9 @@
       "address": "456 Oak Ave, City, State",
       "joinDate": "2024-02-20",
       "totalBookings": 3,
-      "status": "active"
+      "status": "active",
+      "issueDescription": "Failed Transaction",
+      "attachedFile": ""
     }
   ],
   "repairers": [
@@ -850,154 +1220,6 @@
           "price": 180
         }
       ]
-    }
-  ],
-  "logistics": [
-    {
-      "id": 1,
-      "orderId": 1,
-      "customerName": "John Doe",
-      "pickupAddress": "TechParts Supply Warehouse",
-      "deliveryAddress": "123 Main St, City, State",
-      "status": "in_transit",
-      "trackingNumber": "TRK123456789",
-      "estimatedDelivery": "2024-01-23",
-      "driver": "Bob Driver",
-      "driverPhone": "+1234567898"
-    }
-  ],
-  "content": [
-    {
-      "id": "CM001",
-      "name": "John Smith",
-      "email": "john.smith@example.com",
-      "contentType": "Blog Post",
-      "properties": "Tech Review",
-      "status": "approved",
-      "datePosted": "2024-01-15T10:30:00Z",
-      "engagement": 1250,
-      "title": "Latest Smartphone Review",
-      "description": "Comprehensive review of the latest smartphone features, performance, and value for money. This detailed analysis covers camera quality, battery life, and overall user experience.",
-      "image": "/placeholder.svg?height=200&width=300",
-      "tags": ["technology", "smartphone", "review", "gadgets"],
-      "contentOverview": {
-        "wordCount": 1500,
-        "readTime": "7 min",
-        "category": "Technology",
-        "author": "John Smith",
-        "publishDate": "2024-01-15",
-        "lastModified": "2024-01-20"
-      }
-    },
-    {
-      "id": "CM002",
-      "name": "Sarah Johnson",
-      "email": "sarah.j@example.com",
-      "contentType": "Video",
-      "properties": "Tutorial",
-      "status": "pending",
-      "datePosted": "2024-01-18T14:20:00Z",
-      "engagement": 890,
-      "title": "DIY Home Repair Guide",
-      "description": "Step-by-step video tutorial showing common home repair techniques that anyone can master. Includes tools needed, safety tips, and troubleshooting advice.",
-      "image": "/placeholder.svg?height=200&width=300",
-      "tags": ["diy", "home repair", "tutorial", "maintenance"],
-      "contentOverview": {
-        "duration": "15 min",
-        "views": 890,
-        "category": "Home & Garden",
-        "author": "Sarah Johnson",
-        "publishDate": "2024-01-18",
-        "lastModified": "2024-01-18"
-      }
-    },
-    {
-      "id": "CM003",
-      "name": "Mike Davis",
-      "email": "mike.davis@example.com",
-      "contentType": "Article",
-      "properties": "News",
-      "status": "rejected",
-      "datePosted": "2024-01-20T09:15:00Z",
-      "engagement": 340,
-      "title": "Industry News Update",
-      "description": "Latest developments in the repair industry, including new regulations, market trends, and emerging technologies that are shaping the future of repair services.",
-      "image": "/placeholder.svg?height=200&width=300",
-      "tags": ["news", "industry", "trends", "regulations"],
-      "contentOverview": {
-        "wordCount": 800,
-        "readTime": "4 min",
-        "category": "Industry News",
-        "author": "Mike Davis",
-        "publishDate": "2024-01-20",
-        "lastModified": "2024-01-22"
-      }
-    },
-    {
-      "id": "CM004",
-      "name": "Emily Chen",
-      "email": "emily.chen@example.com",
-      "contentType": "Infographic",
-      "properties": "Educational",
-      "status": "approved",
-      "datePosted": "2024-01-22T11:45:00Z",
-      "engagement": 2100,
-      "title": "Repair Cost Comparison",
-      "description": "Visual comparison of repair costs across different device categories, helping users make informed decisions about repair vs replacement options.",
-      "image": "/placeholder.svg?height=200&width=300",
-      "tags": ["infographic", "costs", "comparison", "education"],
-      "contentOverview": {
-        "format": "PNG",
-        "size": "2MB",
-        "category": "Educational",
-        "author": "Emily Chen",
-        "publishDate": "2024-01-22",
-        "lastModified": "2024-01-22"
-      }
-    },
-    {
-      "id": "CM005",
-      "name": "David Wilson",
-      "email": "david.w@example.com",
-      "contentType": "Podcast",
-      "properties": "Interview",
-      "status": "pending",
-      "datePosted": "2024-01-25T16:30:00Z",
-      "engagement": 650,
-      "title": "Expert Interview Series",
-      "description": "In-depth interview with industry experts discussing the future of repair services, sustainability, and customer service excellence in the digital age.",
-      "image": "/placeholder.svg?height=200&width=300",
-      "tags": ["podcast", "interview", "expert", "sustainability"],
-      "contentOverview": {
-        "duration": "45 min",
-        "listens": 650,
-        "category": "Interview",
-        "author": "David Wilson",
-        "publishDate": "2024-01-25",
-        "lastModified": "2024-01-25"
-      }
-    },
-    {
-      "id": "CM006",
-      "name": "Lisa Anderson",
-      "email": "lisa.a@example.com",
-      "contentType": "Guide",
-      "properties": "How-to",
-      "status": "approved",
-      "datePosted": "2024-01-28T13:20:00Z",
-      "engagement": 1800,
-      "title": "Complete Maintenance Guide",
-      "description": "Comprehensive guide covering preventive maintenance techniques for various electronic devices and appliances to extend their lifespan and performance.",
-      "image": "/placeholder.svg?height=200&width=300",
-      "tags": ["guide", "maintenance", "prevention", "electronics"],
-      "contentOverview": {
-        "wordCount": 2200,
-        "readTime": "12 min",
-        "category": "Maintenance",
-        "author": "Lisa Anderson",
-        "publishDate": "2024-01-28",
-        "lastModified": "2024-01-30"
-      }
     }
   ]
 }

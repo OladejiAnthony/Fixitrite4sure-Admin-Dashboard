@@ -112,7 +112,7 @@ const navigationItems: NavigationItem[] = [
     ],
   },
   {
-    title: "SERVICES",
+    title: "SERV",
     icon: Settings,
     hasDropdown: true,
     subItems: [
@@ -194,6 +194,57 @@ const navigationItems: NavigationItem[] = [
     url: "/invoices",
   },
   {
+    title: "Services",
+    icon: Home,
+    hasDropdown: true,
+    subItems: [
+      {
+        title: "Order Management",
+        icon: ShoppingBag,
+        url: "/order-management",
+      },
+      {
+        title: "Content Management",
+        icon: "/images/e-repair.png",
+        url: "/content-management",
+      },
+    ],
+  },
+  {
+    title: "Bookings & Orders",
+    icon: Calendar,
+    hasDropdown: true,
+    subItems: [
+      {
+        title: "Repair Bookings",
+        icon: Calendar,
+        url: "/repair-bookings",
+      },
+      {
+        title: "Product Orders",
+        icon: ShoppingCart,
+        url: "/product-orders",
+      },
+    ],
+  },
+  {
+    title: "Application",
+    icon: Home,
+    hasDropdown: true,
+    subItems: [
+      {
+        title: "Insurance",
+        icon: ShoppingBag,
+        url: "/insurance",
+      },
+      {
+        title: "Logistics",
+        icon: "/images/e-repair.png",
+        url: "/logistics",
+      },
+    ],
+  },
+  {
     title: "Promotion & Marketing Tool",
     icon: Home,
     hasDropdown: true,
@@ -217,8 +268,20 @@ const navigationItems: NavigationItem[] = [
   },
   {
     title: "Support System",
-    icon: Truck,
-    url: "/support-sytem",
+    icon: Home,
+    hasDropdown: true,
+    subItems: [
+      {
+        title: "SOS Request Management",
+        icon: ShoppingBag,
+        url: "sos-requests",
+      },
+      {
+        title: "Payment Request",
+        icon: ShoppingBag,
+        url: "payment-request",
+      },
+    ],
   },
   {
     title: "Settings and Utilities",
@@ -254,7 +317,7 @@ const navigationItems: NavigationItem[] = [
     //url: "/dashboard",
   },
   {
-    title: "MANAGE PAGE",
+    title: "Manage Page",
     icon: Home,
     hasDropdown: true,
     subItems: [

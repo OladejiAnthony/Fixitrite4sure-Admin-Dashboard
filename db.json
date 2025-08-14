@@ -7,7 +7,7 @@
       "password": "password123",
       "role": "admin",
       "createdAt": "2024-01-01T00:00:00.000Z",
-      "lastLogin": "2025-08-10T13:22:06.113Z",
+      "lastLogin": "2025-08-14T20:31:29.791Z",
       "isActive": true,
       "phone": "08137459380",
       "country": "Nigeria",
@@ -205,6 +205,20 @@
       "dateTime": "2025-08-07T05:50:33.538Z",
       "status": "Success",
       "id": 13
+    },
+    {
+      "adminName": "lere",
+      "activityDescription": "jobson",
+      "dateTime": "2025-08-12T08:34:31.230Z",
+      "status": "Success",
+      "id": 14
+    },
+    {
+      "adminName": "joy",
+      "activityDescription": "gona",
+      "dateTime": "2025-08-12T08:52:57.547Z",
+      "status": "Success",
+      "id": 15
     }
   ],
   "notifications": [
@@ -664,7 +678,7 @@
       "username": "Marie Smart",
       "location": "Marilin Yaba",
       "time": "01:45:54",
-      "status": "Resolved",
+      "status": "Closed",
       "issueDescription": "Failed Transaction",
       "attachedFile": ""
     },
@@ -969,13 +983,14 @@
       "status": "rejected",
       "contentText": "Another example content text with different information about the posted content.",
       "imageUrl": "/images/sample-ad.png",
-      "adminName": "John Doe"
+      "adminName": "John Doe",
+      "reason": "fraudster"
     },
     {
       "id": "4",
       "name": "Inda Yaba",
       "datePosted": "2000-02-13T04:00:00Z",
-      "status": "pending",
+      "status": "approved",
       "contentText": "Another example content text with different information about the posted content.",
       "imageUrl": "/images/sample-ad.png",
       "adminName": "John Doe"
@@ -1024,6 +1039,748 @@
       "contentText": "Another example content text with different information about the posted content.",
       "imageUrl": "/images/sample-ad.png",
       "adminName": "John Doe"
+    },
+    {
+      "id": "10",
+      "name": "Mushin Yaba",
+      "datePosted": "2000-02-13T04:00:00Z",
+      "status": "approved",
+      "contentText": "Another example content text with different information about the posted content.",
+      "imageUrl": "/images/sample-ad.png",
+      "adminName": "John Doe"
+    },
+    {
+      "id": "11",
+      "name": "Mushin Yaba",
+      "datePosted": "2000-02-13T04:00:00Z",
+      "status": "rejected",
+      "contentText": "Another example content text with different information about the posted content.",
+      "imageUrl": "/images/sample-ad.png",
+      "adminName": "John Doe"
+    },
+    {
+      "id": "12",
+      "name": "Mushin Yaba",
+      "datePosted": "2000-02-13T04:00:00Z",
+      "status": "approved",
+      "contentText": "Another example content text with different information about the posted content.",
+      "imageUrl": "/images/sample-ad.png",
+      "adminName": "John Doe"
+    },
+    {
+      "id": "13",
+      "name": "Mushin Yaba",
+      "datePosted": "2000-02-13T04:00:00Z",
+      "status": "rejected",
+      "contentText": "Another example content text with different information about the posted content.",
+      "imageUrl": "/images/sample-ad.png",
+      "adminName": "John Doe"
+    }
+  ],
+  "reviews": [
+    {
+      "id": 1,
+      "name": "John Doe",
+      "email": "john@example.com",
+      "rating": 4,
+      "comment": "Good experience overall, but more room for improvement",
+      "response": "Hello judea",
+      "status": "active",
+      "date": "2025-08-01T10:00:00Z"
+    },
+    {
+      "id": 2,
+      "name": "John Doe",
+      "email": "john@example.com",
+      "rating": 4,
+      "comment": "Nice experience overall, but more room for improvement",
+      "response": "",
+      "status": "active",
+      "date": "2025-08-01T10:00:00Z"
+    },
+    {
+      "id": 3,
+      "name": "John Doe",
+      "email": "john@example.com",
+      "rating": 2,
+      "comment": "Fantastic experience overall, but more room for improvement",
+      "response": "hello",
+      "status": "active",
+      "date": "2025-08-01T10:00:00Z"
+    },
+    {
+      "id": 4,
+      "name": "John Doe",
+      "email": "test@gmail.com",
+      "rating": 3,
+      "comment": "Good experience overall, but more room for improvement",
+      "response": "",
+      "status": "active",
+      "date": "2025-08-01T10:00:00Z"
+    },
+    {
+      "id": 5,
+      "name": "John Doe",
+      "email": "test@gmail.com",
+      "rating": 4,
+      "comment": "Good experience overall, but more room for improvement",
+      "response": "",
+      "status": "active",
+      "date": "2025-08-01T10:00:00Z"
+    },
+    {
+      "id": 6,
+      "name": "John Doe",
+      "email": "test@gmail.com",
+      "rating": 3,
+      "comment": "Good experience overall, but more room for improvement",
+      "response": "",
+      "status": "active",
+      "date": "2025-08-01T10:00:00Z"
+    },
+    {
+      "id": 7,
+      "name": "John Doe",
+      "email": "john@example.com",
+      "rating": 2,
+      "comment": "Fantastic experience overall, but more room for improvement",
+      "response": "",
+      "status": "active",
+      "date": "2025-08-01T10:00:00Z"
+    },
+    {
+      "id": 8,
+      "name": "John Doe",
+      "email": "test@gmail.com",
+      "rating": 3,
+      "comment": "Good experience overall, but more room for improvement",
+      "response": "",
+      "status": "active",
+      "date": "2025-08-01T10:00:00Z"
+    },
+    {
+      "id": 9,
+      "name": "John Doe",
+      "email": "test@gmail.com",
+      "rating": 4,
+      "comment": "Good experience overall, but more room for improvement",
+      "response": "",
+      "status": "active",
+      "date": "2025-08-01T10:00:00Z"
+    },
+    {
+      "id": 10,
+      "name": "John Doe",
+      "email": "test@gmail.com",
+      "rating": 3,
+      "comment": "Good experience overall, but more room for improvement",
+      "response": "",
+      "status": "active",
+      "date": "2025-08-01T10:00:00Z"
+    },
+    {
+      "id": 11,
+      "name": "John Doe",
+      "email": "john@example.com",
+      "rating": 2,
+      "comment": "Fantastic experience overall, but more room for improvement",
+      "response": "",
+      "status": "active",
+      "date": "2025-08-01T10:00:00Z"
+    },
+    {
+      "id": 12,
+      "name": "John Doe",
+      "email": "test@gmail.com",
+      "rating": 3,
+      "comment": "Good experience overall, but more room for improvement",
+      "response": "",
+      "status": "active",
+      "date": "2025-08-01T10:00:00Z"
+    },
+    {
+      "id": 13,
+      "name": "John Doe",
+      "email": "test@gmail.com",
+      "rating": 4,
+      "comment": "Good experience overall, but more room for improvement",
+      "response": "",
+      "status": "active",
+      "date": "2025-08-01T10:00:00Z"
+    },
+    {
+      "id": 14,
+      "name": "John Doe",
+      "email": "test@gmail.com",
+      "rating": 3,
+      "comment": "Good experience overall, but more room for improvement",
+      "response": "",
+      "status": "active",
+      "date": "2025-08-01T10:00:00Z"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "1",
+      "dateTime": "01-02-2000 05:50:51",
+      "paymentBy": "Marie Smart",
+      "purpose": "Business advert",
+      "amountPaid": 45.404,
+      "status": "Successful",
+      "date": "01-02-2000",
+      "time": "05:50:51",
+      "user": {
+        "name": "Marie Smart",
+        "email": "marie.smart@example.com",
+        "phone": "08012345678"
+      },
+      "payment": {
+        "method": "Mastercard",
+        "amount": 45.404
+      },
+      "item": {
+        "purpose": "Business advert",
+        "itemPaidFor": "Ad campaign"
+      }
+    },
+    {
+      "id": "2",
+      "dateTime": "01-02-2000 05:50:51",
+      "paymentBy": "Marie Smart",
+      "purpose": "Product purchase",
+      "amountPaid": 45.404,
+      "status": "Successful",
+      "date": "01-02-2000",
+      "time": "05:50:51",
+      "user": {
+        "name": "Marie Smart",
+        "email": "marie.smart@example.com",
+        "phone": "08012345678"
+      },
+      "payment": {
+        "method": "Mastercard",
+        "amount": 45.404
+      },
+      "item": {
+        "purpose": "Product purchase",
+        "itemPaidFor": "Gadget accessory"
+      }
+    },
+    {
+      "id": "3",
+      "dateTime": "01-02-2000 05:50:51",
+      "paymentBy": "Marie Smart",
+      "purpose": "Repair Service",
+      "amountPaid": 45.404,
+      "status": "Successful",
+      "date": "01-02-2000",
+      "time": "05:50:51",
+      "user": {
+        "name": "Marie Smart",
+        "email": "marie.smart@example.com",
+        "phone": "08012345678"
+      },
+      "payment": {
+        "method": "Mastercard",
+        "amount": 45.404
+      },
+      "item": {
+        "purpose": "Repair Service",
+        "itemPaidFor": "Device repair"
+      }
+    },
+    {
+      "id": "4",
+      "dateTime": "01-02-2000 05:50:51",
+      "paymentBy": "Marie Smart",
+      "purpose": "Business advert",
+      "amountPaid": 45.404,
+      "status": "Successful",
+      "date": "01-02-2000",
+      "time": "05:50:51",
+      "user": {
+        "name": "Marie Smart",
+        "email": "marie.smart@example.com",
+        "phone": "08012345678"
+      },
+      "payment": {
+        "method": "Mastercard",
+        "amount": 45.404
+      },
+      "item": {
+        "purpose": "Business advert",
+        "itemPaidFor": "Ad campaign"
+      }
+    },
+    {
+      "id": "5",
+      "dateTime": "01-02-2000 05:50:51",
+      "paymentBy": "Marie Smart",
+      "purpose": "Product purchase",
+      "amountPaid": 45.404,
+      "status": "Successful",
+      "date": "01-02-2000",
+      "time": "05:50:51",
+      "user": {
+        "name": "Marie Smart",
+        "email": "marie.smart@example.com",
+        "phone": "08012345678"
+      },
+      "payment": {
+        "method": "Mastercard",
+        "amount": 45.404
+      },
+      "item": {
+        "purpose": "Product purchase",
+        "itemPaidFor": "Gadget accessory"
+      }
+    },
+    {
+      "id": "6",
+      "dateTime": "01-02-2000 05:50:51",
+      "paymentBy": "Marie Smart",
+      "purpose": "Repair Service",
+      "amountPaid": 45.404,
+      "status": "Successful",
+      "date": "01-02-2000",
+      "time": "05:50:51",
+      "user": {
+        "name": "Marie Smart",
+        "email": "marie.smart@example.com",
+        "phone": "08012345678"
+      },
+      "payment": {
+        "method": "Mastercard",
+        "amount": 45.404
+      },
+      "item": {
+        "purpose": "Repair Service",
+        "itemPaidFor": "Device repair"
+      }
+    },
+    {
+      "id": "7",
+      "dateTime": "01-02-2000 05:50:51",
+      "paymentBy": "Marie Smart",
+      "purpose": "Personal advert",
+      "amountPaid": 45.404,
+      "status": "Pending",
+      "date": "01-02-2000",
+      "time": "05:50:51",
+      "user": {
+        "name": "Marie Smart",
+        "email": "marie.smart@example.com",
+        "phone": "08012345678"
+      },
+      "payment": {
+        "method": "Mastercard",
+        "amount": 45.404
+      },
+      "item": {
+        "purpose": "Personal advert",
+        "itemPaidFor": "Personal ad"
+      }
+    },
+    {
+      "id": "8",
+      "dateTime": "01-02-2000 05:50:51",
+      "paymentBy": "Marie Smart",
+      "purpose": "Product purchase",
+      "amountPaid": 45.404,
+      "status": "Pending",
+      "date": "01-02-2000",
+      "time": "05:50:51",
+      "user": {
+        "name": "Marie Smart",
+        "email": "marie.smart@example.com",
+        "phone": "08012345678"
+      },
+      "payment": {
+        "method": "Mastercard",
+        "amount": 45.404
+      },
+      "item": {
+        "purpose": "Product purchase",
+        "itemPaidFor": "Gadget accessory"
+      }
+    },
+    {
+      "id": "9",
+      "dateTime": "01-02-2000 05:50:51",
+      "paymentBy": "Marie Smart",
+      "purpose": "Repair Service",
+      "amountPaid": 45.404,
+      "status": "Pending",
+      "date": "01-02-2000",
+      "time": "05:50:51",
+      "user": {
+        "name": "Marie Smart",
+        "email": "marie.smart@example.com",
+        "phone": "08012345678"
+      },
+      "payment": {
+        "method": "Mastercard",
+        "amount": 45.404
+      },
+      "item": {
+        "purpose": "Repair Service",
+        "itemPaidFor": "Device repair"
+      }
+    },
+    {
+      "id": "dghwu44550",
+      "dateTime": "14-04-2000 04:05:50",
+      "paymentBy": "John Doe",
+      "purpose": "Product purchase",
+      "amountPaid": 5406,
+      "status": "Successful",
+      "date": "14-04-2000",
+      "time": "04:05:50",
+      "user": {
+        "name": "John Doe",
+        "email": "johndoe@gmail.com",
+        "phone": "08054644654"
+      },
+      "payment": {
+        "method": "Mastercard",
+        "amount": 5406
+      },
+      "item": {
+        "purpose": "Product purchase",
+        "itemPaidFor": "Apple Mini Ipad case"
+      }
+    }
+  ],
+  "analytics": {
+    "user": {
+      "customers": 40654,
+      "repairers": 10548,
+      "repairCompanies": 40654,
+      "vendors": 40654,
+      "timestamp": "12 April 2024 - 9:00am"
+    },
+    "orders": {
+      "product": 10293,
+      "productChange": "+1.3% Up from last week",
+      "service": 89000,
+      "serviceChange": "-4.3% Down from yesterday"
+    },
+    "totalOrdersChart": [
+      {
+        "month": "Aug 2018",
+        "product": 20000,
+        "service": 10000
+      },
+      {
+        "month": "Sep 2018",
+        "product": 15000,
+        "service": 20000
+      },
+      {
+        "month": "Oct 2018",
+        "product": 25000,
+        "service": 15000
+      },
+      {
+        "month": "Nov 2018",
+        "product": 20000,
+        "service": 25000
+      },
+      {
+        "month": "Dec 2018",
+        "product": 30000,
+        "service": 20000
+      },
+      {
+        "month": "Jan 2019",
+        "product": 25000,
+        "service": 30000
+      },
+      {
+        "month": "Feb 2019",
+        "product": 35000,
+        "service": 25000
+      },
+      {
+        "month": "Mar 2019",
+        "product": 30000,
+        "service": 35000
+      },
+      {
+        "month": "Apr 2019",
+        "product": 25000,
+        "service": 30000
+      },
+      {
+        "month": "May 2019",
+        "product": 20000,
+        "service": 25000
+      }
+    ]
+  },
+  "transactionDetails": [
+    {
+      "id": "1",
+      "dateTime": "01-02-2000 05:50:51",
+      "paymentBy": "Marie Smart",
+      "purpose": "Business advert",
+      "amountPaid": 45.404,
+      "status": "Successful",
+      "date": "01-02-2000",
+      "time": "05:50:51",
+      "user": {
+        "name": "Marie Smart",
+        "email": "marie.smart@example.com",
+        "phone": "08012345678"
+      },
+      "payment": {
+        "method": "Mastercard",
+        "amount": 45.404,
+        "transactionId": "TXN-123456",
+        "cardLast4": "1234",
+        "paymentDate": "01-02-2000"
+      },
+      "item": {
+        "purpose": "Business advert",
+        "itemPaidFor": "Ad campaign",
+        "details": "Promotional ad for business growth",
+        "quantity": 1
+      }
+    }
+  ],
+  "onboarding": [
+    {
+      "id": 1,
+      "dateTime": "01-05-2000 05:50:51",
+      "surname": "Marie",
+      "otherNames": "Smart",
+      "phone": "+23486054445",
+      "accountType": "Vendor",
+      "status": "pending",
+      "firstName": "Marie",
+      "lastName": "Smart",
+      "email": "MarieSmart@gmail.com",
+      "address": "54, Lekki Mandalay, Lagos Nigeria",
+      "profilePicture": "/images/profile-female.jpg",
+      "govIdType": "Driver's License",
+      "govIdFront": "/images/id-front.jpg",
+      "govIdBack": "/images/id-back.jpg",
+      "dob": "Smart",
+      "cardAddress": "Smart",
+      "occupation": "Smart",
+      "pollingUnit": "Smart",
+      "vin": "Smart",
+      "businessName": "Smart",
+      "businessPhone": "+23454879324",
+      "repairCategory": "Automobile repair",
+      "repairSkills": ["Car Repair", "Battery Repair", "Engine Repair"],
+      "yearsExperience": 5,
+      "associationName": "NACAM",
+      "certificationUrl": "/images/certificate.jpg"
+    },
+    {
+      "id": 2,
+      "dateTime": "01-05-2000 05:50:51",
+      "surname": "Marie",
+      "otherNames": "Smart",
+      "phone": "+23486054445",
+      "accountType": "Customer",
+      "status": "pending",
+      "firstName": "Marie",
+      "lastName": "Smart",
+      "email": "MarieSmart@gmail.com",
+      "address": "54, Lekki Mandalay, Lagos Nigeria",
+      "profilePicture": "/images/profile-female.jpg",
+      "govIdType": "Driver's License",
+      "govIdFront": "/images/id-front.jpg",
+      "govIdBack": "/images/id-back.jpg",
+      "dob": "Smart",
+      "cardAddress": "Smart",
+      "occupation": "Smart",
+      "pollingUnit": "Smart",
+      "vin": "Smart"
+    },
+    {
+      "id": 3,
+      "dateTime": "01-05-2000 05:50:51",
+      "surname": "Marie",
+      "otherNames": "Smart",
+      "phone": "+23486054445",
+      "accountType": "Repairer",
+      "status": "pending",
+      "firstName": "Marie",
+      "lastName": "Smart",
+      "email": "MarieSmart@gmail.com",
+      "address": "54, Lekki Mandalay, Lagos Nigeria",
+      "profilePicture": "/images/profile-female.jpg",
+      "govIdType": "Driver's License",
+      "govIdFront": "/images/id-front.jpg",
+      "govIdBack": "/images/id-back.jpg",
+      "dob": "Smart",
+      "cardAddress": "Smart",
+      "occupation": "Smart",
+      "pollingUnit": "Smart",
+      "vin": "Smart",
+      "businessName": "Smart",
+      "businessPhone": "+23454879324",
+      "repairCategory": "Automobile repair",
+      "repairSkills": ["Car Repair", "Battery Repair", "Engine Repair"],
+      "yearsExperience": 5,
+      "associationName": "NACAM",
+      "certificationUrl": "/images/certificate.jpg"
+    },
+    {
+      "id": 4,
+      "dateTime": "01-05-2000 05:50:51",
+      "surname": "Marie",
+      "otherNames": "Smart",
+      "phone": "+23486054445",
+      "accountType": "Vendor",
+      "status": "pending",
+      "firstName": "Marie",
+      "lastName": "Smart",
+      "email": "MarieSmart@gmail.com",
+      "address": "54, Lekki Mandalay, Lagos Nigeria",
+      "profilePicture": "/images/profile-female.jpg",
+      "govIdType": "Driver's License",
+      "govIdFront": "/images/id-front.jpg",
+      "govIdBack": "/images/id-back.jpg",
+      "dob": "Smart",
+      "cardAddress": "Smart",
+      "occupation": "Smart",
+      "pollingUnit": "Smart",
+      "vin": "Smart"
+    },
+    {
+      "id": 5,
+      "dateTime": "01-05-2000 05:50:51",
+      "surname": "Marie",
+      "otherNames": "Smart",
+      "phone": "+23486054445",
+      "accountType": "Repair Company",
+      "status": "pending",
+      "firstName": "Marie",
+      "lastName": "Smart",
+      "email": "MarieSmart@gmail.com",
+      "address": "54, Lekki Mandalay, Lagos Nigeria",
+      "profilePicture": "/images/profile-female.jpg",
+      "govIdType": "Driver's License",
+      "govIdFront": "/images/id-front.jpg",
+      "govIdBack": "/images/id-back.jpg",
+      "dob": "Smart",
+      "cardAddress": "Smart",
+      "occupation": "Smart",
+      "pollingUnit": "Smart",
+      "vin": "Smart",
+      "businessName": "Smart",
+      "businessPhone": "+23454879324",
+      "repairCategory": "Automobile repair",
+      "repairSkills": ["Car Repair", "Battery Repair", "Engine Repair"],
+      "yearsExperience": 5,
+      "associationName": "NACAM",
+      "certificationUrl": "/images/certificate.jpg"
+    },
+    {
+      "id": 6,
+      "dateTime": "01-05-2000 05:50:51",
+      "surname": "Marie",
+      "otherNames": "Smart",
+      "phone": "+23486054445",
+      "accountType": "Vendor",
+      "status": "pending",
+      "firstName": "Marie",
+      "lastName": "Smart",
+      "email": "MarieSmart@gmail.com",
+      "address": "54, Lekki Mandalay, Lagos Nigeria",
+      "profilePicture": "/images/profile-female.jpg",
+      "govIdType": "Driver's License",
+      "govIdFront": "/images/id-front.jpg",
+      "govIdBack": "/images/id-back.jpg",
+      "dob": "Smart",
+      "cardAddress": "Smart",
+      "occupation": "Smart",
+      "pollingUnit": "Smart",
+      "vin": "Smart"
+    },
+    {
+      "id": 7,
+      "dateTime": "01-05-2000 05:50:51",
+      "surname": "Marie",
+      "otherNames": "Smart",
+      "phone": "+23486054445",
+      "accountType": "Repairer",
+      "status": "pending",
+      "firstName": "Marie",
+      "lastName": "Smart",
+      "email": "MarieSmart@gmail.com",
+      "address": "54, Lekki Mandalay, Lagos Nigeria",
+      "profilePicture": "/images/profile-female.jpg",
+      "govIdType": "Driver's License",
+      "govIdFront": "/images/id-front.jpg",
+      "govIdBack": "/images/id-back.jpg",
+      "dob": "Smart",
+      "cardAddress": "Smart",
+      "occupation": "Smart",
+      "pollingUnit": "Smart",
+      "vin": "Smart",
+      "businessName": "Smart",
+      "businessPhone": "+23454879324",
+      "repairCategory": "Automobile repair",
+      "repairSkills": ["Car Repair", "Battery Repair", "Engine Repair"],
+      "yearsExperience": 5,
+      "associationName": "NACAM",
+      "certificationUrl": "/images/certificate.jpg"
+    },
+    {
+      "id": 8,
+      "dateTime": "01-05-2000 05:50:51",
+      "surname": "Marie",
+      "otherNames": "Smart",
+      "phone": "+23486054445",
+      "accountType": "Vendor",
+      "status": "pending",
+      "firstName": "Marie",
+      "lastName": "Smart",
+      "email": "MarieSmart@gmail.com",
+      "address": "54, Lekki Mandalay, Lagos Nigeria",
+      "profilePicture": "/images/profile-female.jpg",
+      "govIdType": "Driver's License",
+      "govIdFront": "/images/id-front.jpg",
+      "govIdBack": "/images/id-back.jpg",
+      "dob": "Smart",
+      "cardAddress": "Smart",
+      "occupation": "Smart",
+      "pollingUnit": "Smart",
+      "vin": "Smart"
+    },
+    {
+      "id": 9,
+      "dateTime": "01-05-2000 05:50:51",
+      "surname": "Marie",
+      "otherNames": "Smart",
+      "phone": "+23486054445",
+      "accountType": "Repairer",
+      "status": "pending",
+      "firstName": "Marie",
+      "lastName": "Smart",
+      "email": "MarieSmart@gmail.com",
+      "address": "54, Lekki Mandalay, Lagos Nigeria",
+      "profilePicture": "/images/profile-female.jpg",
+      "govIdType": "Driver's License",
+      "govIdFront": "/images/id-front.jpg",
+      "govIdBack": "/images/id-back.jpg",
+      "dob": "Smart",
+      "cardAddress": "Smart",
+      "occupation": "Smart",
+      "pollingUnit": "Smart",
+      "vin": "Smart",
+      "businessName": "Smart",
+      "businessPhone": "+23454879324",
+      "repairCategory": "Automobile repair",
+      "repairSkills": ["Car Repair", "Battery Repair", "Engine Repair"],
+      "yearsExperience": 5,
+      "associationName": "NACAM",
+      "certificationUrl": "/images/certificate.jpg"
     }
   ],
   "customers": [
@@ -1177,32 +1934,7 @@
       "shippingAddress": "123 Main St, City, State"
     }
   ],
-  "transactions": [
-    {
-      "id": 1,
-      "type": "repair_payment",
-      "amount": 180,
-      "customerId": 2,
-      "customerName": "Jane Smith",
-      "repairerId": 2,
-      "repairerName": "Sarah Wilson",
-      "date": "2024-01-21",
-      "status": "completed",
-      "paymentMethod": "credit_card"
-    },
-    {
-      "id": 2,
-      "type": "product_payment",
-      "amount": 165,
-      "customerId": 1,
-      "customerName": "John Doe",
-      "vendorId": 1,
-      "vendorName": "TechParts Supply",
-      "date": "2024-01-19",
-      "status": "completed",
-      "paymentMethod": "paypal"
-    }
-  ],
+
   "invoices": [
     {
       "id": 1,

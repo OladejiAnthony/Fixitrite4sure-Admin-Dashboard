@@ -1,5 +1,6 @@
-import { ECommerce } from "@/components/dashboard/e-commerce";
+//app/(dashboard)/e-commerce/page.tsx
+"use Client";
 
 export default function ECommercePage() {
-  return <ECommerce />;
+  return <div>ECommerce Page</div>;
 }

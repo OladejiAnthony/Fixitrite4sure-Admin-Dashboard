@@ -1,3 +1,4 @@
+//app\(dashboard)\analytics\page.tsx
 import { Analytics } from "@/components/dashboard/analytics";
 
 export default function AnalyticsPage() {

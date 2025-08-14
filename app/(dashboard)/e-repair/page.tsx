@@ -1,5 +1,6 @@
-import { ERepair } from "@/components/dashboard/e-repair";
+//
+"use Client";
 
 export default function ERepairPage() {
-  return <ERepair />;
+  return <div>Order Management</div>;
 }

@@ -1,3 +1,4 @@
+//app/(dashboard)/dashboard/page.tsx
 import { DashboardHome } from "@/components/dashboard/dashboard-home"
 
 export default function Dashboard() {

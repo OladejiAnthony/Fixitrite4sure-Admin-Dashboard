@@ -48,8 +48,14 @@ type NavigationItem = {
   hasDropdown?: boolean;
   subItems?: Array<{
     title: string;
-    url: string;
+    url?: string;
     icon: string | React.ComponentType<{ className?: string }>;
+    hasDropdown?: boolean;
+    subItems?: Array<{
+      title: string;
+      url: string;
+      icon: string | React.ComponentType<{ className?: string }>;
+    }>;
   }>;
   icon: string | React.ComponentType<{ className?: string }>;
 };
@@ -111,28 +117,6 @@ const navigationItems: NavigationItem[] = [
       },
     ],
   },
-  {
-    title: "SERV",
-    icon: Settings,
-    hasDropdown: true,
-    subItems: [
-      {
-        title: "E-Commerce",
-        icon: ShoppingBag,
-        url: "/e-commerce",
-      },
-      {
-        title: "E-Repair",
-        icon: "/images/e-repair.png",
-        url: "/e-repair",
-      },
-      {
-        title: "Content Management",
-        icon: "/images/content.png",
-        url: "/content-management",
-      },
-    ],
-  },
 
   {
     title: "Super Admin",
@@ -166,42 +150,54 @@ const navigationItems: NavigationItem[] = [
       },
     ],
   },
-  {
-    title: "Transactions",
-    icon: CreditCard,
-    url: "/transactions",
-  },
-  {
-    title: "Orders & Bookings",
-    icon: Calendar,
-    hasDropdown: true,
-    subItems: [
-      {
-        title: "Repair Bookings",
-        icon: Calendar,
-        url: "/repair-bookings",
-      },
-      {
-        title: "Product Orders",
-        icon: ShoppingCart,
-        url: "/product-orders",
-      },
-    ],
-  },
-  {
-    title: "Invoices",
-    icon: FileText,
-    url: "/invoices",
-  },
+  // {
+  //   title: "Transactions",
+  //   icon: CreditCard,
+  //   url: "/transactions",
+  // },
+  // {
+  //   title: "Orders & Bookings",
+  //   icon: Calendar,
+  //   hasDropdown: true,
+  //   subItems: [
+  //     {
+  //       title: "Repair Bookings",
+  //       icon: Calendar,
+  //       url: "/repair-bookings",
+  //     },
+  //     {
+  //       title: "Product Orders",
+  //       icon: ShoppingCart,
+  //       url: "/product-orders",
+  //     },
+  //   ],
+  // },
+  // {
+  //   title: "Invoices",
+  //   icon: FileText,
+  //   url: "/invoices",
+  // },
   {
     title: "Services",
-    icon: Home,
+    icon: Settings,
     hasDropdown: true,
     subItems: [
       {
         title: "Order Management",
         icon: ShoppingBag,
-        url: "/order-management",
+        hasDropdown: true,
+        subItems: [
+          {
+            title: "E-Commerce",
+            icon: ShoppingBag,
+            url: "/e-commerce",
+          },
+          {
+            title: "E-Repair",
+            icon: "/images/e-repair.png",
+            url: "/e-repair",
+          },
+        ],
       },
       {
         title: "Content Management",
@@ -216,14 +212,19 @@ const navigationItems: NavigationItem[] = [
     hasDropdown: true,
     subItems: [
       {
-        title: "Repair Bookings",
+        title: "Bookings",
         icon: Calendar,
-        url: "/repair-bookings",
+        url: "/bookings",
       },
       {
-        title: "Product Orders",
+        title: "Transaction Details",
         icon: ShoppingCart,
-        url: "/product-orders",
+        url: "/transaction-details",
+      },
+      {
+        title: "Reviews and Feedbacks",
+        icon: ShoppingCart,
+        url: "/reviews-feedbacks",
       },
     ],
   },
@@ -350,8 +351,10 @@ export function AppSidebar() {
     setIsLogoutDialogOpen(true);
   };
 
-  const handleNavigation = (url: string) => {
-    router.push(url);
+  const handleNavigation = (url: string | undefined) => {
+    if (url) {
+      router.push(url);
+    }
   };
 
   return (
@@ -394,30 +397,100 @@ export function AppSidebar() {
                             <SidebarMenu className="space-y-1">
                               {item.subItems.map((subItem) => (
                                 <SidebarMenuItem key={subItem.title}>
-                                  <SidebarMenuButton
-                                    onClick={() =>
-                                      handleNavigation(subItem.url)
-                                    }
-                                    className={`w-full h-[42px] gap-2  text-left py-2 px-4 text-sm font-medium transition-colors cursor-pointer ${
-                                      pathname === subItem.url
-                                        ? "bg-white text-[#1A3B6F] hover:bg-white hover:text-[#1A3B6F]"
-                                        : "text-white hover:bg-[#2A4B7F] hover:text-white"
-                                    }`}
-                                  >
-                                    <div className="flex items-center gap-3">
-                                      {typeof subItem.icon === "string" ? (
-                                        <Image
-                                          src={subItem.icon}
-                                          alt="icon"
-                                          width={16}
-                                          height={16}
-                                        />
-                                      ) : (
-                                        <subItem.icon className="h-4 w-4" />
+                                  {subItem.hasDropdown ? (
+                                    <Collapsible>
+                                      <CollapsibleTrigger asChild>
+                                        <SidebarMenuButton className="w-full h-[42px] gap-2 text-left py-2 px-4 text-sm font-medium transition-colors cursor-pointer text-white hover:bg-[#2A4B7F] hover:text-white">
+                                          <div className="flex items-center gap-3">
+                                            {typeof subItem.icon ===
+                                            "string" ? (
+                                              <Image
+                                                src={subItem.icon}
+                                                alt="icon"
+                                                width={16}
+                                                height={16}
+                                              />
+                                            ) : (
+                                              <subItem.icon className="h-4 w-4" />
+                                            )}
+                                            <span>{subItem.title}</span>
+                                          </div>
+                                          <ChevronDown className="h-4 w-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-180" />
+                                        </SidebarMenuButton>
+                                      </CollapsibleTrigger>
+                                      {subItem.subItems && (
+                                        <CollapsibleContent className="ml-4 mt-1">
+                                          <SidebarMenu className="space-y-1">
+                                            {subItem.subItems.map(
+                                              (nestedSubItem) => (
+                                                <SidebarMenuItem
+                                                  key={nestedSubItem.title}
+                                                >
+                                                  <SidebarMenuButton
+                                                    onClick={() =>
+                                                      handleNavigation(
+                                                        nestedSubItem.url
+                                                      )
+                                                    }
+                                                    className={`w-full h-[42px] gap-2 text-left py-2 px-4 text-sm font-medium transition-colors cursor-pointer ${
+                                                      pathname ===
+                                                      nestedSubItem.url
+                                                        ? "bg-white text-[#1A3B6F] hover:bg-white hover:text-[#1A3B6F]"
+                                                        : "text-white hover:bg-[#2A4B7F] hover:text-white"
+                                                    }`}
+                                                  >
+                                                    <div className="flex items-center gap-3">
+                                                      {typeof nestedSubItem.icon ===
+                                                      "string" ? (
+                                                        <Image
+                                                          src={
+                                                            nestedSubItem.icon
+                                                          }
+                                                          alt="icon"
+                                                          width={16}
+                                                          height={16}
+                                                        />
+                                                      ) : (
+                                                        <nestedSubItem.icon className="h-4 w-4" />
+                                                      )}
+                                                      <span>
+                                                        {nestedSubItem.title}
+                                                      </span>
+                                                    </div>
+                                                  </SidebarMenuButton>
+                                                </SidebarMenuItem>
+                                              )
+                                            )}
+                                          </SidebarMenu>
+                                        </CollapsibleContent>
                                       )}
-                                      <span>{subItem.title}</span>
-                                    </div>
-                                  </SidebarMenuButton>
+                                    </Collapsible>
+                                  ) : subItem.url ? (
+                                    <SidebarMenuButton
+                                      onClick={() =>
+                                        handleNavigation(subItem.url!)
+                                      }
+                                      className={`w-full h-[42px] gap-2 text-left py-2 px-4 text-sm font-medium transition-colors cursor-pointer ${
+                                        pathname === subItem.url
+                                          ? "bg-white text-[#1A3B6F] hover:bg-white hover:text-[#1A3B6F]"
+                                          : "text-white hover:bg-[#2A4B7F] hover:text-white"
+                                      }`}
+                                    >
+                                      <div className="flex items-center gap-3">
+                                        {typeof subItem.icon === "string" ? (
+                                          <Image
+                                            src={subItem.icon}
+                                            alt="icon"
+                                            width={16}
+                                            height={16}
+                                          />
+                                        ) : (
+                                          <subItem.icon className="h-4 w-4" />
+                                        )}
+                                        <span>{subItem.title}</span>
+                                      </div>
+                                    </SidebarMenuButton>
+                                  ) : null}
                                 </SidebarMenuItem>
                               ))}
                             </SidebarMenu>

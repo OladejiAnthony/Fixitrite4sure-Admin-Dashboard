@@ -8,6 +8,7 @@ import { useState } from "react";
 import { useParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 
 interface Onboarding {
@@ -16,7 +17,7 @@ interface Onboarding {
     surname: string;
     otherNames: string;
     phone: string;
-    accountType: string;
+    accountType: "Customer" | "Repairer" | "Repair Company" | "Vendor";
     status: string;
     firstName: string;
     lastName: string;
@@ -38,6 +39,15 @@ interface Onboarding {
     yearsExperience?: number;
     associationName?: string;
     certificationUrl?: string;
+    numberOfRepairers?: number;
+    businessLicenseUrl?: string;
+    proofOfInsuranceUrl?: string;
+    registeredBusinessName?: string;
+    typeOfBusiness?: string;
+    cacRegistrationNumber?: string;
+    dateOfRegistration?: string;
+    cacDocumentUrl?: string;
+    proofOfAddressUrl?: string;
 }
 
 async function fetchOnboardingDetails(id: string) {
@@ -57,17 +67,36 @@ export default function OnboardingDetailsPage() {
     });
 
     const updateStatusMutation = useMutation({
-        mutationFn: (newStatus: string) => apiClient.patch(`/onboarding/${id}`, { status: newStatus }),
-        onSuccess: () => router.push("/onboarding"),
+        mutationFn: (newStatus: string) =>
+            apiClient.patch(`/onboarding/${id}`, { status: newStatus }),
+        onSuccess: (data, variables) => {
+            const action = variables === "approved" ? "approved" : "rejected";
+            toast.success(`User ${action} successfully`);
+            router.push("/onboarding");
+        },
+        onError: (error) => {
+            toast.error("Failed to update user status");
+            console.error("Error updating status:", error);
+        }
     });
 
     if (isLoading || !data) {
         return <div className="p-6 text-center text-gray-600">Loading...</div>;
     }
 
-    const isRepairType = data.accountType === "Repairer" || data.accountType === "Repair Company";
-    const maxStep = isRepairType ? 3 : 2;
-    const title = `${data.accountType.toUpperCase()} USER DETAILS`;
+    let maxStep = data.accountType === "Customer" ? 2 : 3;
+
+    let title;
+    switch (data.accountType) {
+        case "Repair Company":
+            title = "REPAIR COMPANY DETAILS";
+            break;
+        case "Vendor":
+            title = "VENDOR DETAILS";
+            break;
+        default:
+            title = `${data.accountType.toUpperCase()} USER DETAILS`;
+    }
 
     const handleNext = () => {
         if (step < maxStep) setStep(step + 1);
@@ -76,40 +105,118 @@ export default function OnboardingDetailsPage() {
     let content;
 
     if (step === 1) {
+        let personalTitle = ["Customer", "Repairer"].includes(data.accountType) ? "USER PERSONAL DETAILS" : "PERSONAL DETAILS";
+        let addressTitle = data.accountType === "Repair Company" ? "COMPANY'S ADDRESS" : ["Customer", "Repairer"].includes(data.accountType) ? "WORK ADDRESS" : "BUSINESS ADDRESS";
+
+        let personalContent;
+        switch (data.accountType) {
+            case "Customer":
+                personalContent = (
+                    <div className="grid grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">First Name</label>
+                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.firstName}</p>
+                        </div>
+                        <div>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">Last Name</label>
+                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.lastName}</p>
+                        </div>
+                        <div>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">Phone Number</label>
+                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.phone}</p>
+                        </div>
+                        <div>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">Email Address</label>
+                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.email}</p>
+                        </div>
+                    </div>
+                );
+                break;
+            case "Repairer":
+                personalContent = (
+                    <div className="grid grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">First Name</label>
+                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.firstName}</p>
+                        </div>
+                        <div>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">Last Name</label>
+                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.lastName}</p>
+                        </div>
+                        <div>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">Business Phone Number</label>
+                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.businessPhone}</p>
+                        </div>
+                        <div>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">Email Address</label>
+                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.email}</p>
+                        </div>
+                    </div>
+                );
+                break;
+            case "Repair Company":
+                personalContent = (
+                    <div className="grid grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">Company's Name</label>
+                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.businessName}</p>
+                        </div>
+                        <div>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">Contact Person Phone Number</label>
+                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.phone}</p>
+                        </div>
+                        <div>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">Contact Person First Name</label>
+                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.firstName}</p>
+                        </div>
+                        <div>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">Company's Phone Number</label>
+                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.businessPhone}</p>
+                        </div>
+                        <div>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">Contact Person Last Name</label>
+                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.lastName}</p>
+                        </div>
+                        <div>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">Company's Email Address</label>
+                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.email}</p>
+                        </div>
+                    </div>
+                );
+                break;
+            case "Vendor":
+                personalContent = (
+                    <div className="grid grid-cols-2 gap-4 mb-6">
+                        <div>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">First Name</label>
+                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.firstName}</p>
+                        </div>
+                        <div>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">Business Phone Number</label>
+                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.businessPhone}</p>
+                        </div>
+                        <div>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">Last Name</label>
+                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.lastName}</p>
+                        </div>
+                        <div>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">Business Email Address</label>
+                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.email}</p>
+                        </div>
+                        <div className="col-span-2">
+                            <label className="block text-xs font-medium text-gray-600 mb-1">Business Name</label>
+                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.businessName}</p>
+                        </div>
+                    </div>
+                );
+                break;
+        }
+
         content = (
             <div className="w-full">
-                <h2 className="text-base font-semibold text-blue-800 mb-4">USER PERSONAL DETAILS</h2>
-                <div className="grid grid-cols-2 gap-4 mb-6">
-                    <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">First Name</label>
-                        <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.firstName}</p>
-                    </div>
-                    <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">Last Name</label>
-                        <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.lastName}</p>
-                    </div>
-                    {isRepairType && (
-                        <>
-                            <div>
-                                <label className="block text-xs font-medium text-gray-600 mb-1">Business Name</label>
-                                <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.businessName || ""}</p>
-                            </div>
-                            <div>
-                                <label className="block text-xs font-medium text-gray-600 mb-1">Mech Repair</label>
-                                <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800"></p>
-                            </div>
-                        </>
-                    )}
-                    <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">{isRepairType ? "Business Phone Number" : "Phone Number"}</label>
-                        <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{isRepairType ? data.businessPhone : data.phone}</p>
-                    </div>
-                    <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">Email Address</label>
-                        <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.email}</p>
-                    </div>
-                </div>
-                <h2 className="text-base font-semibold text-blue-800 mb-4">{isRepairType ? "WORK ADDRESS" : "USER ADDRESS"}</h2>
+                <h2 className="text-base font-semibold text-blue-800 mb-4">{personalTitle}</h2>
+                {personalContent}
+                <h2 className="text-base font-semibold text-blue-800 mb-4">{addressTitle}</h2>
                 <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800 mb-4">{data.address}</p>
                 <div className="h-40 bg-gray-100 rounded-md flex items-center justify-center text-gray-500">Map Placeholder with Pin</div>
                 <button
@@ -121,14 +228,17 @@ export default function OnboardingDetailsPage() {
             </div>
         );
     } else if (step === 2) {
+        let verificationTitle = ["Customer", "Repairer"].includes(data.accountType) ? "USER VERIFICATION" : "CONTACT PERSON VERIFICATION";
+
         content = (
             <div className="w-full">
-                <h2 className="text-base font-semibold text-blue-800 mb-4">USER VERIFICATION</h2>
+                <h2 className="text-base font-semibold text-blue-800 mb-4">{verificationTitle}</h2>
                 <div className="grid grid-cols-2 gap-6">
                     <div>
                         <label className="block text-xs font-medium text-gray-600 mb-2">Profile Picture</label>
-                        <img src={data.profilePicture} alt="Profile" className="w-32 h-40 object-cover rounded-md" />
+                        <img src={data.profilePicture} alt="Profile" className="w-24 h-32 object-cover rounded-md" />
                         <label className="block text-xs font-medium text-gray-600 mt-6 mb-2">Government Issued ID</label>
+                        <p className="text-xs font-medium text-gray-600 mb-2">{data.govIdType}</p>
                         <div className="flex gap-4">
                             <div>
                                 <img src={data.govIdFront} alt="Front" className="w-32 h-20 object-cover rounded-md" />
@@ -171,67 +281,162 @@ export default function OnboardingDetailsPage() {
                         </div>
                     </div>
                 </div>
-                {isRepairType ? (
+                {data.accountType === "Customer" ? (
+                    <div className="flex gap-4 mt-6">
+                        <button
+                            onClick={() => updateStatusMutation.mutate("approved")}
+                            disabled={updateStatusMutation.isPending}
+                            className={`bg-blue-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors ${updateStatusMutation.isPending ? "opacity-50 cursor-not-allowed" : ""
+                                }`}
+                        >
+                            {updateStatusMutation.isPending ? "Processing..." : "Accept User"}
+                        </button>
+                        <button
+                            onClick={() => updateStatusMutation.mutate("rejected")}
+                            disabled={updateStatusMutation.isPending}
+                            className={`bg-red-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-red-600 transition-colors ${updateStatusMutation.isPending ? "opacity-50 cursor-not-allowed" : ""
+                                }`}
+                        >
+                            {updateStatusMutation.isPending ? "Processing..." : "Reject User"}
+                        </button>
+                    </div>
+                ) : (
                     <button
                         onClick={handleNext}
                         className="mt-6 bg-blue-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors"
                     >
                         Next
                     </button>
-                ) : (
-                    <div className="flex gap-4 mt-6">
-                        <button
-                            onClick={() => updateStatusMutation.mutate("approved")}
-                            className="bg-blue-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors"
-                        >
-                            Accept User
-                        </button>
-                        <button
-                            onClick={() => updateStatusMutation.mutate("rejected")}
-                            className="bg-red-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-red-600 transition-colors"
-                        >
-                            Reject User
-                        </button>
-                    </div>
                 )}
             </div>
         );
-    } else if (step === 3 && isRepairType) {
+    } else if (step === 3) {
+        let profContent;
+        switch (data.accountType) {
+            case "Repairer":
+                profContent = (
+                    <>
+                        <h2 className="text-base font-semibold text-blue-800 mb-4">PROFESSIONAL INFORMATION</h2>
+                        <div className="grid grid-cols-2 gap-4 mb-6">
+                            <div>
+                                <label className="block text-xs font-medium text-gray-600 mb-1">Repair Category</label>
+                                <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.repairCategory}</p>
+                            </div>
+                            <div>
+                                <label className="block text-xs font-medium text-gray-600 mb-1">Repair Skills</label>
+                                <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800 whitespace-pre-line">{data.repairSkills?.join("\n")}</p>
+                            </div>
+                            <div>
+                                <label className="block text-xs font-medium text-gray-600 mb-1">Years of Experience</label>
+                                <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.yearsExperience} years</p>
+                            </div>
+                            <div>
+                                <label className="block text-xs font-medium text-gray-600 mb-1">Association Name</label>
+                                <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.associationName}</p>
+                            </div>
+                        </div>
+                        <h2 className="text-base font-semibold text-blue-800 mb-4">CERTIFICATION AND WORK LICENSE</h2>
+                        <img src={data.certificationUrl} alt="Certificate" className="w-64 h-40 object-cover rounded-md mb-6" />
+                    </>
+                );
+                break;
+            case "Repair Company":
+                profContent = (
+                    <>
+                        <h2 className="text-base font-semibold text-blue-800 mb-4">COMPANY'S INFORMATION</h2>
+                        <div className="grid grid-cols-2 gap-4 mb-6">
+                            <div>
+                                <label className="block text-xs font-medium text-gray-600 mb-1">Number of Repairers</label>
+                                <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.numberOfRepairers}</p>
+                            </div>
+                            <div>
+                                <label className="block text-xs font-medium text-gray-600 mb-1">Repair Category</label>
+                                <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.repairCategory}</p>
+                            </div>
+                            <div>
+                                <label className="block text-xs font-medium text-gray-600 mb-1">Repair Skills</label>
+                                <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800 whitespace-pre-line">{data.repairSkills?.join("\n")}</p>
+                            </div>
+                            <div>
+                                <label className="block text-xs font-medium text-gray-600 mb-1">Years in Service</label>
+                                <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.yearsExperience} years</p>
+                            </div>
+                            <div className="col-span-2">
+                                <label className="block text-xs font-medium text-gray-600 mb-1">Company Registration Number</label>
+                                <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.associationName}</p>
+                            </div>
+                        </div>
+                        <h2 className="text-base font-semibold text-blue-800 mb-4">DOCUMENT VERIFICATION</h2>
+                        <div className="space-y-4 mb-6">
+                            <div>
+                                <label className="block text-xs font-medium text-gray-600 mb-1">Company's Business License</label>
+                                <img src={data.businessLicenseUrl} alt="Business License" className="w-64 h-40 object-cover rounded-md" />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-medium text-gray-600 mb-1">Company's Proof of Insurance</label>
+                                <img src={data.proofOfInsuranceUrl} alt="Proof of Insurance" className="w-64 h-40 object-cover rounded-md" />
+                            </div>
+                        </div>
+                    </>
+                );
+                break;
+            case "Vendor":
+                profContent = (
+                    <>
+                        <h2 className="text-base font-semibold text-blue-800 mb-4">BUSINESS INFORMATION</h2>
+                        <div className="grid grid-cols-2 gap-4 mb-6">
+                            <div>
+                                <label className="block text-xs font-medium text-gray-600 mb-1">Registered Business Name</label>
+                                <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.registeredBusinessName}</p>
+                            </div>
+                            <div>
+                                <label className="block text-xs font-medium text-gray-600 mb-1">Type of Business</label>
+                                <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.typeOfBusiness}</p>
+                            </div>
+                            <div className="col-span-2">
+                                <label className="block text-xs font-medium text-gray-600 mb-1">CAC Registration Number</label>
+                                <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.cacRegistrationNumber}</p>
+                            </div>
+                            <div className="col-span-2">
+                                <label className="block text-xs font-medium text-gray-600 mb-1">Date of Registration</label>
+                                <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.dateOfRegistration}</p>
+                            </div>
+                        </div>
+                        <h2 className="text-base font-semibold text-blue-800 mb-4">DOCUMENT VERIFICATION</h2>
+                        <div className="space-y-4 mb-6">
+                            <div>
+                                <label className="block text-xs font-medium text-gray-600 mb-1">CAC Registration Document</label>
+                                <img src={data.cacDocumentUrl} alt="CAC Document" className="w-64 h-40 object-cover rounded-md" />
+                            </div>
+                            <div>
+                                <label className="block text-xs font-medium text-gray-600 mb-1">Proof of Address</label>
+                                <img src={data.proofOfAddressUrl} alt="Proof of Address" className="w-64 h-40 object-cover rounded-md" />
+                            </div>
+                        </div>
+                    </>
+                );
+                break;
+        }
+
         content = (
             <div className="w-full">
-                <h2 className="text-base font-semibold text-blue-800 mb-4">PROFESSIONAL INFORMATION</h2>
-                <div className="grid grid-cols-2 gap-4 mb-6">
-                    <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">Repair Category</label>
-                        <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.repairCategory}</p>
-                    </div>
-                    <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">Repair Skills</label>
-                        <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.repairSkills?.join("\n")}</p>
-                    </div>
-                    <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">Years of Experience</label>
-                        <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.yearsExperience} years</p>
-                    </div>
-                    <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-1">Association Name</label>
-                        <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.associationName}</p>
-                    </div>
-                </div>
-                <h2 className="text-base font-semibold text-blue-800 mb-4">CERTIFICATION AND WORK LICENSE</h2>
-                <img src={data.certificationUrl} alt="Certificate" className="w-64 h-40 object-cover rounded-md" />
+                {profContent}
                 <div className="flex gap-4 mt-6">
                     <button
                         onClick={() => updateStatusMutation.mutate("approved")}
-                        className="bg-blue-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors"
+                        disabled={updateStatusMutation.isPending}
+                        className={`bg-blue-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors ${updateStatusMutation.isPending ? "opacity-50 cursor-not-allowed" : ""
+                            }`}
                     >
-                        Accept User
+                        {updateStatusMutation.isPending ? "Processing..." : "Accept User"}
                     </button>
                     <button
                         onClick={() => updateStatusMutation.mutate("rejected")}
-                        className="bg-red-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-red-600 transition-colors"
+                        disabled={updateStatusMutation.isPending}
+                        className={`bg-red-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-red-600 transition-colors ${updateStatusMutation.isPending ? "opacity-50 cursor-not-allowed" : ""
+                            }`}
                     >
-                        Reject User
+                        {updateStatusMutation.isPending ? "Processing..." : "Reject User"}
                     </button>
                 </div>
             </div>
@@ -257,3 +462,4 @@ export default function OnboardingDetailsPage() {
         </div>
     );
 }
+

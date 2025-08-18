@@ -6,7 +6,9 @@ import { useQuery } from "@tanstack/react-query";
 import { z } from "zod";
 import { apiClient } from "@/lib/api-client";
 import { Users, Building2, Store, ShoppingBag, Wrench } from "lucide-react";
+import dynamic from "next/dynamic";
 
+const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 const analyticsSchema = z.object({
   user: z.object({
@@ -47,12 +49,136 @@ export function Analytics() {
   const formatNumber = (num: number) => num.toLocaleString();
 
   const chartData = data.totalOrdersChart;
-  const maxValue = Math.max(...chartData.flatMap((d) => [d.product, d.service]), 1);
-  const productPoints = chartData.map((d) => (d.product / maxValue) * 100);
-  const servicePoints = chartData.map((d) => (d.service / maxValue) * 100);
+  const months = chartData.map((d) => d.month);
+
+  const series = [
+    {
+      name: "Service order",
+      data: chartData.map((d) => d.service),
+      color: "#3B82F6",
+    },
+    {
+      name: "Product order",
+      data: chartData.map((d) => d.product),
+      color: "#F97316",
+    },
+  ];
+
+  const options = {
+    chart: {
+      type: 'line' as 'line' | 'area' | 'bar' | 'pie' | 'donut' | 'radialBar' | 'scatter' | 'bubble' | 'heatmap' | 'candlestick' | 'boxPlot' | 'radar' | 'polarArea' | 'rangeBar' | 'rangeArea' | 'treemap',
+      height: "100%",
+      toolbar: {
+        show: false,
+      },
+      zoom: {
+        enabled: false,
+      },
+    },
+    stroke: {
+      curve: 'smooth' as "smooth" | "straight" | "stepline" | "linestep" | "monotoneCubic",
+      width: 3,
+    },
+    xaxis: {
+      categories: months,
+      axisBorder: {
+        show: false,
+      },
+      axisTicks: {
+        show: false,
+      },
+      labels: {
+        style: {
+          colors: "#6B7280",
+          fontSize: "12px",
+          fontFamily: "inherit",
+          fontWeight: 400,
+        },
+      },
+    },
+    yaxis: {
+      show: false,
+    },
+    grid: {
+      borderColor: "#E5E7EB",
+      strokeDashArray: 0,
+      xaxis: {
+        lines: {
+          show: false,
+        },
+      },
+      yaxis: {
+        lines: {
+          show: true,
+        },
+      },
+      padding: {
+        top: 0,
+        right: 20,
+        bottom: 0,
+        left: 110, // Adjusted for left labels space
+      },
+    },
+    markers: {
+      size: 0,
+    },
+    legend: {
+      show: false,
+    },
+    tooltip: {
+      enabled: true,
+      style: {
+        fontSize: "12px",
+        fontFamily: "inherit",
+      },
+    },
+    annotations: {
+      texts: [
+        {
+          x: 0,  // Use index instead of month string
+          y: chartData[0].service,
+          text: "Service order",
+          foreColor: "#3B82F6",
+          fontSize: "13px",
+          fontFamily: "inherit",
+          fontWeight: 500,
+          textAnchor: "end",
+          offsetX: 0,
+          offsetY: 4,
+        },
+        {
+          x: 0,  // Use index instead of month string
+          y: chartData[0].product,
+          text: "Product order",
+          foreColor: "#F97316",
+          fontSize: "13px",
+          fontFamily: "inherit",
+          fontWeight: 500,
+          textAnchor: "end",
+          offsetX: 0,
+          offsetY: 4,
+        },
+      ],
+      points: [
+        {
+          x: 6,  // Use index instead of month string
+          y: chartData[6].product,
+          marker: {
+            size: 5,
+            fillColor: "#F97316",
+            strokeWidth: 0,
+            shape: "circle",
+            radius: 5,
+          },
+        },
+      ],
+    }
+
+  };
+
 
   return (
-    <div className="min-h-screen  p-6 text-white">
+    <div className="min-h-screen p-6 text-white">
       <h2 className="mb-6 text-2xl font-semibold text-black">ANALYTICS</h2>
 
       <div className="mb-6">
@@ -151,56 +277,16 @@ export function Analytics() {
       <div className="rounded-lg bg-white p-4 shadow">
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-lg font-medium text-black">Total Orders</h3>
-          <div className="flex gap-4 text-sm text-gray-500">
-            <div className="flex items-center gap-2">
-              <div className="h-2 w-4 rounded bg-orange-500"></div>
-              Product Orders
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="h-2 w-4 rounded bg-blue-500"></div>
-              Service Orders
-            </div>
+          <div className="text-sm text-gray-500">
+            From {chartData[0].month} · To {chartData[chartData.length - 1].month} ·
           </div>
         </div>
         <div className="relative h-64 w-full">
-          {/* Product line */}
-          <ul className="absolute inset-0 flex" style={{ "--count": chartData.length - 1 } as React.CSSProperties}>
-
-            {productPoints.slice(1).map((val, i) => (
-              <li
-                key={`product-${i}`}
-                className="w-[calc(100%/var(--count))]"
-                style={{
-                  "--previous-value": `${productPoints[i]}%`,
-                  "--value": `${productPoints[i + 1]}%`,
-                  backgroundColor: "#F97316",
-                  clipPath: "polygon(0 calc(100% - var(--previous-value)), 100% calc(100% - var(--value)), 100% calc(100% - var(--value) + 2px), 0 calc(100% - var(--previous-value) + 2px))",
-                } as React.CSSProperties}
-              />
-            ))}
-          </ul>
-          {/* Service line */}
-          <ul className="absolute inset-0 flex" style={{ "--count": chartData.length - 1 } as React.CSSProperties}>
-            {servicePoints.slice(1).map((val, i) => (
-              <li
-                key={`service-${i}`}
-                className="w-[calc(100%/var(--count))]"
-                style={{
-                  "--previous-value": `${servicePoints[i]}%`,
-                  "--value": `${servicePoints[i + 1]}%`,
-                  backgroundColor: "#3B82F6",
-                  clipPath: "polygon(0 calc(100% - var(--previous-value)), 100% calc(100% - var(--value)), 100% calc(100% - var(--value) + 2px), 0 calc(100% - var(--previous-value) + 2px))",
-                } as React.CSSProperties}
-              />
-            ))}
-          </ul>
-        </div>
-        <div className="mt-2 flex justify-between text-xs text-gray-500">
-          {chartData.map((d) => (
-            <span key={d.month}>{d.month}</span>
-          ))}
+          <Chart options={options} series={series} type="line" width="100%" height="100%" />
         </div>
       </div>
     </div>
   );
 }
+
+

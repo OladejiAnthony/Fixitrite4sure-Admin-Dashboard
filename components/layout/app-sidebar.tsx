@@ -87,47 +87,18 @@ const navigationItems: NavigationItem[] = [
   {
     title: "MEMBERS",
     icon: Users,
-    //url: "/members",
     hasDropdown: true,
     subItems: [
       {
         title: "Admin",
-        icon: ShoppingBag,
-        url: "/admin",
+        icon: Shield,
+        url: "/super-admin",
       },
       {
         title: "Customers",
-        icon: "/images/e-repair.png",
+        icon: UserCheck,
         url: "/customers",
       },
-      {
-        title: "Repairers",
-        icon: "/images/content.png",
-        url: "/repairers",
-      },
-      {
-        title: "Repair Companies",
-        icon: "/images/e-repair.png",
-        url: "/repair-companies",
-      },
-      {
-        title: "Vendors",
-        icon: "/images/content.png",
-        url: "/vendors",
-      },
-    ],
-  },
-
-  {
-    title: "Super Admin",
-    icon: Shield,
-    url: "/super-admin",
-  },
-  {
-    title: "User Management",
-    icon: Users,
-    hasDropdown: true,
-    subItems: [
       {
         title: "Repairers",
         icon: Wrench,
@@ -143,13 +114,36 @@ const navigationItems: NavigationItem[] = [
         icon: Store,
         url: "/vendors",
       },
-      {
-        title: "Customers",
-        icon: UserCheck,
-        url: "/customers",
-      },
+
     ],
   },
+  // {
+  //   title: "User Management",
+  //   icon: Users,
+  //   hasDropdown: true,
+  //   subItems: [
+  //     {
+  //       title: "Repairers",
+  //       icon: Wrench,
+  //       url: "/repairers",
+  //     },
+  //     {
+  //       title: "Repair Companies",
+  //       icon: Building2,
+  //       url: "/repair-companies",
+  //     },
+  //     {
+  //       title: "Vendors",
+  //       icon: Store,
+  //       url: "/vendors",
+  //     },
+  //     {
+  //       title: "Customers",
+  //       icon: UserCheck,
+  //       url: "/customers",
+  //     },
+  //   ],
+  // },
   // {
   //   title: "Transactions",
   //   icon: CreditCard,
@@ -403,7 +397,7 @@ export function AppSidebar() {
                                         <SidebarMenuButton className="w-full h-[42px] gap-2 text-left py-2 px-4 text-sm font-medium transition-colors cursor-pointer text-white hover:bg-[#2A4B7F] hover:text-white">
                                           <div className="flex items-center gap-3">
                                             {typeof subItem.icon ===
-                                            "string" ? (
+                                              "string" ? (
                                               <Image
                                                 src={subItem.icon}
                                                 alt="icon"
@@ -432,16 +426,15 @@ export function AppSidebar() {
                                                         nestedSubItem.url
                                                       )
                                                     }
-                                                    className={`w-full h-[42px] gap-2 text-left py-2 px-4 text-sm font-medium transition-colors cursor-pointer ${
-                                                      pathname ===
+                                                    className={`w-full h-[42px] gap-2 text-left py-2 px-4 text-sm font-medium transition-colors cursor-pointer ${pathname ===
                                                       nestedSubItem.url
-                                                        ? "bg-white text-[#1A3B6F] hover:bg-white hover:text-[#1A3B6F]"
-                                                        : "text-white hover:bg-[#2A4B7F] hover:text-white"
-                                                    }`}
+                                                      ? "bg-white text-[#1A3B6F] hover:bg-white hover:text-[#1A3B6F]"
+                                                      : "text-white hover:bg-[#2A4B7F] hover:text-white"
+                                                      }`}
                                                   >
                                                     <div className="flex items-center gap-3">
                                                       {typeof nestedSubItem.icon ===
-                                                      "string" ? (
+                                                        "string" ? (
                                                         <Image
                                                           src={
                                                             nestedSubItem.icon
@@ -470,11 +463,10 @@ export function AppSidebar() {
                                       onClick={() =>
                                         handleNavigation(subItem.url!)
                                       }
-                                      className={`w-full h-[42px] gap-2 text-left py-2 px-4 text-sm font-medium transition-colors cursor-pointer ${
-                                        pathname === subItem.url
-                                          ? "bg-white text-[#1A3B6F] hover:bg-white hover:text-[#1A3B6F]"
-                                          : "text-white hover:bg-[#2A4B7F] hover:text-white"
-                                      }`}
+                                      className={`w-full h-[42px] gap-2 text-left py-2 px-4 text-sm font-medium transition-colors cursor-pointer ${pathname === subItem.url
+                                        ? "bg-white text-[#1A3B6F] hover:bg-white hover:text-[#1A3B6F]"
+                                        : "text-white hover:bg-[#2A4B7F] hover:text-white"
+                                        }`}
                                     >
                                       <div className="flex items-center gap-3">
                                         {typeof subItem.icon === "string" ? (
@@ -500,11 +492,10 @@ export function AppSidebar() {
                     ) : item.url ? (
                       <SidebarMenuButton
                         onClick={() => handleNavigation(item.url!)}
-                        className={`w-full  py-3 px-3 text-sm font-medium cursor-pointer ${
-                          pathname === item.url
-                            ? "bg-white text-[#1A3B6F] hover:bg-white hover:text-[#1A3B6F]"
-                            : "text-white hover:bg-[#2A4B7F] hover:text-white"
-                        }`}
+                        className={`w-full  py-3 px-3 text-sm font-medium cursor-pointer ${pathname === item.url
+                          ? "bg-white text-[#1A3B6F] hover:bg-white hover:text-[#1A3B6F]"
+                          : "text-white hover:bg-[#2A4B7F] hover:text-white"
+                          }`}
                       >
                         <div className="flex items-center gap-3">
                           <item.icon className="h-4 w-4" />

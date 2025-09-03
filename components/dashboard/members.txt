@@ -5,7 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import { apiClient } from "@/lib/api-client";
 // import { DataTable } from "@/components/ui/data-table";
 import { DataTable } from "../ui/data-table";
-import { SearchComponent } from "@/components/content-management/search-component";
+//import { SearchComponent } from "@/components/content-management/search-component";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Eye, Edit, Trash2 } from "lucide-react";
@@ -124,11 +124,13 @@ export function Members() {
 
       {/* Search */}
       <div className="flex gap-4 items-center">
+        {/*
         <SearchComponent
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
           placeholder="Search members by name, email, or phone..."
         />
+        */}
       </div>
 
       {/* Data Table with Pagination */}

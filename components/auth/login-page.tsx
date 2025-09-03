@@ -48,40 +48,40 @@ export function LoginPage() {
 
   // app/login/page.tsx
   // Update the login success handler
- const onSubmit = async (data: LoginForm) => {
-   console.log("Login started with data:", data); // Debug log
-   setIsLoading(true);
-   dispatch(loginStart());
+  const onSubmit = async (data: LoginForm) => {
+    console.log("Login started with data:", data); // Debug log
+    setIsLoading(true);
+    dispatch(loginStart());
 
-   try {
-     const response = await authService.login(data);
-     localStorage.setItem("auth-token", response.token);
+    try {
+      const response = await authService.login(data);
+      localStorage.setItem("auth-token", response.token);
 
-     // Make sure this matches exactly what your authReducer expects
-     dispatch(
-       loginSuccess({
-         user: {
-           id: response.user.id,
-           name: response.user.name,
-           email: response.user.email,
-           role: response.user.role,
-         },
-         token: response.token,
-       })
-     );
+      // Make sure this matches exactly what your authReducer expects
+      dispatch(
+        loginSuccess({
+          user: {
+            id: response.user.id,
+            name: response.user.name,
+            email: response.user.email,
+            role: response.user.role,
+          },
+          token: response.token,
+        })
+      );
 
-     toast.success("Login successful!");
-     router.push("/dashboard");
-   } catch (error) {
-     dispatch(loginFailure());
-     toast.error("Login failed. Please try again.");
-   } finally {
-     setIsLoading(false);
-   }
- };
+      toast.success("Login successful!");
+      router.push("/dashboard");
+    } catch (error) {
+      dispatch(loginFailure());
+      toast.error("Login failed. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <Card className="h-full">
+    <Card className="h-[90vh]">
       <CardHeader>
         <CardTitle className="text-center text-[#202224] font-nunito-sans text-[32px] font-bold tracking-[-0.114px]">
           Login
@@ -167,7 +167,7 @@ export function LoginPage() {
           </Link>
         </div>
 
-        <div className="mt-4 p-3 bg-muted rounded-md">
+        {/* <div className="mt-4 p-3 bg-muted rounded-md">
           <p className="text-xs text-muted-foreground">
             <strong>Demo credentials:</strong>
             <br />
@@ -176,6 +176,7 @@ export function LoginPage() {
             Password: password123
           </p>
         </div>
+         */}
       </CardContent>
     </Card>
   );

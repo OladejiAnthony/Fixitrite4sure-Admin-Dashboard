@@ -83,3 +83,114 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Add to your globals.css */
+.rdp {
+  --rdp-cell-size: 40px;
+  --rdp-accent-color: #3b82f6;
+  --rdp-background-color: #e5e7eb;
+  margin: 0;
+}
+
+.rdp-month {
+  margin: 0;
+  padding: 0.5rem;
+}
+
+.rdp-caption {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 0;
+  margin-bottom: 0.5rem;
+}
+
+.rdp-caption_label {
+  font-weight: 500;
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.rdp-nav {
+  position: absolute;
+  right: 0;
+  display: flex;
+  gap: 0.25rem;
+}
+
+.rdp-nav_button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 0.375rem;
+  border: 1px solid #d1d5db;
+  background-color: transparent;
+  color: #6b7280;
+  cursor: pointer;
+}
+
+.rdp-nav_button:hover {
+  background-color: #f3f4f6;
+  color: #374151;
+}
+
+.rdp-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.rdp-head_row {
+  display: flex;
+}
+
+.rdp-head_cell {
+  flex: 1;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6b7280;
+  text-align: center;
+  padding: 0.5rem 0;
+}
+
+.rdp-row {
+  display: flex;
+}
+
+.rdp-cell {
+  flex: 1;
+  text-align: center;
+  padding: 0.125rem;
+}
+
+.rdp-day {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  color: #374151;
+  cursor: pointer;
+}
+
+.rdp-day:hover {
+  background-color: #f3f4f6;
+}
+
+.rdp-day_selected {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.rdp-day_outside {
+  color: #9ca3af;
+}
+
+.rdp-day_disabled {
+  color: #d1d5db;
+  cursor: not-allowed;
+}

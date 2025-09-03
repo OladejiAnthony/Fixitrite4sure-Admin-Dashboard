@@ -7,7 +7,7 @@
       "password": "password123",
       "role": "admin",
       "createdAt": "2024-01-01T00:00:00.000Z",
-      "lastLogin": "2025-08-18T16:40:57.672Z",
+      "lastLogin": "2025-09-03T07:34:56.495Z",
       "isActive": true,
       "phone": "08137459380",
       "country": "Nigeria",
@@ -85,6 +85,16 @@
           "ip": "192.168.0.11"
         }
       ]
+    },
+    {
+      "id": 4,
+      "name": "blessing ilufoye",
+      "email": "test-fixit@gmail.com",
+      "password": "Test1234",
+      "role": "admin",
+      "createdAt": "2025-09-03T15:32:23.303Z",
+      "lastLogin": "2025-09-03T15:32:32.460Z",
+      "isActive": true
     }
   ],
   "dashboardStats": {
@@ -770,198 +780,10 @@
       "attachedFile": ""
     }
   ],
-  "logistics": [
-    {
-      "id": "1",
-      "vendorLecId": "FN-0000001",
-      "vendorId": "Sultan Marroe",
-      "lecPartners": "State and City name",
-      "shippingCostKg": 4.5,
-      "maxPackageWeight": 4.5,
-      "shippingDays": 3,
-      "handlingFee": 10
-    },
-    {
-      "id": "2",
-      "vendorLecId": "FN-0000002",
-      "vendorId": "Surve Marroe",
-      "lecPartners": "State and City name",
-      "shippingCostKg": 4.5,
-      "maxPackageWeight": 4.5,
-      "shippingDays": 3,
-      "handlingFee": 10
-    },
-    {
-      "id": "3",
-      "vendorLecId": "FN-0000001",
-      "vendorId": "Sud Marroe",
-      "lecPartners": "State and City name",
-      "shippingCostKg": 4.5,
-      "maxPackageWeight": 4.5,
-      "shippingDays": 3,
-      "handlingFee": 10
-    },
-    {
-      "id": "4",
-      "vendorLecId": "FN-0000001",
-      "vendorId": "Soda Marroe",
-      "lecPartners": "State and City name",
-      "shippingCostKg": 4.5,
-      "maxPackageWeight": 4.5,
-      "shippingDays": 3,
-      "handlingFee": 10
-    },
-    {
-      "id": "5",
-      "vendorLecId": "FN-0000001",
-      "vendorId": "Supra Marroe",
-      "lecPartners": "State and City name",
-      "shippingCostKg": 4.5,
-      "maxPackageWeight": 4.5,
-      "shippingDays": 3,
-      "handlingFee": 10
-    }
-  ],
-  "shipments": [
-    {
-      "id": "1",
-      "shipmentId": "SH-00001",
-      "orderId": "ORD-0002",
-      "carrierId": "CR-0002",
-      "trackingNumber": "TRK123456",
-      "shipmentDate": "2024-02-12",
-      "eta": "2024-02-15"
-    },
-    {
-      "id": "2",
-      "shipmentId": "SH-00002",
-      "orderId": "ORD-0002",
-      "carrierId": "CR-0002",
-      "trackingNumber": "TRK123456",
-      "shipmentDate": "2024-02-12",
-      "eta": "2024-02-15"
-    },
-    {
-      "id": "3",
-      "shipmentId": "SH-00003",
-      "orderId": "ORD-0003",
-      "carrierId": "CR-0003",
-      "trackingNumber": "TRK123456",
-      "shipmentDate": "2024-02-12",
-      "eta": "2024-02-15"
-    },
-    {
-      "id": "4",
-      "shipmentId": "SH-00004",
-      "orderId": "ORD-0004",
-      "carrierId": "CR-0004",
-      "trackingNumber": "TRK123456",
-      "shipmentDate": "2024-02-12",
-      "eta": "2024-02-15"
-    },
-    {
-      "id": "5",
-      "shipmentId": "SH-00005",
-      "orderId": "ORD-0005",
-      "carrierId": "CR-0005",
-      "trackingNumber": "TRK123456",
-      "shipmentDate": "2024-02-12",
-      "eta": "2024-02-15"
-    },
-    {
-      "id": "6",
-      "shipmentId": "SH-00006",
-      "orderId": "ORD-0006",
-      "carrierId": "CR-0006",
-      "trackingNumber": "TRK123456",
-      "shipmentDate": "2024-02-12",
-      "eta": "2024-02-15"
-    }
-  ],
-  "carriers": [
-    {
-      "id": "1",
-      "carrierId": "CR-0001",
-      "carrierName": "Fast Delivery Inc.",
-      "contactName": "Bob Smith",
-      "address": "123 Shipping Lane, Logistics City",
-      "trackingUrl": "https://track.fastdelivery.com"
-    },
-    {
-      "id": "2",
-      "carrierId": "CR-0002",
-      "carrierName": "Fast Delivery Inc.",
-      "contactName": "John Smith",
-      "address": "123 Shipping Lane, Logistics City",
-      "trackingUrl": "https://track.fastdelivery.com"
-    },
-    {
-      "id": "3",
-      "carrierId": "CR-0003",
-      "carrierName": "Fast Delivery Inc.",
-      "contactName": "Jane Smith",
-      "address": "123 Shipping Lane, Logistics City",
-      "trackingUrl": "https://track.fastdelivery.com"
-    },
-    {
-      "id": "4",
-      "carrierId": "CR-0004",
-      "carrierName": "Fast Delivery Inc.",
-      "contactName": "Jordan Smith",
-      "address": "123 Shipping Lane, Logistics City",
-      "trackingUrl": "https://track.fastdelivery.com"
-    },
-    {
-      "id": "5",
-      "carrierId": "CR-0005",
-      "carrierName": "Fast Delivery Inc.",
-      "contactName": "Jick Smith",
-      "address": "123 Shipping Lane, Logistics City",
-      "trackingUrl": "https://track.fastdelivery.com"
-    },
-    {
-      "id": "6",
-      "carrierId": "CR-0006",
-      "carrierName": "Fast Delivery Inc.",
-      "contactName": "John Smith",
-      "address": "123 Shipping Lane, Logistics City",
-      "trackingUrl": "https://track.fastdelivery.com"
-    }
-  ],
-  "tracking": [
-    {
-      "id": "1",
-      "trackingId": "TRK-0001",
-      "shipmentId": "SH-00001",
-      "status": "In Transit",
-      "updateDate": "2024-02-13 10:30",
-      "location": "Distribution Center"
-    },
-    {
-      "id": "2",
-      "trackingId": "TRK-0002",
-      "shipmentId": "SH-00002",
-      "status": "Out Of Delivery",
-      "updateDate": "2024-02-13 10:30",
-      "location": "Distribution Center"
-    },
-    {
-      "id": "3",
-      "trackingId": "TRK-0003",
-      "shipmentId": "SH-00003",
-      "status": "Shipped",
-      "updateDate": "2024-02-13 10:30",
-      "location": "Distribution Center"
-    },
-    {
-      "id": "4",
-      "trackingId": "TRK-0004",
-      "shipmentId": "SH-00004",
-      "status": "OUT FOR DELIVERY",
-      "updateDate": "2024-02-13 10:30",
-      "location": "Distribution Center"
-    }
-  ],
+  "logistics": [],
+  "shipments": [],
+  "carriers": [],
+  "tracking": [],
   "content": [
     {
       "id": "1",
@@ -1584,7 +1406,7 @@
       "otherNames": "Mike",
       "phone": "+2348098765432",
       "accountType": "Repairer",
-      "status": "pending",
+      "status": "rejected",
       "firstName": "Mike",
       "lastName": "Johnson",
       "email": "mike.johnson@example.com",
@@ -1820,180 +1642,2152 @@
       "certificationUrl": "/images/certificate.jpg"
     }
   ],
-  "customers": [
+  "superAdmins": [
     {
       "id": 1,
-      "name": "John Doe",
-      "email": "john@example.com",
-      "phone": "+1234567890",
-      "address": "123 Main St, City, State",
-      "joinDate": "2024-01-15",
-      "totalBookings": 5,
-      "status": "active",
-      "issueDescription": "Failed Transaction",
-      "attachedFile": ""
+      "name": "Sultan Manroe",
+      "email": "sultanmanroe@gmail.com",
+      "role": "Super Admin",
+      "status": "Active",
+      "lastLogin": "12/02/2024 04:14",
+      "activities": [
+        {
+          "date": "15th April 2024",
+          "time": "8:00am",
+          "activity": "Content Approval",
+          "status": "Approved"
+        },
+        {
+          "date": "15th April 2024",
+          "time": "8:00am",
+          "activity": "Content Approval",
+          "status": "Rejected"
+        },
+        {
+          "date": "15th April 2024",
+          "time": "8:00am",
+          "activity": "User Verification",
+          "status": "Approved"
+        },
+        {
+          "date": "15th April 2024",
+          "time": "8:00am",
+          "activity": "User Verification",
+          "status": "Pending"
+        },
+        {
+          "date": "15th April 2024",
+          "time": "8:00am",
+          "activity": "User Verification",
+          "status": "Pending"
+        },
+        {
+          "date": "15th April 2024",
+          "time": "8:00am",
+          "activity": "User Verification",
+          "status": "Pending"
+        }
+      ]
     },
     {
       "id": 2,
-      "name": "Jane Smith",
-      "email": "jane@example.com",
-      "phone": "+1234567891",
-      "address": "456 Oak Ave, City, State",
-      "joinDate": "2024-02-20",
-      "totalBookings": 3,
-      "status": "active",
-      "issueDescription": "Failed Transaction",
-      "attachedFile": ""
+      "name": "Denis Manroe",
+      "email": "sultanmanroe@gmail.com",
+      "role": "Editor",
+      "status": "Inactive",
+      "lastLogin": "12/02/2024 04:14",
+      "activities": []
+    },
+    {
+      "id": 3,
+      "name": "Sultan Manroe",
+      "email": "sultanmanroe@gmail.com",
+      "role": "Editor",
+      "status": "Inactive",
+      "lastLogin": "12/02/2024 04:14",
+      "activities": []
+    },
+    {
+      "id": 4,
+      "name": "Jude Manroe",
+      "email": "sultanmanroe@gmail.com",
+      "role": "Editor",
+      "status": "Inactive",
+      "lastLogin": "12/02/2024 04:14",
+      "activities": []
+    },
+    {
+      "id": 5,
+      "name": "Shawn Manroe",
+      "email": "sultanmanroe@gmail.com",
+      "role": "Editor",
+      "status": "Inactive",
+      "lastLogin": "12/02/2024 04:14",
+      "activities": []
+    },
+    {
+      "id": 6,
+      "name": "Sultan Manroe",
+      "email": "sultanmanroe@gmail.com",
+      "role": "Accountant",
+      "status": "Inactive",
+      "lastLogin": "12/02/2024 04:14",
+      "activities": []
+    },
+    {
+      "id": 7,
+      "name": "Sultan Manroe",
+      "email": "sultanmanroe@gmail.com",
+      "role": "Super Admin",
+      "status": "Active",
+      "lastLogin": "12/02/2024 04:14",
+      "activities": []
+    },
+    {
+      "id": 8,
+      "name": "Sultan Manroe",
+      "email": "sultanmanroe@gmail.com",
+      "role": "Moderator",
+      "status": "Active",
+      "lastLogin": "12/02/2024 04:14",
+      "activities": []
+    },
+    {
+      "id": 10,
+      "name": "Sostene Manroe",
+      "email": "sultanmanroe@gmail.com",
+      "role": "Super Admin",
+      "status": "Active",
+      "lastLogin": "12/02/2024 04:14",
+      "activities": []
+    },
+    {
+      "id": 11,
+      "name": "Sultan Shade",
+      "email": "sultanmanroe@gmail.com",
+      "role": "Super Admin",
+      "status": "Active",
+      "lastLogin": "12/02/2024 04:14",
+      "activities": []
+    },
+    {
+      "id": 12,
+      "name": "Sultan Manroe",
+      "email": "sultanmanroe@gmail.com",
+      "role": "Accountant",
+      "status": "Active",
+      "lastLogin": "12/02/2024 04:14",
+      "activities": []
+    },
+    {
+      "name": "Invited Admin",
+      "email": "oladejianthony4@gmail.com",
+      "role": "Admin",
+      "status": "Inactive",
+      "lastLogin": "8/19/2025, 7:55:23 AM",
+      "id": 13
+    },
+    {
+      "email": "tests@gmail.com",
+      "name": "Invited Admin",
+      "role": "Admin",
+      "status": "Inactive",
+      "lastLogin": "8/19/2025, 8:13:46 AM",
+      "id": 14
+    },
+    {
+      "email": "Oladejianthony4@gmail.com",
+      "name": "Invited Admin",
+      "role": "Admin",
+      "status": "Inactive",
+      "lastLogin": "8/19/2025, 8:14:04 AM",
+      "id": 15
+    },
+    {
+      "email": "Oladejianthony4@gmail.com",
+      "name": "Invited Admin",
+      "role": "Admin",
+      "status": "Inactive",
+      "lastLogin": "8/20/2025, 7:17:07 AM",
+      "id": 16
+    }
+  ],
+  "customers": [
+    {
+      "id": 1,
+      "name": "Sultan Manroe",
+      "homeName": "Sultan's Home",
+      "email": "sultanmanroe@gmail.com",
+      "phone": "+324 120670044",
+      "status": "Online",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "123 Main Street, Brussels, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Driver's License",
+          "frontImage": "/images/id-front.jpg",
+          "backImage": "/images/id-back.jpg"
+        }
+      },
+      "activities": [
+        {
+          "date": "15th April 2024",
+          "time": "8:00am",
+          "activity": "Content Approval",
+          "status": "Approved"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Denis Manroe",
+      "email": "denis@email.com",
+      "phone": "+324 120670045",
+      "status": "Offline",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "456 Oak Avenue, Antwerp, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Passport",
+          "frontImage": "/images/passport-front.jpg",
+          "backImage": "/images/passport-back.jpg"
+        }
+      },
+      "activities": []
+    },
+    {
+      "id": 3,
+      "name": "Shawn Manroe",
+      "homeName": "Shawn's Home",
+      "email": "sultanmanroe@gmail.com",
+      "phone": "+324 120670044",
+      "status": "Online",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "123 Main Street, Brussels, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Driver's License",
+          "frontImage": "/images/id-front.jpg",
+          "backImage": "/images/id-back.jpg"
+        }
+      },
+      "activities": [
+        {
+          "date": "15th April 2024",
+          "time": "8:00am",
+          "activity": "Content Approval",
+          "status": "Approved"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Drake Manroe",
+      "email": "denis@email.com",
+      "phone": "+324 120670045",
+      "status": "Offline",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "456 Oak Avenue, Antwerp, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Passport",
+          "frontImage": "/images/passport-front.jpg",
+          "backImage": "/images/passport-back.jpg"
+        }
+      },
+      "activities": []
+    },
+    {
+      "id": 5,
+      "name": "Sultan Manroe",
+      "homeName": "Sultan's Home",
+      "email": "sultanmanroe@gmail.com",
+      "phone": "+324 120670044",
+      "status": "Online",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "123 Main Street, Brussels, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Driver's License",
+          "frontImage": "/images/id-front.jpg",
+          "backImage": "/images/id-back.jpg"
+        }
+      },
+      "activities": [
+        {
+          "date": "15th April 2024",
+          "time": "8:00am",
+          "activity": "Content Approval",
+          "status": "Approved"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Denis Manroe",
+      "email": "denis@email.com",
+      "phone": "+324 120670045",
+      "status": "Offline",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "456 Oak Avenue, Antwerp, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Passport",
+          "frontImage": "/images/passport-front.jpg",
+          "backImage": "/images/passport-back.jpg"
+        }
+      },
+      "activities": []
+    },
+    {
+      "id": 7,
+      "name": "Jakes Manroe",
+      "homeName": "Jake's Home",
+      "email": "sultanmanroe@gmail.com",
+      "phone": "+324 120670044",
+      "status": "Online",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "123 Main Street, Brussels, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Driver's License",
+          "frontImage": "/images/id-front.jpg",
+          "backImage": "/images/id-back.jpg"
+        }
+      },
+      "activities": [
+        {
+          "date": "15th April 2024",
+          "time": "8:00am",
+          "activity": "Content Approval",
+          "status": "Approved"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Daniel Manroe",
+      "email": "denis@email.com",
+      "phone": "+324 120670045",
+      "status": "Offline",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "456 Oak Avenue, Antwerp, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Passport",
+          "frontImage": "/images/passport-front.jpg",
+          "backImage": "/images/passport-back.jpg"
+        }
+      },
+      "activities": []
+    },
+    {
+      "id": 9,
+      "name": "Sultan Manroe",
+      "homeName": "Sultan's Home",
+      "email": "sultanmanroe@gmail.com",
+      "phone": "+324 120670044",
+      "status": "Online",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "123 Main Street, Brussels, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Driver's License",
+          "frontImage": "/images/id-front.jpg",
+          "backImage": "/images/id-back.jpg"
+        }
+      },
+      "activities": [
+        {
+          "date": "15th April 2024",
+          "time": "8:00am",
+          "activity": "Content Approval",
+          "status": "Approved"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Denis Manroe",
+      "email": "denis@email.com",
+      "phone": "+324 120670045",
+      "status": "Offline",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "456 Oak Avenue, Antwerp, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Passport",
+          "frontImage": "/images/passport-front.jpg",
+          "backImage": "/images/passport-back.jpg"
+        }
+      },
+      "activities": []
     }
   ],
   "repairers": [
     {
       "id": 1,
-      "name": "Mike Johnson",
-      "email": "mike@example.com",
-      "phone": "+1234567892",
-      "specialization": "Electronics",
-      "rating": 4.8,
-      "completedJobs": 156,
-      "status": "active",
-      "location": "Downtown"
+      "name": "Sultan Manroe",
+      "homeName": "Sultan's Home",
+      "email": "sultanmanroe@gmail.com",
+      "phone": "+324 120670044",
+      "status": "Online",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "123 Main Street, Brussels, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Driver's License",
+          "frontImage": "/images/id-front.jpg",
+          "backImage": "/images/id-back.jpg"
+        }
+      },
+      "activities": [
+        {
+          "date": "15th April 2024",
+          "time": "8:00am",
+          "activity": "Content Approval",
+          "status": "Approved"
+        }
+      ]
     },
     {
       "id": 2,
-      "name": "Sarah Wilson",
-      "email": "sarah@example.com",
-      "phone": "+1234567893",
-      "specialization": "Appliances",
-      "rating": 4.9,
-      "completedJobs": 203,
-      "status": "active",
-      "location": "Uptown"
+      "name": "Denis Manroe",
+      "email": "denis@email.com",
+      "phone": "+324 120670045",
+      "status": "Offline",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "456 Oak Avenue, Antwerp, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Passport",
+          "frontImage": "/images/passport-front.jpg",
+          "backImage": "/images/passport-back.jpg"
+        }
+      },
+      "activities": []
+    },
+    {
+      "id": 3,
+      "name": "Shawn Manroe",
+      "homeName": "Shawn's Home",
+      "email": "sultanmanroe@gmail.com",
+      "phone": "+324 120670044",
+      "status": "Online",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "123 Main Street, Brussels, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Driver's License",
+          "frontImage": "/images/id-front.jpg",
+          "backImage": "/images/id-back.jpg"
+        }
+      },
+      "activities": [
+        {
+          "date": "15th April 2024",
+          "time": "8:00am",
+          "activity": "Content Approval",
+          "status": "Approved"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Drake Manroe",
+      "email": "denis@email.com",
+      "phone": "+324 120670045",
+      "status": "Offline",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "456 Oak Avenue, Antwerp, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Passport",
+          "frontImage": "/images/passport-front.jpg",
+          "backImage": "/images/passport-back.jpg"
+        }
+      },
+      "activities": []
+    },
+    {
+      "id": 5,
+      "name": "Sultan Manroe",
+      "homeName": "Sultan's Home",
+      "email": "sultanmanroe@gmail.com",
+      "phone": "+324 120670044",
+      "status": "Online",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "123 Main Street, Brussels, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Driver's License",
+          "frontImage": "/images/id-front.jpg",
+          "backImage": "/images/id-back.jpg"
+        }
+      },
+      "activities": [
+        {
+          "date": "15th April 2024",
+          "time": "8:00am",
+          "activity": "Content Approval",
+          "status": "Approved"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Denis Manroe",
+      "email": "denis@email.com",
+      "phone": "+324 120670045",
+      "status": "Offline",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "456 Oak Avenue, Antwerp, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Passport",
+          "frontImage": "/images/passport-front.jpg",
+          "backImage": "/images/passport-back.jpg"
+        }
+      },
+      "activities": []
+    },
+    {
+      "id": 7,
+      "name": "Jakes Manroe",
+      "homeName": "Jake's Home",
+      "email": "sultanmanroe@gmail.com",
+      "phone": "+324 120670044",
+      "status": "Online",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "123 Main Street, Brussels, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Driver's License",
+          "frontImage": "/images/id-front.jpg",
+          "backImage": "/images/id-back.jpg"
+        }
+      },
+      "activities": [
+        {
+          "date": "15th April 2024",
+          "time": "8:00am",
+          "activity": "Content Approval",
+          "status": "Approved"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Daniel Manroe",
+      "email": "denis@email.com",
+      "phone": "+324 120670045",
+      "status": "Offline",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "456 Oak Avenue, Antwerp, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Passport",
+          "frontImage": "/images/passport-front.jpg",
+          "backImage": "/images/passport-back.jpg"
+        }
+      },
+      "activities": []
+    },
+    {
+      "id": 9,
+      "name": "Sultan Manroe",
+      "homeName": "Sultan's Home",
+      "email": "sultanmanroe@gmail.com",
+      "phone": "+324 120670044",
+      "status": "Online",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "123 Main Street, Brussels, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Driver's License",
+          "frontImage": "/images/id-front.jpg",
+          "backImage": "/images/id-back.jpg"
+        }
+      },
+      "activities": [
+        {
+          "date": "15th April 2024",
+          "time": "8:00am",
+          "activity": "Content Approval",
+          "status": "Approved"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Denis Manroe",
+      "email": "denis@email.com",
+      "phone": "+324 120670045",
+      "status": "Offline",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "456 Oak Avenue, Antwerp, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Passport",
+          "frontImage": "/images/passport-front.jpg",
+          "backImage": "/images/passport-back.jpg"
+        }
+      },
+      "activities": []
     }
   ],
   "vendors": [
     {
       "id": 1,
-      "name": "TechParts Supply",
-      "email": "contact@techparts.com",
-      "phone": "+1234567894",
-      "category": "Electronics",
-      "productsCount": 450,
-      "rating": 4.7,
-      "status": "active"
-    },
-    {
-      "id": 2,
-      "name": "Home Appliance Store",
-      "email": "info@homeappliance.com",
-      "phone": "+1234567895",
-      "category": "Appliances",
-      "productsCount": 320,
-      "rating": 4.6,
-      "status": "active"
-    }
-  ],
-  "repairCompanies": [
-    {
-      "id": 1,
-      "name": "QuickFix Solutions",
-      "email": "info@quickfix.com",
-      "phone": "+1234567896",
-      "address": "789 Business Blvd, City, State",
-      "employeeCount": 25,
-      "specializations": [
-        "Electronics",
-        "Appliances"
-      ],
-      "rating": 4.8,
-      "status": "active"
-    },
-    {
-      "id": 2,
-      "name": "Reliable Repairs Inc",
-      "email": "contact@reliablerepairs.com",
-      "phone": "+1234567897",
-      "address": "321 Service St, City, State",
-      "employeeCount": 18,
-      "specializations": [
-        "HVAC",
-        "Plumbing"
-      ],
-      "rating": 4.7,
-      "status": "active"
-    }
-  ],
-  "repairBookings": [
-    {
-      "id": 1,
-      "customerId": 1,
-      "customerName": "John Doe",
-      "repairerId": 1,
-      "repairerName": "Mike Johnson",
-      "service": "Laptop Screen Repair",
-      "status": "in-progress",
-      "bookingDate": "2024-01-20",
-      "scheduledDate": "2024-01-22",
-      "estimatedCost": 150,
-      "actualCost": null,
-      "description": "Cracked laptop screen needs replacement"
-    },
-    {
-      "id": 2,
-      "customerId": 2,
-      "customerName": "Jane Smith",
-      "repairerId": 2,
-      "repairerName": "Sarah Wilson",
-      "service": "Washing Machine Repair",
-      "status": "completed",
-      "bookingDate": "2024-01-18",
-      "scheduledDate": "2024-01-20",
-      "estimatedCost": 200,
-      "actualCost": 180,
-      "description": "Washing machine not draining properly"
-    }
-  ],
-  "productOrders": [
-    {
-      "id": 1,
-      "customerId": 1,
-      "customerName": "John Doe",
-      "vendorId": 1,
-      "vendorName": "TechParts Supply",
-      "products": [
-        {
-          "name": "Laptop Screen",
-          "quantity": 1,
-          "price": 120
-        },
-        {
-          "name": "Keyboard",
-          "quantity": 1,
-          "price": 45
+      "name": "Sultan Manroe",
+      "homeName": "Sultan's Home",
+      "email": "sultanmanroe@gmail.com",
+      "phone": "+324 120670044",
+      "status": "Online",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "123 Main Street, Brussels, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Driver's License",
+          "frontImage": "/images/id-front.jpg",
+          "backImage": "/images/id-back.jpg"
         }
-      ],
-      "totalAmount": 165,
-      "status": "shipped",
-      "orderDate": "2024-01-19",
-      "shippingAddress": "123 Main St, City, State"
-    }
-  ],
-  "invoices": [
-    {
-      "id": 1,
-      "invoiceNumber": "INV-2024-001",
-      "customerId": 2,
-      "customerName": "Jane Smith",
-      "amount": 180,
-      "issueDate": "2024-01-21",
-      "dueDate": "2024-02-21",
-      "status": "paid",
-      "items": [
+      },
+      "activities": [
         {
-          "description": "Washing Machine Repair",
-          "quantity": 1,
-          "price": 180
+          "date": "15th April 2024",
+          "time": "8:00am",
+          "activity": "Content Approval",
+          "status": "Approved"
         }
       ]
+    },
+    {
+      "id": 2,
+      "name": "Denis Manroe",
+      "email": "denis@email.com",
+      "phone": "+324 120670045",
+      "status": "Offline",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "456 Oak Avenue, Antwerp, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Passport",
+          "frontImage": "/images/passport-front.jpg",
+          "backImage": "/images/passport-back.jpg"
+        }
+      },
+      "activities": []
+    },
+    {
+      "id": 3,
+      "name": "Shawn Manroe",
+      "homeName": "Shawn's Home",
+      "email": "sultanmanroe@gmail.com",
+      "phone": "+324 120670044",
+      "status": "Online",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "123 Main Street, Brussels, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Driver's License",
+          "frontImage": "/images/id-front.jpg",
+          "backImage": "/images/id-back.jpg"
+        }
+      },
+      "activities": [
+        {
+          "date": "15th April 2024",
+          "time": "8:00am",
+          "activity": "Content Approval",
+          "status": "Approved"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Drake Manroe",
+      "email": "denis@email.com",
+      "phone": "+324 120670045",
+      "status": "Offline",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "456 Oak Avenue, Antwerp, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Passport",
+          "frontImage": "/images/passport-front.jpg",
+          "backImage": "/images/passport-back.jpg"
+        }
+      },
+      "activities": []
+    },
+    {
+      "id": 5,
+      "name": "Sultan Manroe",
+      "homeName": "Sultan's Home",
+      "email": "sultanmanroe@gmail.com",
+      "phone": "+324 120670044",
+      "status": "Online",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "123 Main Street, Brussels, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Driver's License",
+          "frontImage": "/images/id-front.jpg",
+          "backImage": "/images/id-back.jpg"
+        }
+      },
+      "activities": [
+        {
+          "date": "15th April 2024",
+          "time": "8:00am",
+          "activity": "Content Approval",
+          "status": "Approved"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Denis Manroe",
+      "email": "denis@email.com",
+      "phone": "+324 120670045",
+      "status": "Offline",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "456 Oak Avenue, Antwerp, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Passport",
+          "frontImage": "/images/passport-front.jpg",
+          "backImage": "/images/passport-back.jpg"
+        }
+      },
+      "activities": []
+    },
+    {
+      "id": 7,
+      "name": "Jakes Manroe",
+      "homeName": "Jake's Home",
+      "email": "sultanmanroe@gmail.com",
+      "phone": "+324 120670044",
+      "status": "Online",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "123 Main Street, Brussels, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Driver's License",
+          "frontImage": "/images/id-front.jpg",
+          "backImage": "/images/id-back.jpg"
+        }
+      },
+      "activities": [
+        {
+          "date": "15th April 2024",
+          "time": "8:00am",
+          "activity": "Content Approval",
+          "status": "Approved"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Daniel Manroe",
+      "email": "denis@email.com",
+      "phone": "+324 120670045",
+      "status": "Offline",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "456 Oak Avenue, Antwerp, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Passport",
+          "frontImage": "/images/passport-front.jpg",
+          "backImage": "/images/passport-back.jpg"
+        }
+      },
+      "activities": []
+    },
+    {
+      "id": 9,
+      "name": "Sultan Manroe",
+      "homeName": "Sultan's Home",
+      "email": "sultanmanroe@gmail.com",
+      "phone": "+324 120670044",
+      "status": "Online",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "123 Main Street, Brussels, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Driver's License",
+          "frontImage": "/images/id-front.jpg",
+          "backImage": "/images/id-back.jpg"
+        }
+      },
+      "activities": [
+        {
+          "date": "15th April 2024",
+          "time": "8:00am",
+          "activity": "Content Approval",
+          "status": "Approved"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Denis Manroe",
+      "email": "denis@email.com",
+      "phone": "+324 120670045",
+      "status": "Offline",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "456 Oak Avenue, Antwerp, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Passport",
+          "frontImage": "/images/passport-front.jpg",
+          "backImage": "/images/passport-back.jpg"
+        }
+      },
+      "activities": []
+    }
+  ],
+  "repair-companies": [
+    {
+      "id": 1,
+      "name": "Sultan Manroe",
+      "homeName": "Sultan's Home",
+      "email": "sultanmanroe@gmail.com",
+      "phone": "+324 120670044",
+      "status": "Online",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "123 Main Street, Brussels, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Driver's License",
+          "frontImage": "/images/id-front.jpg",
+          "backImage": "/images/id-back.jpg"
+        }
+      },
+      "activities": [
+        {
+          "date": "15th April 2024",
+          "time": "8:00am",
+          "activity": "Content Approval",
+          "status": "Approved"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Denis Manroe",
+      "email": "denis@email.com",
+      "phone": "+324 120670045",
+      "status": "Offline",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "456 Oak Avenue, Antwerp, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Passport",
+          "frontImage": "/images/passport-front.jpg",
+          "backImage": "/images/passport-back.jpg"
+        }
+      },
+      "activities": []
+    },
+    {
+      "id": 3,
+      "name": "Shawn Manroe",
+      "homeName": "Shawn's Home",
+      "email": "sultanmanroe@gmail.com",
+      "phone": "+324 120670044",
+      "status": "Online",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "123 Main Street, Brussels, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Driver's License",
+          "frontImage": "/images/id-front.jpg",
+          "backImage": "/images/id-back.jpg"
+        }
+      },
+      "activities": [
+        {
+          "date": "15th April 2024",
+          "time": "8:00am",
+          "activity": "Content Approval",
+          "status": "Approved"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Drake Manroe",
+      "email": "denis@email.com",
+      "phone": "+324 120670045",
+      "status": "Offline",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "456 Oak Avenue, Antwerp, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Passport",
+          "frontImage": "/images/passport-front.jpg",
+          "backImage": "/images/passport-back.jpg"
+        }
+      },
+      "activities": []
+    },
+    {
+      "id": 5,
+      "name": "Sultan Manroe",
+      "homeName": "Sultan's Home",
+      "email": "sultanmanroe@gmail.com",
+      "phone": "+324 120670044",
+      "status": "Online",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "123 Main Street, Brussels, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Driver's License",
+          "frontImage": "/images/id-front.jpg",
+          "backImage": "/images/id-back.jpg"
+        }
+      },
+      "activities": [
+        {
+          "date": "15th April 2024",
+          "time": "8:00am",
+          "activity": "Content Approval",
+          "status": "Approved"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Denis Manroe",
+      "email": "denis@email.com",
+      "phone": "+324 120670045",
+      "status": "Offline",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "456 Oak Avenue, Antwerp, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Passport",
+          "frontImage": "/images/passport-front.jpg",
+          "backImage": "/images/passport-back.jpg"
+        }
+      },
+      "activities": []
+    },
+    {
+      "id": 7,
+      "name": "Jakes Manroe",
+      "homeName": "Jake's Home",
+      "email": "sultanmanroe@gmail.com",
+      "phone": "+324 120670044",
+      "status": "Online",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "123 Main Street, Brussels, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Driver's License",
+          "frontImage": "/images/id-front.jpg",
+          "backImage": "/images/id-back.jpg"
+        }
+      },
+      "activities": [
+        {
+          "date": "15th April 2024",
+          "time": "8:00am",
+          "activity": "Content Approval",
+          "status": "Approved"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Daniel Manroe",
+      "email": "denis@email.com",
+      "phone": "+324 120670045",
+      "status": "Offline",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "456 Oak Avenue, Antwerp, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Passport",
+          "frontImage": "/images/passport-front.jpg",
+          "backImage": "/images/passport-back.jpg"
+        }
+      },
+      "activities": []
+    },
+    {
+      "id": 9,
+      "name": "Sultan Manroe",
+      "homeName": "Sultan's Home",
+      "email": "sultanmanroe@gmail.com",
+      "phone": "+324 120670044",
+      "status": "Online",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "123 Main Street, Brussels, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Driver's License",
+          "frontImage": "/images/id-front.jpg",
+          "backImage": "/images/id-back.jpg"
+        }
+      },
+      "activities": [
+        {
+          "date": "15th April 2024",
+          "time": "8:00am",
+          "activity": "Content Approval",
+          "status": "Approved"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "name": "Denis Manroe",
+      "email": "denis@email.com",
+      "phone": "+324 120670045",
+      "status": "Offline",
+      "lastLogin": "12/02/2024 04:14",
+      "address": "456 Oak Avenue, Antwerp, Belgium",
+      "verificationDocuments": {
+        "governmentId": {
+          "type": "Passport",
+          "frontImage": "/images/passport-front.jpg",
+          "backImage": "/images/passport-back.jpg"
+        }
+      },
+      "activities": []
+    }
+  ],
+  "orders": [
+    {
+      "id": "00001",
+      "customerName": "Christine Brooks",
+      "orderDate": "04 Sep 2019",
+      "totalAmount": 20000,
+      "orderStatus": "Pending",
+      "paymentStatus": "Paid",
+      "shippingStatus": "-",
+      "store": "Tech Store",
+      "storesId": "FIV87684-004",
+      "storeName": "God's Providence",
+      "vendor": "Christine Brooks",
+      "transactionId": "PIB65463-876",
+      "serviceProvider": "Trackbox",
+      "shipmentId": "FISB7684-004",
+      "quantity": 4,
+      "productStatus": "Completed",
+      "productId": "FIM22084-440",
+      "productName": "Copper Wire",
+      "shippingDate": "28 May 2019",
+      "deliveryDate": "31 May 2019",
+      "customerAddress": "78 Ibikunle Street, Lagos State.",
+      "totalPrice": 25850
+    },
+    {
+      "id": "00002",
+      "customerName": "Rosie Pearson",
+      "orderDate": "28 May 2019",
+      "totalAmount": 20000,
+      "orderStatus": "Pending",
+      "paymentStatus": "Unpaid",
+      "shippingStatus": "-",
+      "store": "Gadget World"
+    },
+    {
+      "id": "00003",
+      "customerName": "Darrell Caldwell",
+      "orderDate": "23 Nov 2019",
+      "totalAmount": 20000,
+      "orderStatus": "Completed",
+      "paymentStatus": "Paid",
+      "shippingStatus": "Delivered",
+      "store": "Apple Store"
+    },
+    {
+      "id": "00004",
+      "customerName": "Gilbert Johnston",
+      "orderDate": "05 Feb 2019",
+      "totalAmount": 20000,
+      "orderStatus": "Completed",
+      "paymentStatus": "Paid",
+      "shippingStatus": "Shipped",
+      "store": "Biggie Store"
+    },
+    {
+      "id": "00005",
+      "customerName": "Alan Cain",
+      "orderDate": "29 Jul 2019",
+      "totalAmount": 20000,
+      "orderStatus": "Pending",
+      "paymentStatus": "Unpaid",
+      "shippingStatus": "-",
+      "store": "Audio Zone"
+    },
+    {
+      "id": "00006",
+      "customerName": "Alfred Murray",
+      "orderDate": "15 Aug 2019",
+      "totalAmount": 20000,
+      "orderStatus": "Completed",
+      "paymentStatus": "Paid",
+      "shippingStatus": "Processing...",
+      "store": "Kiddies"
+    },
+    {
+      "id": "00007",
+      "customerName": "Maggie Sullivan",
+      "orderDate": "21 Dec 2019",
+      "totalAmount": 20000,
+      "orderStatus": "Pending",
+      "paymentStatus": "Paid",
+      "shippingStatus": "-",
+      "store": "IVM"
+    },
+    {
+      "id": "00008",
+      "customerName": "Rosie Todd",
+      "orderDate": "30 Apr 2019",
+      "totalAmount": 20000,
+      "orderStatus": "Completed",
+      "paymentStatus": "Paid",
+      "shippingStatus": "Delivered",
+      "store": "Chucks"
+    },
+    {
+      "id": "00009",
+      "customerName": "Dollie Hines",
+      "orderDate": "09 Jan 2019",
+      "totalAmount": 20000,
+      "orderStatus": "Pending",
+      "paymentStatus": "Unpaid",
+      "shippingStatus": "-",
+      "store": "Rollings Store"
+    }
+  ],
+  "stores": [
+    {
+      "id": "ST001",
+      "storeName": "Tech Gadgets Hub",
+      "totalProducts": 45,
+      "rating": 4.8,
+      "lastOrderDate": "2025-08-25",
+      "status": "Active",
+      "location": "Lagos, Nigeria"
+    },
+    {
+      "id": "ST002",
+      "storeName": "Electronics World",
+      "totalProducts": 32,
+      "rating": 4.5,
+      "lastOrderDate": "2025-08-24",
+      "status": "Active",
+      "location": "Abuja, Nigeria"
+    },
+    {
+      "id": "ST003",
+      "storeName": "Mobile Accessories Plus",
+      "totalProducts": 28,
+      "rating": 4.2,
+      "lastOrderDate": "2025-08-23",
+      "status": "Inactive",
+      "location": "Ibadan, Nigeria"
+    },
+    {
+      "id": "ST004",
+      "storeName": "Computer Solutions",
+      "totalProducts": 56,
+      "rating": 4.9,
+      "lastOrderDate": "2025-08-26",
+      "status": "Active",
+      "location": "Port Harcourt, Nigeria"
+    },
+    {
+      "id": "ST005",
+      "storeName": "Home Appliances Store",
+      "totalProducts": 38,
+      "rating": 4.3,
+      "lastOrderDate": "2025-08-22",
+      "status": "Active",
+      "location": "Kano, Nigeria"
+    },
+    {
+      "id": "ST006",
+      "storeName": "Audio Visual Center",
+      "totalProducts": 22,
+      "rating": 4.6,
+      "lastOrderDate": "2025-08-21",
+      "status": "Suspended",
+      "location": "Enugu, Nigeria"
+    },
+    {
+      "id": "ST007",
+      "storeName": "Gaming World",
+      "totalProducts": 41,
+      "rating": 4.7,
+      "lastOrderDate": "2025-08-26",
+      "status": "Active",
+      "location": "Lagos, Nigeria"
+    },
+    {
+      "id": "ST008",
+      "storeName": "Smart Home Solutions",
+      "totalProducts": 29,
+      "rating": 4.4,
+      "lastOrderDate": "2025-08-20",
+      "status": "Active",
+      "location": "Abuja, Nigeria"
+    },
+    {
+      "id": "ST009",
+      "storeName": "Camera & Photography",
+      "totalProducts": 18,
+      "rating": 4.1,
+      "lastOrderDate": "2025-08-19",
+      "status": "Inactive",
+      "location": "Ilorin, Nigeria"
+    }
+  ],
+  "products": [
+    {
+      "id": "P001",
+      "productName": "iPhone 14 Pro Max",
+      "category": "Smartphones",
+      "quantity": 25,
+      "price": 450000,
+      "status": "Available",
+      "storeId": "ST001",
+      "dateAdded": "2025-08-15"
+    },
+    {
+      "id": "P002",
+      "productName": "Samsung Galaxy S23",
+      "category": "Smartphones",
+      "quantity": 18,
+      "price": 380000,
+      "status": "Available",
+      "storeId": "ST001",
+      "dateAdded": "2025-08-10"
+    },
+    {
+      "id": "P003",
+      "productName": "MacBook Pro 16-inch",
+      "category": "Laptops",
+      "quantity": 12,
+      "price": 950000,
+      "status": "Low Stock",
+      "storeId": "ST004",
+      "dateAdded": "2025-08-05"
+    },
+    {
+      "id": "P004",
+      "productName": "Sony WH-1000XM5",
+      "category": "Headphones",
+      "quantity": 30,
+      "price": 85000,
+      "status": "Available",
+      "storeId": "ST002",
+      "dateAdded": "2025-08-12"
+    },
+    {
+      "id": "P005",
+      "productName": "Canon EOS R6",
+      "category": "Cameras",
+      "quantity": 8,
+      "price": 720000,
+      "status": "Out of Stock",
+      "storeId": "ST009",
+      "dateAdded": "2025-07-28"
+    },
+    {
+      "id": "P006",
+      "productName": "PlayStation 5",
+      "category": "Gaming",
+      "quantity": 15,
+      "price": 320000,
+      "status": "Available",
+      "storeId": "ST007",
+      "dateAdded": "2025-08-18"
+    },
+    {
+      "id": "P007",
+      "productName": "Dell XPS 13",
+      "category": "Laptops",
+      "quantity": 10,
+      "price": 680000,
+      "status": "Available",
+      "storeId": "ST004",
+      "dateAdded": "2025-08-08"
+    },
+    {
+      "id": "P008",
+      "productName": "Smart TV 55-inch",
+      "category": "Televisions",
+      "quantity": 20,
+      "price": 280000,
+      "status": "Available",
+      "storeId": "ST005",
+      "dateAdded": "2025-08-14"
+    },
+    {
+      "id": "P009",
+      "productName": "AirPods Pro",
+      "category": "Earphones",
+      "quantity": 35,
+      "price": 95000,
+      "status": "Available",
+      "storeId": "ST002",
+      "dateAdded": "2025-08-20"
+    }
+  ],
+  "reports": [
+    {
+      "id": "R001",
+      "reportName": "Monthly Sales Summary",
+      "type": "Sales",
+      "period": "August 2025",
+      "generatedDate": "2025-08-31",
+      "totalRevenue": 12500000,
+      "status": "Completed",
+      "downloads": 45
+    },
+    {
+      "id": "R002",
+      "reportName": "Customer Acquisition Report",
+      "type": "Customers",
+      "period": "Q3 2025",
+      "generatedDate": "2025-08-30",
+      "totalRevenue": 0,
+      "status": "Completed",
+      "downloads": 28
+    },
+    {
+      "id": "R003",
+      "reportName": "Inventory Status",
+      "type": "Inventory",
+      "period": "Weekly",
+      "generatedDate": "2025-08-28",
+      "totalRevenue": 0,
+      "status": "Completed",
+      "downloads": 32
+    },
+    {
+      "id": "R004",
+      "reportName": "Top Performing Products",
+      "type": "Products",
+      "period": "July 2025",
+      "generatedDate": "2025-08-05",
+      "totalRevenue": 0,
+      "status": "Completed",
+      "downloads": 51
+    },
+    {
+      "id": "R005",
+      "reportName": "Store Performance Analysis",
+      "type": "Stores",
+      "period": "Q2 2025",
+      "generatedDate": "2025-07-15",
+      "totalRevenue": 0,
+      "status": "Completed",
+      "downloads": 19
+    },
+    {
+      "id": "R006",
+      "reportName": "Payment Processing Report",
+      "type": "Financial",
+      "period": "August 2025",
+      "generatedDate": "2025-08-29",
+      "totalRevenue": 0,
+      "status": "Processing",
+      "downloads": 0
+    },
+    {
+      "id": "R007",
+      "reportName": "Customer Satisfaction Survey",
+      "type": "Feedback",
+      "period": "Q3 2025",
+      "generatedDate": "2025-08-25",
+      "totalRevenue": 0,
+      "status": "Completed",
+      "downloads": 22
+    },
+    {
+      "id": "R008",
+      "reportName": "Shipping & Delivery Performance",
+      "type": "Logistics",
+      "period": "Monthly",
+      "generatedDate": "2025-08-27",
+      "totalRevenue": 0,
+      "status": "Completed",
+      "downloads": 17
+    },
+    {
+      "id": "R009",
+      "reportName": "Marketing Campaign ROI",
+      "type": "Marketing",
+      "period": "Summer Campaign",
+      "generatedDate": "2025-08-20",
+      "totalRevenue": 0,
+      "status": "Completed",
+      "downloads": 38
+    }
+  ],
+  "e-repairBookings": [
+    {
+      "id": "ERB0001",
+      "repairId": "RP0001",
+      "customerName": "Christine Brooks",
+      "category": "Automobile",
+      "bookingDate": "28 May 2019",
+      "serviceType": "Workshop",
+      "technician": "Maria Garcia",
+      "bookingStatus": "In Progress",
+      "initialCost": 0,
+      "paymentStatus": "",
+      "customerPhone": "",
+      "customerAddress": "",
+      "deviceType": "Car",
+      "issueDescription": "Awkward Engine Noise and Overheating",
+      "scheduledTime": "28 May 2019",
+      "priority": "",
+      "customerId": "FICD86749-003",
+      "brand": "Benz",
+      "model": "C550ML",
+      "requestType": "Third Party",
+      "thirdPartyName": "Christine Brooks",
+      "thirdPartyNumber": "+234-813765980",
+      "technicianId": "4"
+    },
+    {
+      "id": "ERB0002",
+      "repairId": "RP0001",
+      "customerName": "Christine Brooks",
+      "category": "Automobile",
+      "bookingDate": "28 May 2019",
+      "serviceType": "Workshop",
+      "technician": "Michael Brown",
+      "bookingStatus": "Completed",
+      "initialCost": 0,
+      "paymentStatus": "",
+      "customerPhone": "",
+      "customerAddress": "",
+      "deviceType": "Car",
+      "issueDescription": "Awkward Engine Noise and Overheating",
+      "scheduledTime": "28 May 2019",
+      "priority": "",
+      "customerId": "FICD86749-003",
+      "brand": "Benz",
+      "model": "C550ML",
+      "requestType": "Third Party",
+      "thirdPartyName": "Christine Brooks",
+      "thirdPartyNumber": "+234-813765980"
+    },
+    {
+      "id": "ERB0003",
+      "repairId": "RP0001",
+      "customerName": "Christine Brooks",
+      "category": "Automobile",
+      "bookingDate": "28 May 2019",
+      "serviceType": "Workshop",
+      "technician": "Michael Brown",
+      "bookingStatus": "Cancelled",
+      "initialCost": 0,
+      "paymentStatus": "",
+      "customerPhone": "",
+      "customerAddress": "",
+      "deviceType": "Car",
+      "issueDescription": "Awkward Engine Noise and Overheating",
+      "scheduledTime": "28 May 2019",
+      "priority": "",
+      "customerId": "FICD86749-003",
+      "brand": "Benz",
+      "model": "C550ML",
+      "requestType": "Personal",
+      "reasonForCancellation": "Entered Wrong Repair Information"
+    },
+    {
+      "id": "ERB0004",
+      "repairId": "REP00123",
+      "customerName": "Michael Johnson",
+      "category": "Gadgets",
+      "bookingDate": "2025-08-15",
+      "serviceType": "Home",
+      "technician": "James Wilson",
+      "bookingStatus": "In Progress",
+      "initialCost": 12500,
+      "paymentStatus": "Paid",
+      "customerPhone": "+2348012345678",
+      "customerAddress": "12 Allen Avenue, Ikeja, Lagos",
+      "deviceType": "iPhone 12 Pro",
+      "issueDescription": "Screen replacement and battery issues",
+      "scheduledTime": "10:00 AM",
+      "priority": "Medium"
+    },
+    {
+      "id": "ERB0005",
+      "repairId": "REP00124",
+      "customerName": "Sarah Thompson",
+      "category": "Electrical",
+      "bookingDate": "2025-08-16",
+      "serviceType": "Workshop",
+      "technician": "Robert Davis",
+      "bookingStatus": "Completed",
+      "initialCost": 8500,
+      "paymentStatus": "Paid",
+      "customerPhone": "+2348023456789",
+      "customerAddress": "45 Victoria Island, Lagos",
+      "deviceType": "Samsung TV 55\"",
+      "issueDescription": "Power supply issues",
+      "scheduledTime": "2:00 PM",
+      "priority": "Low"
+    },
+    {
+      "id": "ERB0006",
+      "repairId": "REP00125",
+      "customerName": "David Wilson",
+      "category": "Automobile",
+      "bookingDate": "2025-08-14",
+      "serviceType": "Pickup",
+      "technician": "Thomas Brown",
+      "bookingStatus": "Cancelled",
+      "initialCost": 22000,
+      "paymentStatus": "Refunded",
+      "customerPhone": "+2348034567890",
+      "customerAddress": "78 Lekki Phase 1, Lagos",
+      "deviceType": "Toyota Camry",
+      "issueDescription": "Electrical system diagnosis",
+      "scheduledTime": "11:30 AM",
+      "priority": "High"
+    },
+    {
+      "id": "ERB0007",
+      "repairId": "REP00126",
+      "customerName": "Jennifer Lopez",
+      "category": "Plumbing",
+      "bookingDate": "2025-08-17",
+      "serviceType": "VIP",
+      "technician": "Maria Garcia",
+      "bookingStatus": "In Progress",
+      "initialCost": 15000,
+      "paymentStatus": "Partial",
+      "customerPhone": "+2348045678901",
+      "customerAddress": "23 Banana Island, Lagos",
+      "deviceType": "Water Heater",
+      "issueDescription": "Leaking and heating issues",
+      "scheduledTime": "9:00 AM",
+      "priority": "High"
+    },
+    {
+      "id": "ERB0008",
+      "repairId": "REP00127",
+      "customerName": "Christopher Lee",
+      "category": "Gadgets",
+      "bookingDate": "2025-08-18",
+      "serviceType": "Home",
+      "technician": "James Wilson",
+      "bookingStatus": "Completed",
+      "initialCost": 7500,
+      "paymentStatus": "Paid",
+      "customerPhone": "+2348056789012",
+      "customerAddress": "34 Surulere, Lagos",
+      "deviceType": "MacBook Pro",
+      "issueDescription": "Keyboard replacement",
+      "scheduledTime": "3:00 PM",
+      "priority": "Medium"
+    },
+    {
+      "id": "ERB0009",
+      "repairId": "REP00128",
+      "customerName": "Amanda Smith",
+      "category": "Electrical",
+      "bookingDate": "2025-08-19",
+      "serviceType": "Workshop",
+      "technician": "Robert Davis",
+      "bookingStatus": "In Progress",
+      "initialCost": 11000,
+      "paymentStatus": "Unpaid",
+      "customerPhone": "+2348067890123",
+      "customerAddress": "56 GRA, Ibadan",
+      "deviceType": "Washing Machine",
+      "issueDescription": "Motor not spinning",
+      "scheduledTime": "1:00 PM",
+      "priority": "Medium"
+    },
+    {
+      "id": "ERB0010",
+      "repairId": "REP00129",
+      "customerName": "Daniel Kim",
+      "category": "Automobile",
+      "bookingDate": "2025-08-20",
+      "serviceType": "Pickup",
+      "technician": "Thomas Brown",
+      "bookingStatus": "Completed",
+      "initialCost": 18500,
+      "paymentStatus": "Paid",
+      "customerPhone": "+2348078901234",
+      "customerAddress": "67 Ikeja GRA, Lagos",
+      "deviceType": "Honda Accord",
+      "issueDescription": "AC system repair",
+      "scheduledTime": "10:30 AM",
+      "priority": "High"
+    },
+    {
+      "id": "ERB0011",
+      "repairId": "REP00130",
+      "customerName": "Sophia Rodriguez",
+      "category": "Plumbing",
+      "bookingDate": "2025-08-21",
+      "serviceType": "VIP",
+      "technician": "Maria Garcia",
+      "bookingStatus": "Cancelled",
+      "initialCost": 9500,
+      "paymentStatus": "Refunded",
+      "customerPhone": "+2348089012345",
+      "customerAddress": "89 Victoria Garden City, Lagos",
+      "deviceType": "Kitchen Sink",
+      "issueDescription": "Clogged drainage",
+      "scheduledTime": "4:00 PM",
+      "priority": "Low"
+    },
+    {
+      "id": "ERB0012",
+      "repairId": "REP00131",
+      "customerName": "Matthew Taylor",
+      "category": "Gadgets",
+      "bookingDate": "2025-08-22",
+      "serviceType": "Home",
+      "technician": "James Wilson",
+      "bookingStatus": "In Progress",
+      "initialCost": 13500,
+      "paymentStatus": "Partial",
+      "customerPhone": "+2348090123456",
+      "customerAddress": "12 Ajah, Lagos",
+      "deviceType": "Samsung Galaxy S22",
+      "issueDescription": "Screen and charging port repair",
+      "scheduledTime": "11:00 AM",
+      "priority": "Medium"
+    },
+    {
+      "id": "ERB0013",
+      "repairId": "REP00132",
+      "customerName": "Olivia Brown",
+      "category": "Electrical",
+      "bookingDate": "2025-08-23",
+      "serviceType": "Workshop",
+      "technician": "Robert Davis",
+      "bookingStatus": "Completed",
+      "initialCost": 6800,
+      "paymentStatus": "Paid",
+      "customerPhone": "+2348101234567",
+      "customerAddress": "34 Maryland, Lagos",
+      "deviceType": "Microwave Oven",
+      "issueDescription": "Heating element replacement",
+      "scheduledTime": "2:30 PM",
+      "priority": "Low"
+    }
+  ],
+  "booking-repairers": [
+    {
+      "id": "1",
+      "name": "Michael Brown",
+      "email": "michael.brown@repair.com",
+      "phone": "+234-801-234-5678",
+      "status": "Available",
+      "repairCategory": "Automobile",
+      "repairSkills": [
+        "Engine Repair",
+        "Transmission",
+        "Brake Systems"
+      ],
+      "rating": 4.8,
+      "completedRepairs": 156,
+      "specialization": "Automotive Repair"
+    },
+    {
+      "id": "2",
+      "name": "James Wilson",
+      "email": "james.wilson@repair.com",
+      "phone": "+234-802-345-6789",
+      "status": "Available",
+      "repairCategory": "Electronics",
+      "repairSkills": [
+        "Phone Repair",
+        "Laptop Repair",
+        "Tablet Repair"
+      ],
+      "rating": 4.7,
+      "completedRepairs": 89,
+      "specialization": "Gadget Repair"
+    },
+    {
+      "id": "3",
+      "name": "Robert Davis",
+      "email": "robert.davis@repair.com",
+      "phone": "+234-803-456-7890",
+      "status": "Available",
+      "repairCategory": "Electrical",
+      "repairSkills": [
+        "Appliance Repair",
+        "Power Systems",
+        "Wiring"
+      ],
+      "rating": 4.6,
+      "completedRepairs": 112,
+      "specialization": "Home Appliances"
+    },
+    {
+      "id": "4",
+      "name": "Maria Garcia",
+      "email": "maria.garcia@repair.com",
+      "phone": "+234-804-567-8901",
+      "status": "Available",
+      "repairCategory": "Plumbing",
+      "repairSkills": [
+        "Pipe Repair",
+        "Drain Cleaning",
+        "Fixture Installation"
+      ],
+      "rating": 4.9,
+      "completedRepairs": 78,
+      "specialization": "Plumbing Services"
+    },
+    {
+      "id": "5",
+      "name": "Thomas Brown",
+      "email": "thomas.brown@repair.com",
+      "phone": "+234-805-678-9012",
+      "status": "Busy",
+      "repairCategory": "Automobile",
+      "repairSkills": [
+        "AC Repair",
+        "Electrical Systems",
+        "Diagnostics"
+      ],
+      "rating": 4.5,
+      "completedRepairs": 134,
+      "specialization": "Auto Electrical"
+    }
+  ],
+  "e-repairRepairs": [
+    {
+      "id": "ERR0001",
+      "repairId": "REP00123",
+      "technician": "James Wilson",
+      "repairStatus": "In Progress",
+      "startDate": "2025-08-15",
+      "completionDate": "",
+      "totalCost": 12500,
+      "paymentStatus": "Paid",
+      "repairConfirmation": "Pending",
+      "partsUsed": [
+        "iPhone 12 Pro Screen",
+        "Battery"
+      ],
+      "laborHours": 2.5,
+      "warranty": "90 days",
+      "notes": "Customer requested original parts",
+      "resultId": "RFP0001",
+      "bookingId": "28 May 2013",
+      "buckingDate": "28 May 2013",
+      "scheduleDate": "28 May 2013",
+      "repairCategory": "Automobile",
+      "serviceDescription": "Engine Repair",
+      "serviceType": "WorkShop",
+      "serviceAddress": "S123 Lektil login Street Auto: site center Laptu, Nigeria",
+      "repairs1Id": "Repairs*1 Id:",
+      "repairs2Name": "Creative Books",
+      "customerId": "PIC0097-09-073",
+      "customerName": "Christine Brooks",
+      "productType": "Car",
+      "brand": "Boraz",
+      "model": "CS5004L",
+      "requestType": "Third Party",
+      "thirdPartyName": "Christine Brooks",
+      "thirdPartyNumber": "+254-83 3296800",
+      "initialIssue": "Audiosuit Engine Noise and Overloading",
+      "initialCost": 25850
+    },
+    {
+      "id": "ERR0002",
+      "repairId": "REP00124",
+      "technician": "Robert Davis",
+      "repairStatus": "Completed",
+      "startDate": "2025-08-16",
+      "completionDate": "2025-08-16",
+      "totalCost": 8500,
+      "paymentStatus": "Paid",
+      "repairConfirmation": "Confirmed",
+      "partsUsed": [
+        "Power Supply Unit"
+      ],
+      "laborHours": 1.5,
+      "warranty": "180 days",
+      "notes": "Issue resolved successfully"
+    },
+    {
+      "id": "ERR0003",
+      "repairId": "REP00125",
+      "technician": "Thomas Brown",
+      "repairStatus": "Cancelled",
+      "startDate": "2025-08-14",
+      "completionDate": "",
+      "totalCost": 0,
+      "paymentStatus": "Refunded",
+      "repairConfirmation": "N/A",
+      "partsUsed": [],
+      "laborHours": 0,
+      "warranty": "N/A",
+      "notes": "Customer cancelled appointment"
+    },
+    {
+      "id": "ERR0004",
+      "repairId": "REP00126",
+      "technician": "Maria Garcia",
+      "repairStatus": "In Progress",
+      "startDate": "2025-08-17",
+      "completionDate": "",
+      "totalCost": 15000,
+      "paymentStatus": "Partial",
+      "repairConfirmation": "Pending",
+      "partsUsed": [
+        "Heating Element",
+        "Valves"
+      ],
+      "laborHours": 3,
+      "warranty": "365 days",
+      "notes": "Waiting for additional parts"
+    },
+    {
+      "id": "ERR0005",
+      "repairId": "REP00127",
+      "technician": "James Wilson",
+      "repairStatus": "Completed",
+      "startDate": "2025-08-18",
+      "completionDate": "2025-08-18",
+      "totalCost": 7500,
+      "paymentStatus": "Paid",
+      "repairConfirmation": "Confirmed",
+      "partsUsed": [
+        "Keyboard Assembly"
+      ],
+      "laborHours": 1,
+      "warranty": "90 days",
+      "notes": "Quick service completed"
+    },
+    {
+      "id": "ERR0006",
+      "repairId": "REP00128",
+      "technician": "Robert Davis",
+      "repairStatus": "In Progress",
+      "startDate": "2025-08-19",
+      "completionDate": "",
+      "totalCost": 11000,
+      "paymentStatus": "Unpaid",
+      "repairConfirmation": "Pending",
+      "partsUsed": [
+        "Motor Assembly"
+      ],
+      "laborHours": 2,
+      "warranty": "180 days",
+      "notes": "Waiting for customer approval"
+    },
+    {
+      "id": "ERR0007",
+      "repairId": "REP00129",
+      "technician": "Thomas Brown",
+      "repairStatus": "Completed",
+      "startDate": "2025-08-20",
+      "completionDate": "2025-08-21",
+      "totalCost": 18500,
+      "paymentStatus": "Paid",
+      "repairConfirmation": "Confirmed",
+      "partsUsed": [
+        "AC Compressor",
+        "Refrigerant"
+      ],
+      "laborHours": 4.5,
+      "warranty": "365 days",
+      "notes": "Complex repair completed successfully"
+    },
+    {
+      "id": "ERR0008",
+      "repairId": "REP00130",
+      "technician": "Maria Garcia",
+      "repairStatus": "Cancelled",
+      "startDate": "2025-08-21",
+      "completionDate": "",
+      "totalCost": 0,
+      "paymentStatus": "Refunded",
+      "repairConfirmation": "N/A",
+      "partsUsed": [],
+      "laborHours": 0,
+      "warranty": "N/A",
+      "notes": "Customer rescheduled"
+    },
+    {
+      "id": "ERR0009",
+      "repairId": "REP00131",
+      "technician": "James Wilson",
+      "repairStatus": "In Progress",
+      "startDate": "2025-08-22",
+      "completionDate": "",
+      "totalCost": 13500,
+      "paymentStatus": "Partial",
+      "repairConfirmation": "Pending",
+      "partsUsed": [
+        "Screen",
+        "Charging Port"
+      ],
+      "laborHours": 2,
+      "warranty": "90 days",
+      "notes": "Parts ordered, awaiting delivery"
+    },
+    {
+      "id": "ERR0010",
+      "repairId": "REP00132",
+      "technician": "Robert Davis",
+      "repairStatus": "Completed",
+      "startDate": "2025-08-23",
+      "completionDate": "2025-08-23",
+      "totalCost": 6800,
+      "paymentStatus": "Paid",
+      "repairConfirmation": "Confirmed",
+      "partsUsed": [
+        "Heating Element"
+      ],
+      "laborHours": 1,
+      "warranty": "180 days",
+      "notes": "Standard repair completed"
+    }
+  ],
+  "e-repairDiscovery": [
+    {
+      "id": "ERD0001",
+      "repairId": "REP00123",
+      "discovery": "Battery swelling detected",
+      "description": "During screen replacement, discovered swollen battery that needs immediate replacement for safety reasons",
+      "discoveryDate": "2025-08-15",
+      "invoiceAmount": 3500,
+      "paymentStatus": "Paid",
+      "technician": "James Wilson",
+      "images": [
+        "/images/battery-swelling-1.jpg",
+        "/images/battery-swelling-2.jpg"
+      ],
+      "priority": "High",
+      "customerApproval": "Approved",
+      "reportId": "BYPROX1",
+      "bookingDate": "25 May 2019",
+      "scheduleDate": "29 May 2019",
+      "startDate": "28 May 2019",
+      "completionDate": "29 May 2019",
+      "reportCategory": "Automobile",
+      "serviceDescription": "Engine Packet",
+      "serviceType": "Voxelung",
+      "serviceAddress": "$131 Locki Unit; Brand Auto-axe orner; Lopes, Nigeria",
+      "reporterName": "Christian Breaks",
+      "customerId": "PCD55749-003",
+      "customerName": "Christina Breaks",
+      "productType": "Car",
+      "brand": "Ross",
+      "model": "C55054",
+      "requestType": "Third Party",
+      "thirdPartyName": "Christian Breaks",
+      "thirdPartyNumber": "+234-813769680",
+      "initialIssue": "Archived Engine Notice and Overhearing",
+      "initialCost": 25850,
+      "discoveryId": "DH587976",
+      "repairIssue": "Putty's Pin Col",
+      "damageStatus": "Not",
+      "recommendation": "Replacement of the fan coil to remove ooh to avoid excessive damage!",
+      "replacementPart": "Ten Col.slt, 1m Col.slt, 4m Col.slt...",
+      "discoveryResponse": "Ignored/invoke request",
+      "totalCost": 75850,
+      "totalAmountPaid": 75850
+    },
+    {
+      "id": "ERD0002",
+      "repairId": "REP00124",
+      "discovery": "Additional capacitor issues",
+      "description": "Found additional faulty capacitors on main board that were causing intermittent power issues",
+      "discoveryDate": "2025-08-16",
+      "invoiceAmount": 2500,
+      "paymentStatus": "Paid",
+      "technician": "Robert Davis",
+      "images": [
+        "/images/capacitors-1.jpg"
+      ],
+      "priority": "Medium",
+      "customerApproval": "Approved",
+      "reportId": "BYPROX2",
+      "bookingDate": "26 May 2019",
+      "scheduleDate": "30 May 2019",
+      "startDate": "29 May 2019",
+      "completionDate": "30 May 2019",
+      "reportCategory": "Electronics",
+      "serviceDescription": "Power Supply Repair",
+      "serviceType": "Workshop",
+      "serviceAddress": "45 Victoria Island, Lagos",
+      "reporterName": "Sarah Thompson",
+      "customerId": "PCD55750-004",
+      "customerName": "Sarah Thompson",
+      "productType": "TV",
+      "brand": "Samsung",
+      "model": "55U7000",
+      "requestType": "Personal",
+      "thirdPartyName": "N/A",
+      "thirdPartyNumber": "N/A",
+      "initialIssue": "Power supply issues",
+      "initialCost": 8500,
+      "discoveryId": "DH587977",
+      "repairIssue": "Capacitor failure",
+      "damageStatus": "Minor",
+      "recommendation": "Replace all faulty capacitors to ensure stable power delivery",
+      "replacementPart": "Capacitor 1000uF, Capacitor 470uF",
+      "discoveryResponse": "Approved",
+      "totalCost": 11000,
+      "totalAmountPaid": 11000
+    },
+    {
+      "id": "ERD0004",
+      "repairId": "REP00128",
+      "discovery": "Belt drive system worn",
+      "description": "The belt drive system is significantly worn and needs replacement to prevent motor strain",
+      "discoveryDate": "2025-08-19",
+      "invoiceAmount": 4500,
+      "paymentStatus": "Unpaid",
+      "technician": "Robert Davis",
+      "images": [
+        "/images/belt-drive-1.jpg"
+      ],
+      "priority": "Medium",
+      "customerApproval": "Pending"
+    },
+    {
+      "id": "ERD0005",
+      "repairId": "REP00129",
+      "discovery": "Compressor seal leakage",
+      "description": "Found refrigerant leakage from compressor seals requiring complete seal replacement",
+      "discoveryDate": "2025-08-20",
+      "invoiceAmount": 6500,
+      "paymentStatus": "Paid",
+      "technician": "Thomas Brown",
+      "images": [
+        "/images/compressor-seal-1.jpg",
+        "/images/compressor-seal-2.jpg"
+      ],
+      "priority": "High",
+      "customerApproval": "Approved"
+    },
+    {
+      "id": "ERD0006",
+      "repairId": "REP00131",
+      "discovery": "Water damage evidence",
+      "description": "Discovered evidence of previous water damage affecting multiple components",
+      "discoveryDate": "2025-08-22",
+      "invoiceAmount": 5500,
+      "paymentStatus": "Pending",
+      "technician": "James Wilson",
+      "images": [
+        "/images/water-damage-1.jpg",
+        "/images/water-damage-2.jpg"
+      ],
+      "priority": "High",
+      "customerApproval": "Pending"
+    }
+  ],
+  "e-repairReports": [
+    {
+      "id": "ERRPT0001",
+      "reportName": "Monthly Repair Summary - August 2025",
+      "type": "Performance",
+      "period": "August 2025",
+      "generatedDate": "2025-08-31",
+      "totalRevenue": 1250000,
+      "status": "Completed",
+      "downloads": 15,
+      "repairsCompleted": 45,
+      "averageCompletionTime": "2.3 days",
+      "customerSatisfaction": "4.8/5"
+    },
+    {
+      "id": "ERRPT0002",
+      "reportName": "Technician Performance Report",
+      "type": "Performance",
+      "period": "Q3 2025",
+      "generatedDate": "2025-08-30",
+      "totalRevenue": 0,
+      "status": "Completed",
+      "downloads": 8,
+      "repairsCompleted": 0,
+      "averageCompletionTime": "N/A",
+      "customerSatisfaction": "N/A"
+    },
+    {
+      "id": "ERRPT0003",
+      "reportName": "Category-wise Revenue Analysis",
+      "type": "Financial",
+      "period": "July 2025",
+      "generatedDate": "2025-08-05",
+      "totalRevenue": 980000,
+      "status": "Completed",
+      "downloads": 12,
+      "repairsCompleted": 38,
+      "averageCompletionTime": "2.1 days",
+      "customerSatisfaction": "4.7/5"
+    },
+    {
+      "id": "ERRPT0004",
+      "reportName": "Service Type Efficiency Report",
+      "type": "Operational",
+      "period": "Q2 2025",
+      "generatedDate": "2025-07-15",
+      "totalRevenue": 0,
+      "status": "Completed",
+      "downloads": 9,
+      "repairsCompleted": 0,
+      "averageCompletionTime": "N/A",
+      "customerSatisfaction": "N/A"
+    },
+    {
+      "id": "ERRPT0005",
+      "reportName": "Customer Feedback Analysis",
+      "type": "Feedback",
+      "period": "August 2025",
+      "generatedDate": "2025-08-29",
+      "totalRevenue": 0,
+      "status": "Processing",
+      "downloads": 0,
+      "repairsCompleted": 0,
+      "averageCompletionTime": "N/A",
+      "customerSatisfaction": "N/A"
+    },
+    {
+      "id": "ERRPT0006",
+      "reportName": "Parts Inventory Status",
+      "type": "Inventory",
+      "period": "Weekly",
+      "generatedDate": "2025-08-27",
+      "totalRevenue": 0,
+      "status": "Completed",
+      "downloads": 7,
+      "repairsCompleted": 0,
+      "averageCompletionTime": "N/A",
+      "customerSatisfaction": "N/A"
+    },
+    {
+      "id": "ERRPT0007",
+      "reportName": "Warranty Claims Report",
+      "type": "Warranty",
+      "period": "Monthly",
+      "generatedDate": "2025-08-20",
+      "totalRevenue": 0,
+      "status": "Completed",
+      "downloads": 11,
+      "repairsCompleted": 0,
+      "averageCompletionTime": "N/A",
+      "customerSatisfaction": "N/A"
     }
   ]
 }

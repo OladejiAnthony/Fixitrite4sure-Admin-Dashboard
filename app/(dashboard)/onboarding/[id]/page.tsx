@@ -213,7 +213,7 @@ export default function OnboardingDetailsPage() {
         }
 
         content = (
-            <div className="w-full">
+            <div className="w-full flex flex-col gap-6">
                 <h2 className="text-base font-semibold text-blue-800 mb-4">{personalTitle}</h2>
                 {personalContent}
                 <h2 className="text-base font-semibold text-blue-800 mb-4">{addressTitle}</h2>
@@ -221,7 +221,7 @@ export default function OnboardingDetailsPage() {
                 <div className="h-40 bg-gray-100 rounded-md flex items-center justify-center text-gray-500">Map Placeholder with Pin</div>
                 <button
                     onClick={handleNext}
-                    className="mt-6 bg-blue-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors"
+                    className="mt-6 bg-blue-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors self-end"
                 >
                     Next
                 </button>
@@ -231,7 +231,7 @@ export default function OnboardingDetailsPage() {
         let verificationTitle = ["Customer", "Repairer"].includes(data.accountType) ? "USER VERIFICATION" : "CONTACT PERSON VERIFICATION";
 
         content = (
-            <div className="w-full">
+            <div className="w-full flex flex-col gap-6">
                 <h2 className="text-base font-semibold text-blue-800 mb-4">{verificationTitle}</h2>
                 <div className="grid grid-cols-2 gap-6">
                     <div>
@@ -282,7 +282,7 @@ export default function OnboardingDetailsPage() {
                     </div>
                 </div>
                 {data.accountType === "Customer" ? (
-                    <div className="flex gap-4 mt-6">
+                    <div className="flex gap-4 mt-6 justify-end">
                         <button
                             onClick={() => updateStatusMutation.mutate("approved")}
                             disabled={updateStatusMutation.isPending}
@@ -303,7 +303,7 @@ export default function OnboardingDetailsPage() {
                 ) : (
                     <button
                         onClick={handleNext}
-                        className="mt-6 bg-blue-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors"
+                        className="mt-6 bg-blue-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors self-end"
                     >
                         Next
                     </button>
@@ -419,9 +419,9 @@ export default function OnboardingDetailsPage() {
         }
 
         content = (
-            <div className="w-full">
+            <div className="w-full ">
                 {profContent}
-                <div className="flex gap-4 mt-6">
+                <div className="flex gap-4 mt-6 justify-end">
                     <button
                         onClick={() => updateStatusMutation.mutate("approved")}
                         disabled={updateStatusMutation.isPending}

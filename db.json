@@ -7,7 +7,7 @@
       "password": "password123",
       "role": "admin",
       "createdAt": "2024-01-01T00:00:00.000Z",
-      "lastLogin": "2025-09-03T07:34:56.495Z",
+      "lastLogin": "2025-09-05T08:56:51.767Z",
       "isActive": true,
       "phone": "08137459380",
       "country": "Nigeria",
@@ -94,6 +94,16 @@
       "role": "admin",
       "createdAt": "2025-09-03T15:32:23.303Z",
       "lastLogin": "2025-09-03T15:32:32.460Z",
+      "isActive": true
+    },
+    {
+      "id": 5,
+      "name": "John Doe",
+      "email": "john@gmail.com",
+      "password": "Test1234",
+      "role": "admin",
+      "createdAt": "2025-09-03T16:04:30.590Z",
+      "lastLogin": "2025-09-03T16:04:46.622Z",
       "isActive": true
     }
   ],
@@ -258,8 +268,8 @@
     }
   ],
   "settings": {
-    "adminName": "Eysed Inc.",
-    "adminEmail": "admin@eysed.com",
+    "adminName": "Nitel Inc.",
+    "adminEmail": "admin@nitel.com",
     "passwordPolicy": "Minimum 8 characters, 1 uppercase, 1 number",
     "ipWhitelist": "192.168.1.1, 192.168.1.2",
     "firewallEnabled": true,

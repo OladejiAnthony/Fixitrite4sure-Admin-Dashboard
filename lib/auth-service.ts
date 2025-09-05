@@ -2,7 +2,8 @@
 import axios from "axios";
 import { z } from "zod";
 
-const API_BASE_URL = "http://localhost:3001";
+const API_BASE_URL = "https://fixit-dashboard-api.onrender.com";
+//const API_BASE_URL = "http://localhost:3001";
 
 const loginSchema = z.object({
   email: z.string().email(),

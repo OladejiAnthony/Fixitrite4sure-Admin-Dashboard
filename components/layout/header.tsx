@@ -15,6 +15,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { useSelector, useDispatch } from "react-redux";
 import type { RootState } from "@/store/store";
 import { logout } from "@/store/slices/auth-slice";
+import { authService } from "@/lib/auth-service";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -35,9 +36,9 @@ export function Header() {
   const [open, setOpen] = useState(false);
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     setIsLogoutDialogOpen(false);
-    localStorage.removeItem("auth-token");
+    await authService.logout();
     dispatch(logout());
     router.push("/login");
   };
@@ -108,10 +109,10 @@ export function Header() {
 
                 <div className="flex flex-col space-y-1">
                   <p className="text-[#1A1A1A] font-nunito-sans text-xs font-bold leading-none">
-                    {user?.name || "User"}
+                    {user?.user_metadata?.name || user?.email || "User"}
                   </p>
                   <p className="text-[#333] font-nunito-sans text-xs font-normal leading-none">
-                    {user?.role || "User Role"}
+                    Admin
                   </p>
                 </div>
 
@@ -137,10 +138,10 @@ export function Header() {
                 </Avatar>
                 <div className="flex flex-col">
                   <span className="text-sm font-semibold leading-tight">
-                    {user?.name || "User"}
+                    {user?.user_metadata?.name || user?.email || "User"}
                   </span>
                   <span className="text-[10px] text-gray-500 leading-none">
-                    {user?.role || "User Role"}
+                    Admin
                   </span>
                 </div>
               </div>

@@ -16,6 +16,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { toast } from "sonner";
+import { authService } from "@/lib/auth-service";
 
 const forgotPasswordSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -39,12 +40,15 @@ export function ForgotPasswordPage() {
     setIsLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await authService.resetPassword(data.email);
       setIsSubmitted(true);
       toast.success("Password reset instructions sent to your email!");
     } catch (error) {
-      toast.error("Failed to send reset instructions. Please try again.");
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Failed to send reset instructions. Please try again.";
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }

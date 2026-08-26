@@ -11,6 +11,7 @@ import { Pagination } from "@/components/common/pagination"
 import { useSelector } from "react-redux"
 import type { RootState } from "@/store/store"
 
+
 const ActivitySchema = z.object({
   id: z.number(),
   adminName: z.string(),
@@ -136,3 +137,8 @@ export function DashboardHome() {
     </div>
   )
 }
+
+
+{/*
+   GET /activities
+  */}

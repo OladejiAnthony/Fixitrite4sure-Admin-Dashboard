@@ -10,7 +10,6 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 
-
 interface Onboarding {
     id: number;
     dateTime: string;
@@ -463,3 +462,9 @@ export default function OnboardingDetailsPage() {
     );
 }
 
+{/*
+    GET /onboarding/:id 
+
+    PATCH /onboarding/:id  
+      body { status }      
+    */}

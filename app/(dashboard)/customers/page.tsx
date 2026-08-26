@@ -3,7 +3,6 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiClient } from "@/lib/api-client";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store"; // Assuming store is configured with the pagination slice
@@ -26,17 +25,38 @@ import Link from "next/link";
 import { toast } from "@/components/ui/use-toast"; // Assuming shadcn toast is available
 
 interface Admin {
-  id: number;
+  id: string;
   name: string;
   email: string;
   phone: string;
-  status: "Active" | "Inactive" | "Online" | "Offline";
-  lastLogin: string;
+  status: string;
+  joined: string;
 }
 
+interface ProfileRow {
+  id: string;
+  first_name: string | null;
+  last_name: string | null;
+  email: string | null;
+  phone_number: string | null;
+  verification_status: string | null;
+  created_at: string;
+}
+
+const toAdmin = (row: ProfileRow): Admin => ({
+  id: row.id,
+  name: [row.first_name, row.last_name].filter(Boolean).join(" ") || "—",
+  email: row.email || "—",
+  phone: row.phone_number || "—",
+  status: row.verification_status || "unverified",
+  joined: row.created_at,
+});
+
 const fetchAdmins = async (): Promise<Admin[]> => {
-  const { data } = await apiClient.get("/customers");
-  return data;
+  const response = await fetch("/api/admin/customers");
+  if (!response.ok) throw new Error("Failed to fetch customers");
+  const rows: ProfileRow[] = await response.json();
+  return rows.map(toAdmin);
 };
 
 
@@ -44,7 +64,7 @@ const adminSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email address"),
   phone: z.string().min(1, "Phone is required"),
-  status: z.enum(["Active", "Inactive", "Online", "Offline"]),
+  status: z.string().min(1, "Status is required"),
 });
 
 
@@ -52,7 +72,7 @@ type AdminForm = z.infer<typeof adminSchema>;
 
 
 export default function CustomerPage() {
-  const [tab, setTab] = useState<"total" | "active" | "inactive">("total");
+  const [tab, setTab] = useState<"total" | "verified" | "unverified">("total");
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   const queryClient = useQueryClient();
@@ -66,10 +86,9 @@ export default function CustomerPage() {
   );
 
   const filteredAdmins = admins?.filter((admin) => {
-    console.log("Status:", admin.status)
     if (tab === "total") return true;
-    if (tab === "active") return admin.status === "Online" || admin.status === "Active";
-    if (tab === "inactive") return admin.status === "Offline" || admin.status === "Inactive";
+    if (tab === "verified") return admin.status === "verified";
+    if (tab === "unverified") return admin.status !== "verified";
     return false;
   }) || [];
 
@@ -82,8 +101,8 @@ export default function CustomerPage() {
   );
 
   const totalCount = admins?.length || 0;
-  const activeCount = admins?.filter((c) => c.status === "Online" || c.status === "Active").length || 0;
-  const inactiveCount = admins?.filter((c) => c.status === "Offline" || c.status === "Inactive").length || 0;
+  const verifiedCount = admins?.filter((c) => c.status === "verified").length || 0;
+  const unverifiedCount = admins?.filter((c) => c.status !== "verified").length || 0;
 
 
   // Update your useForm hook
@@ -95,7 +114,23 @@ export default function CustomerPage() {
 
 
   const editMutation = useMutation({
-    mutationFn: (admin: Admin) => apiClient.put(`/customers/${admin.id}`, admin),
+    mutationFn: (admin: Admin) => {
+      const [first_name, ...rest] = admin.name.split(" ");
+      return fetch(`/api/admin/customers/${admin.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          first_name,
+          last_name: rest.join(" "),
+          email: admin.email,
+          phone_number: admin.phone,
+          verification_status: admin.status,
+        }),
+      }).then((res) => {
+        if (!res.ok) throw new Error("Failed to update customer");
+        return res.json();
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
       toast({ title: "Admin updated successfully" });
@@ -107,7 +142,11 @@ export default function CustomerPage() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: number) => apiClient.delete(`/customers/${id}`),
+    mutationFn: (id: string) =>
+      fetch(`/api/admin/customers/${id}`, { method: "DELETE" }).then((res) => {
+        if (!res.ok) throw new Error("Failed to delete customer");
+        return res.json();
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
       toast({ title: "Admin deleted successfully" });
@@ -132,16 +171,16 @@ export default function CustomerPage() {
           TOTAL CUSTOMER ({totalCount})
         </button>
         <button
-          onClick={() => setTab("active")}
-          className={`text-sm font-medium ${tab === "active" ? "text-gray-900 border-b-2 border-blue-500" : "text-gray-500"}`}
+          onClick={() => setTab("verified")}
+          className={`text-sm font-medium ${tab === "verified" ? "text-gray-900 border-b-2 border-blue-500" : "text-gray-500"}`}
         >
-          ACTIVE CUSTOMER ({activeCount})
+          VERIFIED CUSTOMER ({verifiedCount})
         </button>
         <button
-          onClick={() => setTab("inactive")}
-          className={`text-sm font-medium ${tab === "inactive" ? "text-gray-900 border-b-2 border-blue-500" : "text-gray-500"}`}
+          onClick={() => setTab("unverified")}
+          className={`text-sm font-medium ${tab === "unverified" ? "text-gray-900 border-b-2 border-blue-500" : "text-gray-500"}`}
         >
-          INACTIVE CUSTOMER ({inactiveCount})
+          UNVERIFIED CUSTOMER ({unverifiedCount})
         </button>
       </div>
 
@@ -153,7 +192,7 @@ export default function CustomerPage() {
               <th className="px-4 py-3">Email</th>
               <th className="px-4 py-3">Phone Number</th>
               <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Last Login</th>
+              <th className="px-4 py-3">Joined</th>
               <th className="px-4 py-3">Actions</th>
             </tr>
           </thead>
@@ -167,10 +206,12 @@ export default function CustomerPage() {
                 </td>
                 <td className="px-4 py-3 text-sm text-gray-500">{admin.email}</td>
                 <td className="px-4 py-3 text-sm text-gray-900">{admin.phone}</td>
-                <td className={`px-4 py-3 text-sm ${admin.status === "Active" ? "text-green-600" : "text-orange-500"}`}>
+                <td className={`px-4 py-3 text-sm capitalize ${admin.status === "verified" ? "text-green-600" : "text-orange-500"}`}>
                   {admin.status}
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-500">{admin.lastLogin}</td>
+                <td className="px-4 py-3 text-sm text-gray-500">
+                  {new Date(admin.joined).toLocaleDateString()}
+                </td>
                 <td className="px-4 py-3 text-sm">
                   <div className="flex space-x-2">
                     <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
@@ -249,8 +290,9 @@ export default function CustomerPage() {
                               {...register("status")}
                               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                             >
-                              <option value="Active">Active</option>
-                              <option value="Inactive">Inactive</option>
+                              <option value="verified">Verified</option>
+                              <option value="unverified">Unverified</option>
+                              <option value="pending">Pending</option>
                             </select>
                           </div>
                           <Button
@@ -288,3 +330,7 @@ export default function CustomerPage() {
     </div>
   );
 }
+
+{/*
+  
+  */}

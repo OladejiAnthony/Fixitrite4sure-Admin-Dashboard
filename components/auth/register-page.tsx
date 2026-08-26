@@ -48,7 +48,6 @@ export function RegisterPage() {
 
   const onSubmit = async (data: RegisterForm) => {
     setIsLoading(true);
-    console.log("Registration data:", data);
 
     try {
       await authService.register({
@@ -56,12 +55,9 @@ export function RegisterPage() {
         email: data.email,
         password: data.password,
       });
-      console.log({ authService: authService.register });
 
-      toast.success(
-        "Registration successful! Please login with your credentials."
-      );
-      router.push("/login");
+      toast.success("Registration successful! Please verify your email.");
+      router.push(`/email-verification?email=${encodeURIComponent(data.email)}`);
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error

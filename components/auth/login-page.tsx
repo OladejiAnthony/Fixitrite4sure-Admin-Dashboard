@@ -46,35 +46,28 @@ export function LoginPage() {
     resolver: zodResolver(loginSchema),
   });
 
-  // app/login/page.tsx
-  // Update the login success handler
   const onSubmit = async (data: LoginForm) => {
-    console.log("Login started with data:", data); // Debug log
     setIsLoading(true);
     dispatch(loginStart());
 
     try {
-      const response = await authService.login(data);
-      localStorage.setItem("auth-token", response.token);
+      const { user, session } = await authService.login(data);
 
-      // Make sure this matches exactly what your authReducer expects
-      dispatch(
-        loginSuccess({
-          user: {
-            id: response.user.id,
-            name: response.user.name,
-            email: response.user.email,
-            role: response.user.role,
-          },
-          token: response.token,
-        })
-      );
+      if (!user) {
+        throw new Error("Login failed. Please try again.");
+      }
+
+      dispatch(loginSuccess({ user, session }));
 
       toast.success("Login successful!");
       router.push("/dashboard");
     } catch (error) {
       dispatch(loginFailure());
-      toast.error("Login failed. Please try again.");
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Login failed. Please try again.";
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }

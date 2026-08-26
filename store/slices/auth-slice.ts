@@ -1,23 +1,17 @@
 //store/slices/auth-slice.ts
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-
-interface User {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-}
+import type { Session, User } from "@supabase/supabase-js";
 
 interface AuthState {
   user: User | null;
-  token: string | null;
+  session: Session | null;
   isAuthenticated: boolean;
   isLoading: boolean;
 }
 
 const initialState: AuthState = {
   user: null,
-  token: null,
+  session: null,
   isAuthenticated: false,
   isLoading: false,
 };
@@ -31,23 +25,23 @@ const authSlice = createSlice({
     },
     loginSuccess: (
       state,
-      action: PayloadAction<{ user: User; token: string }>
+      action: PayloadAction<{ user: User; session: Session | null }>
     ) => {
       state.isLoading = false;
       state.isAuthenticated = true;
-      state.user = action.payload.user; // This should set the user
-      state.token = action.payload.token;
+      state.user = action.payload.user;
+      state.session = action.payload.session;
     },
     loginFailure: (state) => {
       state.isLoading = false;
       state.isAuthenticated = false;
       state.user = null;
-      state.token = null;
+      state.session = null;
     },
     logout: (state) => {
       state.isAuthenticated = false;
       state.user = null;
-      state.token = null;
+      state.session = null;
     },
   },
 });

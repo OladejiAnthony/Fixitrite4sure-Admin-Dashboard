@@ -60,6 +60,7 @@ type NavigationItem = {
   icon: string | React.ComponentType<{ className?: string }>;
 };
 
+
 const navigationItems: NavigationItem[] = [
   {
     title: "HOME",

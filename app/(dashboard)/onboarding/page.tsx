@@ -8,7 +8,6 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/store/store"; // Assuming your store is set up
 import { Pagination } from "@/components/common/pagination";
 
-
 interface Onboarding {
     id: number;
     dateTime: string;
@@ -123,3 +122,8 @@ export default function OnboardingPage() {
         </div>
     );
 }
+
+{/*
+    GET /onboarding 
+    
+    */}

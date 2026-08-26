@@ -276,17 +276,11 @@
     "apiKeys": "sk_test_1234567890abcdfg",
     "language": {
       "default": "en",
-      "supported": [
-        "Spanish",
-        "French",
-        "Chinese"
-      ]
+      "supported": ["Spanish", "French", "Chinese"]
     },
     "currency": {
       "default": "GBP",
-      "supported": [
-        "British Pound (£)"
-      ]
+      "supported": ["British Pound (£)"]
     }
   },
   "adverts": [
@@ -1433,11 +1427,7 @@
       "businessName": "Mike's Electronics Repair",
       "businessPhone": "+2348098765433",
       "repairCategory": "Electronics",
-      "repairSkills": [
-        "Phone Repair",
-        "Laptop Repair",
-        "Tablet Repair"
-      ],
+      "repairSkills": ["Phone Repair", "Laptop Repair", "Tablet Repair"],
       "yearsExperience": 8,
       "associationName": "NATE",
       "certificationUrl": "/images/certificate-mike.jpg"
@@ -1466,11 +1456,7 @@
       "businessName": "QuickFix Solutions",
       "businessPhone": "+2348098765435",
       "repairCategory": "Multi-category",
-      "repairSkills": [
-        "Electronics",
-        "Appliances",
-        "Automotive"
-      ],
+      "repairSkills": ["Electronics", "Appliances", "Automotive"],
       "yearsExperience": 12,
       "associationName": "NACAM",
       "certificationUrl": "/images/certificate-quickfix.jpg",
@@ -1554,11 +1540,7 @@
       "businessName": "Taylor's Auto Repair",
       "businessPhone": "+2348098765440",
       "repairCategory": "Automotive",
-      "repairSkills": [
-        "Engine Repair",
-        "Transmission",
-        "Brake Systems"
-      ],
+      "repairSkills": ["Engine Repair", "Transmission", "Brake Systems"],
       "yearsExperience": 10,
       "associationName": "NADAC",
       "certificationUrl": "/images/certificate-taylor.jpg"
@@ -1587,11 +1569,7 @@
       "businessName": "Smart",
       "businessPhone": "+23454879324",
       "repairCategory": "Automobile repair",
-      "repairSkills": [
-        "Car Repair",
-        "Battery Repair",
-        "Engine Repair"
-      ],
+      "repairSkills": ["Car Repair", "Battery Repair", "Engine Repair"],
       "yearsExperience": 5,
       "associationName": "NACAM",
       "certificationUrl": "/images/certificate.jpg"
@@ -1642,11 +1620,7 @@
       "businessName": "Smart",
       "businessPhone": "+23454879324",
       "repairCategory": "Automobile repair",
-      "repairSkills": [
-        "Car Repair",
-        "Battery Repair",
-        "Engine Repair"
-      ],
+      "repairSkills": ["Car Repair", "Battery Repair", "Engine Repair"],
       "yearsExperience": 5,
       "associationName": "NACAM",
       "certificationUrl": "/images/certificate.jpg"
@@ -3305,11 +3279,7 @@
       "phone": "+234-801-234-5678",
       "status": "Available",
       "repairCategory": "Automobile",
-      "repairSkills": [
-        "Engine Repair",
-        "Transmission",
-        "Brake Systems"
-      ],
+      "repairSkills": ["Engine Repair", "Transmission", "Brake Systems"],
       "rating": 4.8,
       "completedRepairs": 156,
       "specialization": "Automotive Repair"
@@ -3321,11 +3291,7 @@
       "phone": "+234-802-345-6789",
       "status": "Available",
       "repairCategory": "Electronics",
-      "repairSkills": [
-        "Phone Repair",
-        "Laptop Repair",
-        "Tablet Repair"
-      ],
+      "repairSkills": ["Phone Repair", "Laptop Repair", "Tablet Repair"],
       "rating": 4.7,
       "completedRepairs": 89,
       "specialization": "Gadget Repair"
@@ -3337,11 +3303,7 @@
       "phone": "+234-803-456-7890",
       "status": "Available",
       "repairCategory": "Electrical",
-      "repairSkills": [
-        "Appliance Repair",
-        "Power Systems",
-        "Wiring"
-      ],
+      "repairSkills": ["Appliance Repair", "Power Systems", "Wiring"],
       "rating": 4.6,
       "completedRepairs": 112,
       "specialization": "Home Appliances"
@@ -3353,11 +3315,7 @@
       "phone": "+234-804-567-8901",
       "status": "Available",
       "repairCategory": "Plumbing",
-      "repairSkills": [
-        "Pipe Repair",
-        "Drain Cleaning",
-        "Fixture Installation"
-      ],
+      "repairSkills": ["Pipe Repair", "Drain Cleaning", "Fixture Installation"],
       "rating": 4.9,
       "completedRepairs": 78,
       "specialization": "Plumbing Services"
@@ -3369,11 +3327,7 @@
       "phone": "+234-805-678-9012",
       "status": "Busy",
       "repairCategory": "Automobile",
-      "repairSkills": [
-        "AC Repair",
-        "Electrical Systems",
-        "Diagnostics"
-      ],
+      "repairSkills": ["AC Repair", "Electrical Systems", "Diagnostics"],
       "rating": 4.5,
       "completedRepairs": 134,
       "specialization": "Auto Electrical"
@@ -3390,10 +3344,7 @@
       "totalCost": 12500,
       "paymentStatus": "Paid",
       "repairConfirmation": "Pending",
-      "partsUsed": [
-        "iPhone 12 Pro Screen",
-        "Battery"
-      ],
+      "partsUsed": ["iPhone 12 Pro Screen", "Battery"],
       "laborHours": 2.5,
       "warranty": "90 days",
       "notes": "Customer requested original parts",
@@ -3428,9 +3379,7 @@
       "totalCost": 8500,
       "paymentStatus": "Paid",
       "repairConfirmation": "Confirmed",
-      "partsUsed": [
-        "Power Supply Unit"
-      ],
+      "partsUsed": ["Power Supply Unit"],
       "laborHours": 1.5,
       "warranty": "180 days",
       "notes": "Issue resolved successfully"
@@ -3460,10 +3409,7 @@
       "totalCost": 15000,
       "paymentStatus": "Partial",
       "repairConfirmation": "Pending",
-      "partsUsed": [
-        "Heating Element",
-        "Valves"
-      ],
+      "partsUsed": ["Heating Element", "Valves"],
       "laborHours": 3,
       "warranty": "365 days",
       "notes": "Waiting for additional parts"
@@ -3478,9 +3424,7 @@
       "totalCost": 7500,
       "paymentStatus": "Paid",
       "repairConfirmation": "Confirmed",
-      "partsUsed": [
-        "Keyboard Assembly"
-      ],
+      "partsUsed": ["Keyboard Assembly"],
       "laborHours": 1,
       "warranty": "90 days",
       "notes": "Quick service completed"
@@ -3495,9 +3439,7 @@
       "totalCost": 11000,
       "paymentStatus": "Unpaid",
       "repairConfirmation": "Pending",
-      "partsUsed": [
-        "Motor Assembly"
-      ],
+      "partsUsed": ["Motor Assembly"],
       "laborHours": 2,
       "warranty": "180 days",
       "notes": "Waiting for customer approval"
@@ -3512,10 +3454,7 @@
       "totalCost": 18500,
       "paymentStatus": "Paid",
       "repairConfirmation": "Confirmed",
-      "partsUsed": [
-        "AC Compressor",
-        "Refrigerant"
-      ],
+      "partsUsed": ["AC Compressor", "Refrigerant"],
       "laborHours": 4.5,
       "warranty": "365 days",
       "notes": "Complex repair completed successfully"
@@ -3545,10 +3484,7 @@
       "totalCost": 13500,
       "paymentStatus": "Partial",
       "repairConfirmation": "Pending",
-      "partsUsed": [
-        "Screen",
-        "Charging Port"
-      ],
+      "partsUsed": ["Screen", "Charging Port"],
       "laborHours": 2,
       "warranty": "90 days",
       "notes": "Parts ordered, awaiting delivery"
@@ -3563,9 +3499,7 @@
       "totalCost": 6800,
       "paymentStatus": "Paid",
       "repairConfirmation": "Confirmed",
-      "partsUsed": [
-        "Heating Element"
-      ],
+      "partsUsed": ["Heating Element"],
       "laborHours": 1,
       "warranty": "180 days",
       "notes": "Standard repair completed"
@@ -3625,9 +3559,7 @@
       "invoiceAmount": 2500,
       "paymentStatus": "Paid",
       "technician": "Robert Davis",
-      "images": [
-        "/images/capacitors-1.jpg"
-      ],
+      "images": ["/images/capacitors-1.jpg"],
       "priority": "Medium",
       "customerApproval": "Approved",
       "reportId": "BYPROX2",
@@ -3668,9 +3600,7 @@
       "invoiceAmount": 4500,
       "paymentStatus": "Unpaid",
       "technician": "Robert Davis",
-      "images": [
-        "/images/belt-drive-1.jpg"
-      ],
+      "images": ["/images/belt-drive-1.jpg"],
       "priority": "Medium",
       "customerApproval": "Pending"
     },
@@ -3699,10 +3629,7 @@
       "invoiceAmount": 5500,
       "paymentStatus": "Pending",
       "technician": "James Wilson",
-      "images": [
-        "/images/water-damage-1.jpg",
-        "/images/water-damage-2.jpg"
-      ],
+      "images": ["/images/water-damage-1.jpg", "/images/water-damage-2.jpg"],
       "priority": "High",
       "customerApproval": "Pending"
     }

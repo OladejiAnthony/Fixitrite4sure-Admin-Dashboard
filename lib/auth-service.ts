@@ -1,9 +1,6 @@
 //lib/auth-service.ts
-import axios from "axios";
 import { z } from "zod";
-
-const API_BASE_URL = "https://fixit-dashboard-api.onrender.com";
-//const API_BASE_URL = "http://localhost:3001";
+import { createClient } from "@/lib/supabase/client";
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -16,92 +13,78 @@ const registerSchema = z.object({
   password: z.string().min(6),
 });
 
+const verifyEmailSchema = z.object({
+  email: z.string().email(),
+  token: z.string().length(6),
+});
+
 export const authService = {
-  async register(userData: z.infer<typeof registerSchema>) {
-    const validatedData = registerSchema.parse(userData);
+  async login(credentials: z.infer<typeof loginSchema>) {
+    const { email, password } = loginSchema.parse(credentials);
+    const supabase = createClient();
 
-    try {
-      // Check if user already exists
-      const response = await axios.get(`${API_BASE_URL}/users`);
-      const users = response.data;
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
 
-      const existingUser = users.find(
-        (u: any) => u.email === validatedData.email
-      );
-      if (existingUser) {
-        throw new Error("User with this email already exists");
-      }
+    if (error) throw new Error(error.message);
 
-      // In a real app, you would hash the password here
-      // const hashedPassword = await bcrypt.hash(validatedData.password, 10);
-
-      // For now, we'll just store the plain password (NOT recommended for production)
-      const newUser = {
-        id: users.length + 1,
-        name: validatedData.name,
-        email: validatedData.email,
-        password: validatedData.password, // In real app, use hashedPassword
-        role: "admin",
-        createdAt: new Date().toISOString(),
-        lastLogin: null,
-        isActive: true,
-      };
-
-      await axios.post(`${API_BASE_URL}/users`, newUser);
-
-      return { success: true };
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        throw new Error("Network error. Please try again.");
-      }
-      throw error;
-    }
+    return { user: data.user, session: data.session };
   },
 
-  async login(credentials: z.infer<typeof loginSchema>) {
-    console.log("AuthService.login called with:", credentials); // Debug log
-    const validatedData = loginSchema.parse(credentials);
+  async register(userData: z.infer<typeof registerSchema>) {
+    const { name, email, password } = registerSchema.parse(userData);
+    const supabase = createClient();
 
-    try {
-      const response = await axios.get(`${API_BASE_URL}/users`);
-      const users = response.data;
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { name } },
+    });
 
-      const user = users.find((u: any) => u.email === validatedData.email);
+    if (error) throw new Error(error.message);
 
-      if (!user) {
-        throw new Error("Invalid email or password");
-      }
+    return { user: data.user, session: data.session };
+  },
 
-      // In a real app, you would compare hashed passwords
-      // const isPasswordValid = await bcrypt.compare(validatedData.password, user.password);
+  async verifyEmail(payload: z.infer<typeof verifyEmailSchema>) {
+    const { email, token } = verifyEmailSchema.parse(payload);
+    const supabase = createClient();
 
-      // For now, we'll compare plain text passwords (NOT recommended for production)
-      if (validatedData.password !== user.password) {
-        throw new Error("Invalid email or password");
-      }
+    const { data, error } = await supabase.auth.verifyOtp({
+      email,
+      token,
+      type: "signup",
+    });
 
-      const token = `token_${user.id}_${Date.now()}`;
+    if (error) throw new Error(error.message);
 
-      await axios.patch(`${API_BASE_URL}/users/${user.id}`, {
-        lastLogin: new Date().toISOString(),
-      });
+    return { user: data.user, session: data.session };
+  },
 
-      console.log("AuthService returning:", { user, token }); // Debug log
+  async resendVerificationCode(email: string) {
+    const supabase = createClient();
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email: z.string().email().parse(email),
+    });
 
-      return {
-        user: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          role: user.role,
-        },
-        token,
-      };
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        throw new Error("Network error. Please try again.");
-      }
-      throw error;
-    }
+    if (error) throw new Error(error.message);
+  },
+
+  async resetPassword(email: string) {
+    const supabase = createClient();
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: `${window.location.origin}/login`,
+    });
+
+    if (error) throw new Error(error.message);
+  },
+
+  async logout() {
+    const supabase = createClient();
+    const { error } = await supabase.auth.signOut();
+    if (error) throw new Error(error.message);
   },
 };

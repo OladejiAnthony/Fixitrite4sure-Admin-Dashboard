@@ -13,6 +13,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { logout } from "@/store/slices/auth-slice"
+import { authService } from "@/lib/auth-service"
 
 interface LogoutDialogProps {
   open: boolean
@@ -23,8 +24,8 @@ export function LogoutDialog({ open, onOpenChange }: LogoutDialogProps) {
   const router = useRouter()
   const dispatch = useDispatch()
 
-  const handleLogout = () => {
-    localStorage.removeItem("auth-token")
+  const handleLogout = async () => {
+    await authService.logout()
     dispatch(logout())
     onOpenChange(false)
     router.push("/login")

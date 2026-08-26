@@ -184,41 +184,37 @@ export function Logistics() {
       {/* Tabs */}
       <div className="flex space-x-8 border-b">
         <button
-          className={`pb-2 px-1 font-medium ${
-            activeTab === "carriers"
-              ? "text-blue-600 border-b-2 border-blue-600"
-              : "text-gray-500"
-          }`}
+          className={`pb-2 px-1 font-medium ${activeTab === "carriers"
+            ? "text-blue-600 border-b-2 border-blue-600"
+            : "text-gray-500"
+            }`}
           onClick={() => setActiveTab("carriers")}
         >
           CARRIERS
         </button>
         <button
-          className={`pb-2 px-1 font-medium ${
-            activeTab === "shipment"
-              ? "text-blue-600 border-b-2 border-blue-600"
-              : "text-gray-500"
-          }`}
+          className={`pb-2 px-1 font-medium ${activeTab === "shipment"
+            ? "text-blue-600 border-b-2 border-blue-600"
+            : "text-gray-500"
+            }`}
           onClick={() => setActiveTab("shipment")}
         >
           SHIPMENT
         </button>
         <button
-          className={`pb-2 px-1 font-medium ${
-            activeTab === "logistics"
-              ? "text-blue-600 border-b-2 border-blue-600"
-              : "text-gray-500"
-          }`}
+          className={`pb-2 px-1 font-medium ${activeTab === "logistics"
+            ? "text-blue-600 border-b-2 border-blue-600"
+            : "text-gray-500"
+            }`}
           onClick={() => setActiveTab("logistics")}
         >
           LOGISTICS
         </button>
         <button
-          className={`pb-2 px-1 font-medium ${
-            activeTab === "tracking"
-              ? "text-blue-600 border-b-2 border-blue-600"
-              : "text-gray-500"
-          }`}
+          className={`pb-2 px-1 font-medium ${activeTab === "tracking"
+            ? "text-blue-600 border-b-2 border-blue-600"
+            : "text-gray-500"
+            }`}
           onClick={() => setActiveTab("tracking")}
         >
           TRACKING

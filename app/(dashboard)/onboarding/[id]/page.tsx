@@ -1,64 +1,112 @@
 //app/(dashboard)/onboarding/[id]/page.tsx
 "use client";
 
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { apiClient } from "@/lib/api-client";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { useParams } from "next/navigation";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter, useParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 
-interface Onboarding {
-    id: number;
-    dateTime: string;
-    surname: string;
-    otherNames: string;
-    phone: string;
-    accountType: "Customer" | "Repairer" | "Repair Company" | "Vendor";
-    status: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    address: string;
-    profilePicture: string;
-    govIdType: string;
-    govIdFront: string;
-    govIdBack: string;
-    dob: string;
-    cardAddress: string;
-    occupation: string;
-    pollingUnit: string;
-    vin: string;
-    businessName?: string;
-    businessPhone?: string;
-    repairCategory?: string;
-    repairSkills?: string[];
-    yearsExperience?: number;
-    associationName?: string;
-    certificationUrl?: string;
-    numberOfRepairers?: number;
-    businessLicenseUrl?: string;
-    proofOfInsuranceUrl?: string;
-    registeredBusinessName?: string;
-    typeOfBusiness?: string;
-    cacRegistrationNumber?: string;
-    dateOfRegistration?: string;
-    cacDocumentUrl?: string;
-    proofOfAddressUrl?: string;
+interface Address {
+    id: string;
+    address_type: string;
+    formatted_address: string | null;
+    contact_person: string | null;
 }
 
+interface Onboarding {
+    id: string;
+    user_type: "customer" | "repairer" | "company" | "vendor";
+    first_name: string | null;
+    last_name: string | null;
+    business_name: string | null;
+    company_name: string | null;
+    phone_number: string | null;
+    email: string | null;
+    profile_image: string | null;
+    id_type: string | null;
+    id_details: Record<string, string> | null;
+    id_front_image: string | null;
+    id_back_image: string | null;
+    verification_status: string | null;
+    business_details: Record<string, unknown> | null;
+    created_at: string;
+    addresses: Address[];
+}
+
+const accountTypeLabels: Record<Onboarding["user_type"], string> = {
+    customer: "Customer",
+    repairer: "Repairer",
+    company: "Repair Company",
+    vendor: "Vendor",
+};
+
+// Every signup flow writes the same 13 id_details keys regardless of ID
+// type — only the ones relevant to the chosen ID type end up non-empty.
+const idDetailLabels: Record<string, string> = {
+    firstNameP: "First Name (on ID)",
+    otherNames: "Other Names (on ID)",
+    dob: "Date of Birth",
+    placeOfBirth: "Place of Birth",
+    passportNumber: "Passport Number",
+    issuedDate: "Issued Date",
+    expiryDate: "Expiry Date",
+    address: "Address (on ID)",
+    licenseNumber: "Licence Number",
+    occupation: "Occupation",
+    pollingUnit: "Polling Unit",
+    vin: "Voter's Identification Number (VIN)",
+    nin: "National Identification Number (NIN)",
+};
+
 async function fetchOnboardingDetails(id: string) {
-    const { data } = await apiClient.get(`/onboarding/${id}`);
-    return data as Onboarding;
+    const response = await fetch(`/api/admin/onboarding/${id}`);
+    if (!response.ok) throw new Error("Failed to fetch onboarding record");
+    return response.json() as Promise<Onboarding>;
+}
+
+function DetailRow({ label, value }: { label: string; value: string | null | undefined }) {
+    if (!value) return null;
+    return (
+        <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">{label}</label>
+            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{value}</p>
+        </div>
+    );
+}
+
+// Image/document uploads to Supabase Storage aren't wired into the mobile
+// app yet — these fields hold local device file:// paths, not fetchable
+// URLs, so we show provided/not-provided rather than a broken <img>.
+function FileBadge({ label, value }: { label: string; value: unknown }) {
+    const provided = Boolean(
+        typeof value === "string"
+            ? value
+            : value && typeof value === "object" && "uri" in (value as Record<string, unknown>)
+    );
+    const fileName =
+        value && typeof value === "object" && "name" in (value as Record<string, unknown>)
+            ? String((value as Record<string, unknown>).name)
+            : null;
+
+    return (
+        <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">{label}</label>
+            <span
+                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${provided ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-600"
+                    }`}
+            >
+                {provided ? fileName || "Provided" : "Not provided"}
+            </span>
+        </div>
+    );
 }
 
 export default function OnboardingDetailsPage() {
     const params = useParams();
     const id = params.id as string;
     const router = useRouter();
-    const [step, setStep] = useState(1);
+    const queryClient = useQueryClient();
 
     const { data, isLoading } = useQuery({
         queryKey: ["onboarding", id],
@@ -66,381 +114,40 @@ export default function OnboardingDetailsPage() {
     });
 
     const updateStatusMutation = useMutation({
-        mutationFn: (newStatus: string) =>
-            apiClient.patch(`/onboarding/${id}`, { status: newStatus }),
-        onSuccess: (data, variables) => {
-            const action = variables === "approved" ? "approved" : "rejected";
-            toast.success(`User ${action} successfully`);
+        mutationFn: (newStatus: "approved" | "rejected") =>
+            fetch(`/api/admin/onboarding/${id}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ status: newStatus }),
+            }).then((res) => {
+                if (!res.ok) throw new Error("Failed to update status");
+                return res.json();
+            }),
+        onSuccess: (_data, variables) => {
+            queryClient.invalidateQueries({ queryKey: ["onboarding"] });
+            toast.success(`User ${variables === "approved" ? "approved" : "rejected"} successfully`);
             router.push("/onboarding");
         },
-        onError: (error) => {
+        onError: () => {
             toast.error("Failed to update user status");
-            console.error("Error updating status:", error);
-        }
+        },
     });
 
     if (isLoading || !data) {
         return <div className="p-6 text-center text-gray-600">Loading...</div>;
     }
 
-    let maxStep = data.accountType === "Customer" ? 2 : 3;
+    const name =
+        [data.first_name, data.last_name].filter(Boolean).join(" ") ||
+        data.company_name ||
+        data.business_name ||
+        "—";
 
-    let title;
-    switch (data.accountType) {
-        case "Repair Company":
-            title = "REPAIR COMPANY DETAILS";
-            break;
-        case "Vendor":
-            title = "VENDOR DETAILS";
-            break;
-        default:
-            title = `${data.accountType.toUpperCase()} USER DETAILS`;
-    }
+    const idDetailEntries = Object.entries(data.id_details || {}).filter(
+        ([, value]) => value
+    );
 
-    const handleNext = () => {
-        if (step < maxStep) setStep(step + 1);
-    };
-
-    let content;
-
-    if (step === 1) {
-        let personalTitle = ["Customer", "Repairer"].includes(data.accountType) ? "USER PERSONAL DETAILS" : "PERSONAL DETAILS";
-        let addressTitle = data.accountType === "Repair Company" ? "COMPANY'S ADDRESS" : ["Customer", "Repairer"].includes(data.accountType) ? "WORK ADDRESS" : "BUSINESS ADDRESS";
-
-        let personalContent;
-        switch (data.accountType) {
-            case "Customer":
-                personalContent = (
-                    <div className="grid grid-cols-2 gap-4 mb-6">
-                        <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">First Name</label>
-                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.firstName}</p>
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">Last Name</label>
-                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.lastName}</p>
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">Phone Number</label>
-                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.phone}</p>
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">Email Address</label>
-                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.email}</p>
-                        </div>
-                    </div>
-                );
-                break;
-            case "Repairer":
-                personalContent = (
-                    <div className="grid grid-cols-2 gap-4 mb-6">
-                        <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">First Name</label>
-                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.firstName}</p>
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">Last Name</label>
-                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.lastName}</p>
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">Business Phone Number</label>
-                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.businessPhone}</p>
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">Email Address</label>
-                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.email}</p>
-                        </div>
-                    </div>
-                );
-                break;
-            case "Repair Company":
-                personalContent = (
-                    <div className="grid grid-cols-2 gap-4 mb-6">
-                        <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">Company's Name</label>
-                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.businessName}</p>
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">Contact Person Phone Number</label>
-                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.phone}</p>
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">Contact Person First Name</label>
-                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.firstName}</p>
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">Company's Phone Number</label>
-                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.businessPhone}</p>
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">Contact Person Last Name</label>
-                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.lastName}</p>
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">Company's Email Address</label>
-                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.email}</p>
-                        </div>
-                    </div>
-                );
-                break;
-            case "Vendor":
-                personalContent = (
-                    <div className="grid grid-cols-2 gap-4 mb-6">
-                        <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">First Name</label>
-                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.firstName}</p>
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">Business Phone Number</label>
-                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.businessPhone}</p>
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">Last Name</label>
-                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.lastName}</p>
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">Business Email Address</label>
-                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.email}</p>
-                        </div>
-                        <div className="col-span-2">
-                            <label className="block text-xs font-medium text-gray-600 mb-1">Business Name</label>
-                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.businessName}</p>
-                        </div>
-                    </div>
-                );
-                break;
-        }
-
-        content = (
-            <div className="w-full flex flex-col gap-6">
-                <h2 className="text-base font-semibold text-blue-800 mb-4">{personalTitle}</h2>
-                {personalContent}
-                <h2 className="text-base font-semibold text-blue-800 mb-4">{addressTitle}</h2>
-                <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800 mb-4">{data.address}</p>
-                <div className="h-40 bg-gray-100 rounded-md flex items-center justify-center text-gray-500">Map Placeholder with Pin</div>
-                <button
-                    onClick={handleNext}
-                    className="mt-6 bg-blue-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors self-end"
-                >
-                    Next
-                </button>
-            </div>
-        );
-    } else if (step === 2) {
-        let verificationTitle = ["Customer", "Repairer"].includes(data.accountType) ? "USER VERIFICATION" : "CONTACT PERSON VERIFICATION";
-
-        content = (
-            <div className="w-full flex flex-col gap-6">
-                <h2 className="text-base font-semibold text-blue-800 mb-4">{verificationTitle}</h2>
-                <div className="grid grid-cols-2 gap-6">
-                    <div>
-                        <label className="block text-xs font-medium text-gray-600 mb-2">Profile Picture</label>
-                        <img src={data.profilePicture} alt="Profile" className="w-24 h-32 object-cover rounded-md" />
-                        <label className="block text-xs font-medium text-gray-600 mt-6 mb-2">Government Issued ID</label>
-                        <p className="text-xs font-medium text-gray-600 mb-2">{data.govIdType}</p>
-                        <div className="flex gap-4">
-                            <div>
-                                <img src={data.govIdFront} alt="Front" className="w-32 h-20 object-cover rounded-md" />
-                                <p className="text-xs text-gray-500 mt-1">(Front)</p>
-                            </div>
-                            <div>
-                                <img src={data.govIdBack} alt="Back" className="w-32 h-20 object-cover rounded-md" />
-                                <p className="text-xs text-gray-500 mt-1">(Back)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="space-y-3">
-                        <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">Holder's first name</label>
-                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.firstName}</p>
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">Holder's other names</label>
-                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.otherNames}</p>
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">Date of birth</label>
-                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.dob}</p>
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">Address on the Card</label>
-                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.cardAddress}</p>
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">Occupation</label>
-                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.occupation}</p>
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">Polling unit</label>
-                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.pollingUnit}</p>
-                        </div>
-                        <div>
-                            <label className="block text-xs font-medium text-gray-600 mb-1">Voter's Identification Number (VIN)</label>
-                            <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.vin}</p>
-                        </div>
-                    </div>
-                </div>
-                {data.accountType === "Customer" ? (
-                    <div className="flex gap-4 mt-6 justify-end">
-                        <button
-                            onClick={() => updateStatusMutation.mutate("approved")}
-                            disabled={updateStatusMutation.isPending}
-                            className={`bg-blue-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors ${updateStatusMutation.isPending ? "opacity-50 cursor-not-allowed" : ""
-                                }`}
-                        >
-                            {updateStatusMutation.isPending ? "Processing..." : "Accept User"}
-                        </button>
-                        <button
-                            onClick={() => updateStatusMutation.mutate("rejected")}
-                            disabled={updateStatusMutation.isPending}
-                            className={`bg-red-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-red-600 transition-colors ${updateStatusMutation.isPending ? "opacity-50 cursor-not-allowed" : ""
-                                }`}
-                        >
-                            {updateStatusMutation.isPending ? "Processing..." : "Reject User"}
-                        </button>
-                    </div>
-                ) : (
-                    <button
-                        onClick={handleNext}
-                        className="mt-6 bg-blue-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors self-end"
-                    >
-                        Next
-                    </button>
-                )}
-            </div>
-        );
-    } else if (step === 3) {
-        let profContent;
-        switch (data.accountType) {
-            case "Repairer":
-                profContent = (
-                    <>
-                        <h2 className="text-base font-semibold text-blue-800 mb-4">PROFESSIONAL INFORMATION</h2>
-                        <div className="grid grid-cols-2 gap-4 mb-6">
-                            <div>
-                                <label className="block text-xs font-medium text-gray-600 mb-1">Repair Category</label>
-                                <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.repairCategory}</p>
-                            </div>
-                            <div>
-                                <label className="block text-xs font-medium text-gray-600 mb-1">Repair Skills</label>
-                                <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800 whitespace-pre-line">{data.repairSkills?.join("\n")}</p>
-                            </div>
-                            <div>
-                                <label className="block text-xs font-medium text-gray-600 mb-1">Years of Experience</label>
-                                <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.yearsExperience} years</p>
-                            </div>
-                            <div>
-                                <label className="block text-xs font-medium text-gray-600 mb-1">Association Name</label>
-                                <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.associationName}</p>
-                            </div>
-                        </div>
-                        <h2 className="text-base font-semibold text-blue-800 mb-4">CERTIFICATION AND WORK LICENSE</h2>
-                        <img src={data.certificationUrl} alt="Certificate" className="w-64 h-40 object-cover rounded-md mb-6" />
-                    </>
-                );
-                break;
-            case "Repair Company":
-                profContent = (
-                    <>
-                        <h2 className="text-base font-semibold text-blue-800 mb-4">COMPANY'S INFORMATION</h2>
-                        <div className="grid grid-cols-2 gap-4 mb-6">
-                            <div>
-                                <label className="block text-xs font-medium text-gray-600 mb-1">Number of Repairers</label>
-                                <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.numberOfRepairers}</p>
-                            </div>
-                            <div>
-                                <label className="block text-xs font-medium text-gray-600 mb-1">Repair Category</label>
-                                <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.repairCategory}</p>
-                            </div>
-                            <div>
-                                <label className="block text-xs font-medium text-gray-600 mb-1">Repair Skills</label>
-                                <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800 whitespace-pre-line">{data.repairSkills?.join("\n")}</p>
-                            </div>
-                            <div>
-                                <label className="block text-xs font-medium text-gray-600 mb-1">Years in Service</label>
-                                <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.yearsExperience} years</p>
-                            </div>
-                            <div className="col-span-2">
-                                <label className="block text-xs font-medium text-gray-600 mb-1">Company Registration Number</label>
-                                <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.associationName}</p>
-                            </div>
-                        </div>
-                        <h2 className="text-base font-semibold text-blue-800 mb-4">DOCUMENT VERIFICATION</h2>
-                        <div className="space-y-4 mb-6">
-                            <div>
-                                <label className="block text-xs font-medium text-gray-600 mb-1">Company's Business License</label>
-                                <img src={data.businessLicenseUrl} alt="Business License" className="w-64 h-40 object-cover rounded-md" />
-                            </div>
-                            <div>
-                                <label className="block text-xs font-medium text-gray-600 mb-1">Company's Proof of Insurance</label>
-                                <img src={data.proofOfInsuranceUrl} alt="Proof of Insurance" className="w-64 h-40 object-cover rounded-md" />
-                            </div>
-                        </div>
-                    </>
-                );
-                break;
-            case "Vendor":
-                profContent = (
-                    <>
-                        <h2 className="text-base font-semibold text-blue-800 mb-4">BUSINESS INFORMATION</h2>
-                        <div className="grid grid-cols-2 gap-4 mb-6">
-                            <div>
-                                <label className="block text-xs font-medium text-gray-600 mb-1">Registered Business Name</label>
-                                <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.registeredBusinessName}</p>
-                            </div>
-                            <div>
-                                <label className="block text-xs font-medium text-gray-600 mb-1">Type of Business</label>
-                                <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.typeOfBusiness}</p>
-                            </div>
-                            <div className="col-span-2">
-                                <label className="block text-xs font-medium text-gray-600 mb-1">CAC Registration Number</label>
-                                <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.cacRegistrationNumber}</p>
-                            </div>
-                            <div className="col-span-2">
-                                <label className="block text-xs font-medium text-gray-600 mb-1">Date of Registration</label>
-                                <p className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">{data.dateOfRegistration}</p>
-                            </div>
-                        </div>
-                        <h2 className="text-base font-semibold text-blue-800 mb-4">DOCUMENT VERIFICATION</h2>
-                        <div className="space-y-4 mb-6">
-                            <div>
-                                <label className="block text-xs font-medium text-gray-600 mb-1">CAC Registration Document</label>
-                                <img src={data.cacDocumentUrl} alt="CAC Document" className="w-64 h-40 object-cover rounded-md" />
-                            </div>
-                            <div>
-                                <label className="block text-xs font-medium text-gray-600 mb-1">Proof of Address</label>
-                                <img src={data.proofOfAddressUrl} alt="Proof of Address" className="w-64 h-40 object-cover rounded-md" />
-                            </div>
-                        </div>
-                    </>
-                );
-                break;
-        }
-
-        content = (
-            <div className="w-full ">
-                {profContent}
-                <div className="flex gap-4 mt-6 justify-end">
-                    <button
-                        onClick={() => updateStatusMutation.mutate("approved")}
-                        disabled={updateStatusMutation.isPending}
-                        className={`bg-blue-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors ${updateStatusMutation.isPending ? "opacity-50 cursor-not-allowed" : ""
-                            }`}
-                    >
-                        {updateStatusMutation.isPending ? "Processing..." : "Accept User"}
-                    </button>
-                    <button
-                        onClick={() => updateStatusMutation.mutate("rejected")}
-                        disabled={updateStatusMutation.isPending}
-                        className={`bg-red-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-red-600 transition-colors ${updateStatusMutation.isPending ? "opacity-50 cursor-not-allowed" : ""
-                            }`}
-                    >
-                        {updateStatusMutation.isPending ? "Processing..." : "Reject User"}
-                    </button>
-                </div>
-            </div>
-        );
-    }
+    const businessDetails = data.business_details || {};
 
     return (
         <div className="min-h-screen bg-gray-50 p-6">
@@ -454,17 +161,134 @@ export default function OnboardingDetailsPage() {
                 </Link>
             </div>
 
-            <div className=" mx-auto bg-white rounded-lg shadow-md overflow-hidden p-6">
-                <h1 className="text-xl font-bold text-gray-800 mb-6">{title}</h1>
-                {content}
+            <div className="mx-auto bg-white rounded-lg shadow-md overflow-hidden p-6 space-y-8">
+                <h1 className="text-xl font-bold text-gray-800">
+                    {accountTypeLabels[data.user_type].toUpperCase()} DETAILS
+                </h1>
+
+                <div>
+                    <h2 className="text-base font-semibold text-blue-800 mb-4">PERSONAL DETAILS</h2>
+                    <div className="grid grid-cols-2 gap-4">
+                        <DetailRow label="Name" value={name} />
+                        <DetailRow label="Email Address" value={data.email} />
+                        <DetailRow label="Phone Number" value={data.phone_number} />
+                        <DetailRow
+                            label="Joined"
+                            value={data.created_at ? new Date(data.created_at).toLocaleString() : null}
+                        />
+                        <div>
+                            <label className="block text-xs font-medium text-gray-600 mb-1">Status</label>
+                            <span
+                                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize ${data.verification_status === "verified"
+                                    ? "bg-green-100 text-green-800"
+                                    : data.verification_status === "rejected"
+                                        ? "bg-red-100 text-red-800"
+                                        : "bg-gray-100 text-gray-800"
+                                    }`}
+                            >
+                                {data.verification_status || "unverified"}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <h2 className="text-base font-semibold text-blue-800 mb-4">ADDRESS</h2>
+                    {data.addresses.length ? (
+                        <div className="space-y-2">
+                            {data.addresses.map((addr) => (
+                                <p key={addr.id} className="bg-white border border-gray-300 p-2 rounded-md text-sm text-gray-800">
+                                    <span className="capitalize font-medium">{addr.address_type}:</span>{" "}
+                                    {addr.formatted_address || "Not provided"}
+                                </p>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-sm text-gray-500">No address on record.</p>
+                    )}
+                </div>
+
+                <div>
+                    <h2 className="text-base font-semibold text-blue-800 mb-4">GOVERNMENT ID</h2>
+                    <div className="grid grid-cols-2 gap-4 mb-4">
+                        <DetailRow label="ID Type" value={data.id_type} />
+                        <FileBadge label="Profile Picture" value={data.profile_image} />
+                        <FileBadge label="ID Front" value={data.id_front_image} />
+                        <FileBadge label="ID Back" value={data.id_back_image} />
+                    </div>
+                    {idDetailEntries.length > 0 && (
+                        <div className="grid grid-cols-2 gap-4">
+                            {idDetailEntries.map(([key, value]) => (
+                                <DetailRow key={key} label={idDetailLabels[key] || key} value={value} />
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                {data.user_type === "repairer" && (
+                    <div>
+                        <h2 className="text-base font-semibold text-blue-800 mb-4">PROFESSIONAL INFORMATION</h2>
+                        <div className="grid grid-cols-2 gap-4">
+                            <DetailRow label="Repair Category" value={businessDetails.repair_category as string} />
+                            <DetailRow label="Skills" value={businessDetails.skills as string} />
+                            <DetailRow label="Years of Experience" value={businessDetails.years_of_experience as string} />
+                            <DetailRow label="Association Name" value={businessDetails.association_name as string} />
+                            <FileBadge label="Certification" value={businessDetails.certification_image} />
+                        </div>
+                    </div>
+                )}
+
+                {data.user_type === "company" && (
+                    <div>
+                        <h2 className="text-base font-semibold text-blue-800 mb-4">COMPANY INFORMATION</h2>
+                        <div className="grid grid-cols-2 gap-4">
+                            <DetailRow
+                                label="Repair Categories"
+                                value={Array.isArray(businessDetails.repair_categories) ? businessDetails.repair_categories.join(", ") : undefined}
+                            />
+                            <DetailRow label="Staff Count" value={businessDetails.staff_count as string} />
+                            <DetailRow label="Skills" value={businessDetails.skills as string} />
+                            <DetailRow label="Years of Service" value={businessDetails.years_of_service as string} />
+                            <DetailRow label="Registration Number" value={businessDetails.registration_number as string} />
+                            <FileBadge label="Certification" value={businessDetails.certification_image} />
+                            <FileBadge label="Business License" value={businessDetails.business_license} />
+                            <FileBadge label="Proof of Insurance" value={businessDetails.proof_of_insurance} />
+                        </div>
+                    </div>
+                )}
+
+                {data.user_type === "vendor" && (
+                    <div>
+                        <h2 className="text-base font-semibold text-blue-800 mb-4">BUSINESS INFORMATION</h2>
+                        <div className="grid grid-cols-2 gap-4">
+                            <DetailRow label="Registered Business Name" value={businessDetails.reg_business_name as string} />
+                            <DetailRow label="CAC Number" value={businessDetails.cac_number as string} />
+                            <DetailRow label="Registration Date" value={businessDetails.registration_date as string} />
+                            <DetailRow label="Business Type" value={businessDetails.business_type as string} />
+                            <FileBadge label="Certification" value={businessDetails.certification_image} />
+                            <FileBadge label="Business License" value={businessDetails.business_license} />
+                            <FileBadge label="Proof of Insurance" value={businessDetails.proof_of_insurance} />
+                        </div>
+                    </div>
+                )}
+
+                <div className="flex gap-4 justify-end pt-4 border-t border-gray-200">
+                    <button
+                        onClick={() => updateStatusMutation.mutate("approved")}
+                        disabled={updateStatusMutation.isPending}
+                        className={`bg-blue-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors ${updateStatusMutation.isPending ? "opacity-50 cursor-not-allowed" : ""}`}
+                    >
+                        {updateStatusMutation.isPending ? "Processing..." : "Accept User"}
+                    </button>
+                    <button
+                        onClick={() => updateStatusMutation.mutate("rejected")}
+                        disabled={updateStatusMutation.isPending}
+                        className={`bg-red-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-red-600 transition-colors ${updateStatusMutation.isPending ? "opacity-50 cursor-not-allowed" : ""}`}
+                    >
+                        {updateStatusMutation.isPending ? "Processing..." : "Reject User"}
+                    </button>
+                </div>
             </div>
         </div>
     );
 }
-
-{/*
-    GET /onboarding/:id 
-
-    PATCH /onboarding/:id  
-      body { status }      
-    */}

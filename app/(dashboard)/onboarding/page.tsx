@@ -2,54 +2,57 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { apiClient } from "@/lib/api-client";
 import Link from "next/link";
 import { useSelector } from "react-redux";
-import { RootState } from "@/store/store"; // Assuming your store is set up
+import { RootState } from "@/store/store";
 import { Pagination } from "@/components/common/pagination";
 
-interface Onboarding {
-    id: number;
-    dateTime: string;
-    surname: string;
-    otherNames: string;
-    phone: string;
-    accountType: "Customer" | "Repairer" | "Repair Company" | "Vendor";
-    status: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    address: string;
-    profilePicture: string;
-    govIdType: string;
-    govIdFront: string;
-    govIdBack: string;
-    dob: string;
-    cardAddress: string;
-    occupation: string;
-    pollingUnit: string;
-    vin: string;
-    businessName?: string;
-    businessPhone?: string;
-    repairCategory?: string;
-    repairSkills?: string[];
-    yearsExperience?: number;
-    associationName?: string;
-    certificationUrl?: string;
-    numberOfRepairers?: number;
-    businessLicenseUrl?: string;
-    proofOfInsuranceUrl?: string;
-    registeredBusinessName?: string;
-    typeOfBusiness?: string;
-    cacRegistrationNumber?: string;
-    dateOfRegistration?: string;
-    cacDocumentUrl?: string;
-    proofOfAddressUrl?: string;
+interface ProfileRow {
+    id: string;
+    user_type: "customer" | "repairer" | "company" | "vendor";
+    first_name: string | null;
+    last_name: string | null;
+    business_name: string | null;
+    company_name: string | null;
+    phone_number: string | null;
+    verification_status: string | null;
+    created_at: string;
 }
 
-async function fetchOnboarding() {
-    const { data } = await apiClient.get("/onboarding");
-    return data as Onboarding[];
+interface Onboarding {
+    id: string;
+    dateTime: string;
+    name: string;
+    phone: string;
+    accountType: string;
+    status: string;
+}
+
+const accountTypeLabels: Record<ProfileRow["user_type"], string> = {
+    customer: "Customer",
+    repairer: "Repairer",
+    company: "Repair Company",
+    vendor: "Vendor",
+};
+
+const toOnboarding = (row: ProfileRow): Onboarding => ({
+    id: row.id,
+    dateTime: row.created_at,
+    name:
+        [row.first_name, row.last_name].filter(Boolean).join(" ") ||
+        row.company_name ||
+        row.business_name ||
+        "—",
+    phone: row.phone_number || "—",
+    accountType: accountTypeLabels[row.user_type],
+    status: row.verification_status || "pending",
+});
+
+async function fetchOnboarding(): Promise<Onboarding[]> {
+    const response = await fetch("/api/admin/onboarding");
+    if (!response.ok) throw new Error("Failed to fetch onboarding records");
+    const rows: ProfileRow[] = await response.json();
+    return rows.map(toOnboarding);
 }
 
 export default function OnboardingPage() {
@@ -61,20 +64,12 @@ export default function OnboardingPage() {
         queryFn: fetchOnboarding,
     });
 
-
-
     if (isLoading) {
         return <div className="p-6 text-center text-gray-600">Loading...</div>;
     }
 
-
-
     const totalItems = data.length;
-    const totalPages = Math.ceil(totalItems / itemsPerPage);
     const paginatedData = data.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
-
-
 
     return (
         <div className="min-h-screen bg-gray-50 p-6">
@@ -95,10 +90,9 @@ export default function OnboardingPage() {
                         <tbody>
                             {paginatedData.map((item) => (
                                 <tr key={item.id} className="bg-white border-b border-gray-200 hover:bg-gray-50">
-                                    <td className="px-6 py-4 whitespace-nowrap">{item.dateTime}</td>
-
-                                    <td className="px-6 py-4">{item.otherNames}{" "}{item.surname}</td>
-                                    <td className="px-6 py-4">{item.status}</td>
+                                    <td className="px-6 py-4 whitespace-nowrap">{new Date(item.dateTime).toLocaleString()}</td>
+                                    <td className="px-6 py-4">{item.name}</td>
+                                    <td className="px-6 py-4 capitalize">{item.status}</td>
                                     <td className="px-6 py-4">{item.phone}</td>
                                     <td className="px-6 py-4">{item.accountType}</td>
                                     <td className="px-6 py-4">
@@ -114,16 +108,8 @@ export default function OnboardingPage() {
                         </tbody>
                     </table>
                 </div>
-
-
             </div>
-            {/* Pagination Component */}
             <Pagination totalItems={totalItems} />
         </div>
     );
 }
-
-{/*
-    GET /onboarding 
-    
-    */}

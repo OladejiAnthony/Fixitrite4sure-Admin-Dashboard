@@ -1,6 +1,7 @@
 //app/(dashboard)/onboarding/[id]/page.tsx
 "use client";
 
+import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter, useParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
@@ -75,29 +76,76 @@ function DetailRow({ label, value }: { label: string; value: string | null | und
     );
 }
 
-// Image/document uploads to Supabase Storage aren't wired into the mobile
-// app yet — these fields hold local device file:// paths, not fetchable
-// URLs, so we show provided/not-provided rather than a broken <img>.
-function FileBadge({ label, value }: { label: string; value: unknown }) {
-    const provided = Boolean(
-        typeof value === "string"
-            ? value
-            : value && typeof value === "object" && "uri" in (value as Record<string, unknown>)
+function extractFileValue(value: unknown): { uri: string | null; name: string | null } {
+    if (typeof value === "string") return { uri: value || null, name: null };
+    if (value && typeof value === "object") {
+        const obj = value as Record<string, unknown>;
+        return {
+            uri: typeof obj.uri === "string" ? obj.uri : null,
+            name: typeof obj.name === "string" ? obj.name : null,
+        };
+    }
+    return { uri: null, name: null };
+}
+
+const isFetchableUrl = (uri: string) => /^https?:\/\//i.test(uri);
+
+function ImagePlaceholder({ label, text }: { label: string; text: string }) {
+    return (
+        <div>
+            <label className="block text-xs font-medium text-gray-600 mb-1">{label}</label>
+            <div className="w-32 h-24 rounded-md border border-dashed border-gray-300 bg-gray-50 flex items-center justify-center p-2">
+                <p className="text-[11px] text-gray-500 text-center leading-tight">{text}</p>
+            </div>
+        </div>
     );
-    const fileName =
-        value && typeof value === "object" && "name" in (value as Record<string, unknown>)
-            ? String((value as Record<string, unknown>).name)
-            : null;
+}
+
+// Supabase Storage upload isn't wired into the mobile app's signup flow
+// yet, so most of these values are still local device file:// paths from
+// ImagePicker/DocumentPicker — not fetchable from a browser. We render a
+// real <img> whenever the value is an http(s) URL (so this works
+// automatically once the mobile app starts uploading), and an honest
+// explanation otherwise instead of a broken image icon.
+function ImageField({ label, value }: { label: string; value: unknown }) {
+    const { uri, name } = extractFileValue(value);
+    const [imgFailed, setImgFailed] = useState(false);
+
+    if (!uri) {
+        return <ImagePlaceholder label={label} text="Not provided" />;
+    }
+
+    if (!isFetchableUrl(uri)) {
+        return (
+            <ImagePlaceholder
+                label={label}
+                text="Not viewable — stored on the user's device, not yet uploaded to cloud storage"
+            />
+        );
+    }
 
     return (
         <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">{label}</label>
-            <span
-                className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${provided ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-600"
-                    }`}
-            >
-                {provided ? fileName || "Provided" : "Not provided"}
-            </span>
+            {imgFailed ? (
+                <a
+                    href={uri}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 hover:bg-blue-200"
+                >
+                    View file{name ? `: ${name}` : ""}
+                </a>
+            ) : (
+                <a href={uri} target="_blank" rel="noopener noreferrer">
+                    <img
+                        src={uri}
+                        alt={label}
+                        onError={() => setImgFailed(true)}
+                        className="w-32 h-24 object-cover rounded-md border border-gray-300 hover:opacity-80 transition-opacity"
+                    />
+                </a>
+            )}
         </div>
     );
 }
@@ -212,9 +260,9 @@ export default function OnboardingDetailsPage() {
                     <h2 className="text-base font-semibold text-blue-800 mb-4">GOVERNMENT ID</h2>
                     <div className="grid grid-cols-2 gap-4 mb-4">
                         <DetailRow label="ID Type" value={data.id_type} />
-                        <FileBadge label="Profile Picture" value={data.profile_image} />
-                        <FileBadge label="ID Front" value={data.id_front_image} />
-                        <FileBadge label="ID Back" value={data.id_back_image} />
+                        <ImageField label="Profile Picture" value={data.profile_image} />
+                        <ImageField label="ID Front" value={data.id_front_image} />
+                        <ImageField label="ID Back" value={data.id_back_image} />
                     </div>
                     {idDetailEntries.length > 0 && (
                         <div className="grid grid-cols-2 gap-4">
@@ -233,7 +281,7 @@ export default function OnboardingDetailsPage() {
                             <DetailRow label="Skills" value={businessDetails.skills as string} />
                             <DetailRow label="Years of Experience" value={businessDetails.years_of_experience as string} />
                             <DetailRow label="Association Name" value={businessDetails.association_name as string} />
-                            <FileBadge label="Certification" value={businessDetails.certification_image} />
+                            <ImageField label="Certification" value={businessDetails.certification_image} />
                         </div>
                     </div>
                 )}
@@ -250,9 +298,9 @@ export default function OnboardingDetailsPage() {
                             <DetailRow label="Skills" value={businessDetails.skills as string} />
                             <DetailRow label="Years of Service" value={businessDetails.years_of_service as string} />
                             <DetailRow label="Registration Number" value={businessDetails.registration_number as string} />
-                            <FileBadge label="Certification" value={businessDetails.certification_image} />
-                            <FileBadge label="Business License" value={businessDetails.business_license} />
-                            <FileBadge label="Proof of Insurance" value={businessDetails.proof_of_insurance} />
+                            <ImageField label="Certification" value={businessDetails.certification_image} />
+                            <ImageField label="Business License" value={businessDetails.business_license} />
+                            <ImageField label="Proof of Insurance" value={businessDetails.proof_of_insurance} />
                         </div>
                     </div>
                 )}
@@ -265,9 +313,9 @@ export default function OnboardingDetailsPage() {
                             <DetailRow label="CAC Number" value={businessDetails.cac_number as string} />
                             <DetailRow label="Registration Date" value={businessDetails.registration_date as string} />
                             <DetailRow label="Business Type" value={businessDetails.business_type as string} />
-                            <FileBadge label="Certification" value={businessDetails.certification_image} />
-                            <FileBadge label="Business License" value={businessDetails.business_license} />
-                            <FileBadge label="Proof of Insurance" value={businessDetails.proof_of_insurance} />
+                            <ImageField label="Certification" value={businessDetails.certification_image} />
+                            <ImageField label="Business License" value={businessDetails.business_license} />
+                            <ImageField label="Proof of Insurance" value={businessDetails.proof_of_insurance} />
                         </div>
                     </div>
                 )}

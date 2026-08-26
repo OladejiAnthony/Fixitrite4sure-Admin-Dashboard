@@ -1,12 +1,11 @@
-//app\(dashboard)\repairers\page.tsx
+// app/(dashboard)/repairers/page.tsx
 
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiClient } from "@/lib/api-client";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "@/store/store"; // Assuming store is configured with the pagination slice
+import { RootState } from "@/store/store";
 import { Pagination } from "@/components/common/pagination";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,38 +20,60 @@ import { Label } from "@/components/ui/label";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Trash2, Pencil, Filter } from "lucide-react";
+import { Trash2, Pencil } from "lucide-react";
 import Link from "next/link";
-import { toast } from "@/components/ui/use-toast"; // Assuming shadcn toast is available
+import { toast } from "@/components/ui/use-toast";
 
 interface Repairer {
-  id: number;
+  id: string;
   name: string;
   email: string;
   phone: string;
-  status: "Active" | "Inactive" | "Online" | "Offline";
-  lastLogin: string;
+  status: string;
+  joined: string;
 }
 
+interface ProfileRow {
+  id: string;
+  first_name: string | null;
+  last_name: string | null;
+  business_name: string | null;
+  email: string | null;
+  phone_number: string | null;
+  verification_status: string | null;
+  created_at: string;
+}
+
+const toRepairer = (row: ProfileRow): Repairer => ({
+  id: row.id,
+  name:
+    [row.first_name, row.last_name].filter(Boolean).join(" ") ||
+    row.business_name ||
+    "—",
+  email: row.email || "—",
+  phone: row.phone_number || "—",
+  status: row.verification_status || "unverified",
+  joined: row.created_at,
+});
 
 const fetchRepairers = async (): Promise<Repairer[]> => {
-  const { data } = await apiClient.get("/repairers");
-  return data;
+  const response = await fetch("/api/admin/repairers");
+  if (!response.ok) throw new Error("Failed to fetch repairers");
+  const rows: ProfileRow[] = await response.json();
+  return rows.map(toRepairer);
 };
 
 const repairerSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email address"),
   phone: z.string().min(1, "Phone is required"),
-  status: z.enum(["Active", "Inactive", "Online", "Offline"]),
+  status: z.string().min(1, "Status is required"),
 });
-
 
 type RepairerForm = z.infer<typeof repairerSchema>;
 
-
-export default function RepairerPage() {
-  const [tab, setTab] = useState<"total" | "active" | "inactive">("total");
+export default function RepairersPage() {
+  const [tab, setTab] = useState<"total" | "verified" | "unverified">("total");
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   const queryClient = useQueryClient();
@@ -66,11 +87,9 @@ export default function RepairerPage() {
   );
 
   const filteredRepairers = repairers?.filter((repairer) => {
-    //
-    console.log("Status:", repairer.status)
     if (tab === "total") return true;
-    if (tab === "active") return repairer.status === "Online" || repairer.status === "Active";
-    if (tab === "inactive") return repairer.status === "Offline" || repairer.status === "Inactive";
+    if (tab === "verified") return repairer.status === "verified";
+    if (tab === "unverified") return repairer.status !== "verified";
     return false;
   }) || [];
 
@@ -83,23 +102,35 @@ export default function RepairerPage() {
   );
 
   const totalCount = repairers?.length || 0;
-  const activeCount = repairers?.filter((c) => c.status === "Online" || c.status === "Active").length || 0;
-  const inactiveCount = repairers?.filter((c) => c.status === "Offline" || c.status === "Inactive").length || 0;
+  const verifiedCount = repairers?.filter((r) => r.status === "verified").length || 0;
+  const unverifiedCount = repairers?.filter((r) => r.status !== "verified").length || 0;
 
-  // Update your useForm hook
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<RepairerForm>({
+  const { register, handleSubmit, formState: { errors } } = useForm<RepairerForm>({
     resolver: zodResolver(repairerSchema),
   });
 
-
-
-
   const editMutation = useMutation({
-    mutationFn: (repairer: Repairer) => apiClient.put(`/repairers/${repairer.id}`, repairer),
+    mutationFn: (repairer: Repairer) => {
+      const [first_name, ...rest] = repairer.name.split(" ");
+      return fetch(`/api/admin/repairers/${repairer.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          first_name,
+          last_name: rest.join(" "),
+          email: repairer.email,
+          phone_number: repairer.phone,
+          verification_status: repairer.status,
+        }),
+      }).then((res) => {
+        if (!res.ok) throw new Error("Failed to update repairer");
+        return res.json();
+      });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["repairers"] });
       toast({ title: "Repairer updated successfully" });
-      setIsEditDialogOpen(false); // Close the dialog
+      setIsEditDialogOpen(false);
     },
     onError: () => {
       toast({ title: "Failed to update repairer", variant: "destructive" });
@@ -107,7 +138,11 @@ export default function RepairerPage() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: number) => apiClient.delete(`/repairers/${id}`),
+    mutationFn: (id: string) =>
+      fetch(`/api/admin/repairers/${id}`, { method: "DELETE" }).then((res) => {
+        if (!res.ok) throw new Error("Failed to delete repairer");
+        return res.json();
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["repairers"] });
       toast({ title: "Repairer deleted successfully" });
@@ -116,8 +151,6 @@ export default function RepairerPage() {
       toast({ title: "Failed to delete repairer", variant: "destructive" });
     },
   });
-
-
 
   if (isLoading) return <div className="p-6 text-center text-gray-500">Loading...</div>;
 
@@ -132,16 +165,16 @@ export default function RepairerPage() {
           TOTAL REPAIRER ({totalCount})
         </button>
         <button
-          onClick={() => setTab("active")}
-          className={`text-sm font-medium ${tab === "active" ? "text-gray-900 border-b-2 border-blue-500" : "text-gray-500"}`}
+          onClick={() => setTab("verified")}
+          className={`text-sm font-medium ${tab === "verified" ? "text-gray-900 border-b-2 border-blue-500" : "text-gray-500"}`}
         >
-          ACTIVE REPAIRER ({activeCount})
+          VERIFIED REPAIRER ({verifiedCount})
         </button>
         <button
-          onClick={() => setTab("inactive")}
-          className={`text-sm font-medium ${tab === "inactive" ? "text-gray-900 border-b-2 border-blue-500" : "text-gray-500"}`}
+          onClick={() => setTab("unverified")}
+          className={`text-sm font-medium ${tab === "unverified" ? "text-gray-900 border-b-2 border-blue-500" : "text-gray-500"}`}
         >
-          INACTIVE REPAIRER ({inactiveCount})
+          UNVERIFIED REPAIRER ({unverifiedCount})
         </button>
       </div>
 
@@ -153,7 +186,7 @@ export default function RepairerPage() {
               <th className="px-4 py-3">Email</th>
               <th className="px-4 py-3">Phone Number</th>
               <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Last Login</th>
+              <th className="px-4 py-3">Joined</th>
               <th className="px-4 py-3">Actions</th>
             </tr>
           </thead>
@@ -167,14 +200,15 @@ export default function RepairerPage() {
                 </td>
                 <td className="px-4 py-3 text-sm text-gray-500">{repairer.email}</td>
                 <td className="px-4 py-3 text-sm text-gray-900">{repairer.phone}</td>
-                <td className={`px-4 py-3 text-sm ${repairer.status === "Active" ? "text-green-600" : "text-orange-500"}`}>
+                <td className={`px-4 py-3 text-sm capitalize ${repairer.status === "verified" ? "text-green-600" : "text-orange-500"}`}>
                   {repairer.status}
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-500">{repairer.lastLogin}</td>
+                <td className="px-4 py-3 text-sm text-gray-500">
+                  {new Date(repairer.joined).toLocaleDateString()}
+                </td>
                 <td className="px-4 py-3 text-sm">
                   <div className="flex space-x-2">
                     <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-
                       <DialogTrigger asChild>
                         <Button
                           variant="outline"
@@ -187,7 +221,7 @@ export default function RepairerPage() {
                       <DialogContent className="sm:max-w-md">
                         <DialogHeader>
                           <DialogTitle className="text-lg font-semibold">
-                            Edit Vendor
+                            Edit Repairer
                           </DialogTitle>
                         </DialogHeader>
                         <form
@@ -249,8 +283,9 @@ export default function RepairerPage() {
                               {...register("status")}
                               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                             >
-                              <option value="Active">Active</option>
-                              <option value="Inactive">Inactive</option>
+                              <option value="verified">Verified</option>
+                              <option value="unverified">Unverified</option>
+                              <option value="pending">Pending</option>
                             </select>
                           </div>
                           <Button
@@ -288,7 +323,3 @@ export default function RepairerPage() {
     </div>
   );
 }
-
-{/*
-  
-*/}

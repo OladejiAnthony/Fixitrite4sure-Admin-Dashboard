@@ -1,12 +1,11 @@
-//app\(dashboard)\repairers\page.tsx
+// app/(dashboard)/repair-companies/page.tsx
 
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiClient } from "@/lib/api-client";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "@/store/store"; // Assuming store is configured with the pagination slice
+import { RootState } from "@/store/store";
 import { Pagination } from "@/components/common/pagination";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,42 +20,66 @@ import { Label } from "@/components/ui/label";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Trash2, Pencil, Filter } from "lucide-react";
+import { Trash2, Pencil } from "lucide-react";
 import Link from "next/link";
-import { toast } from "@/components/ui/use-toast"; // Assuming shadcn toast is available
+import { toast } from "@/components/ui/use-toast";
 
 interface RepairCompany {
-  id: number;
+  id: string;
   name: string;
   email: string;
   phone: string;
-  status: "Active" | "Inactive" | "Online" | "Offline";
-  lastLogin: string;
+  status: string;
+  joined: string;
 }
 
+interface ProfileRow {
+  id: string;
+  company_name: string | null;
+  business_name: string | null;
+  first_name: string | null;
+  last_name: string | null;
+  email: string | null;
+  phone_number: string | null;
+  verification_status: string | null;
+  created_at: string;
+}
+
+const toRepairCompany = (row: ProfileRow): RepairCompany => ({
+  id: row.id,
+  name:
+    row.company_name ||
+    row.business_name ||
+    [row.first_name, row.last_name].filter(Boolean).join(" ") ||
+    "—",
+  email: row.email || "—",
+  phone: row.phone_number || "—",
+  status: row.verification_status || "unverified",
+  joined: row.created_at,
+});
 
 const fetchRepairCompanies = async (): Promise<RepairCompany[]> => {
-  const { data } = await apiClient.get("/repair-companies");
-  return data;
+  const response = await fetch("/api/admin/repair-companies");
+  if (!response.ok) throw new Error("Failed to fetch repair companies");
+  const rows: ProfileRow[] = await response.json();
+  return rows.map(toRepairCompany);
 };
 
-const repairCompanySchema = z.object({
+const companySchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Invalid email address"),
   phone: z.string().min(1, "Phone is required"),
-  status: z.enum(["Active", "Inactive", "Online", "Offline"]),
+  status: z.string().min(1, "Status is required"),
 });
 
-
-type RepairerForm = z.infer<typeof repairCompanySchema>;
-
+type CompanyForm = z.infer<typeof companySchema>;
 
 export default function RepairCompaniesPage() {
-  const [tab, setTab] = useState<"total" | "active" | "inactive">("total");
+  const [tab, setTab] = useState<"total" | "verified" | "unverified">("total");
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   const queryClient = useQueryClient();
-  const { data: repairCompanies, isLoading } = useQuery({
+  const { data: companies, isLoading } = useQuery({
     queryKey: ["repair-companies"],
     queryFn: fetchRepairCompanies,
   });
@@ -65,41 +88,48 @@ export default function RepairCompaniesPage() {
     (state: RootState) => state.pagination
   );
 
-  const filteredRepairers = repairCompanies?.filter((repairer) => {
-
-    console.log("Status:", repairer.status)
+  const filteredCompanies = companies?.filter((company) => {
     if (tab === "total") return true;
-    if (tab === "active") return repairer.status === "Online" || repairer.status === "Active";
-    if (tab === "inactive") return repairer.status === "Offline" || repairer.status === "Inactive";
+    if (tab === "verified") return company.status === "verified";
+    if (tab === "unverified") return company.status !== "verified";
     return false;
   }) || [];
 
-  const totalItems = filteredRepairers.length;
+  const totalItems = filteredCompanies.length;
   const startItem = (currentPage - 1) * itemsPerPage + 1;
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
-  const paginatedRepairers = filteredRepairers.slice(
+  const paginatedCompanies = filteredCompanies.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
-  const totalCount = repairCompanies?.length || 0;
-  const activeCount = repairCompanies?.filter((c) => c.status === "Online" || c.status === "Active").length || 0;
-  const inactiveCount = repairCompanies?.filter((c) => c.status === "Offline" || c.status === "Inactive").length || 0;
+  const totalCount = companies?.length || 0;
+  const verifiedCount = companies?.filter((c) => c.status === "verified").length || 0;
+  const unverifiedCount = companies?.filter((c) => c.status !== "verified").length || 0;
 
-  // Update your useForm hook
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<RepairerForm>({
-    resolver: zodResolver(repairCompanySchema),
+  const { register, handleSubmit, formState: { errors } } = useForm<CompanyForm>({
+    resolver: zodResolver(companySchema),
   });
 
-
-
-
   const editMutation = useMutation({
-    mutationFn: (repairCompany: RepairCompany) => apiClient.put(`/repair-companies/${repairCompany.id}`, repairCompany),
+    mutationFn: (company: RepairCompany) =>
+      fetch(`/api/admin/repair-companies/${company.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          company_name: company.name,
+          email: company.email,
+          phone_number: company.phone,
+          verification_status: company.status,
+        }),
+      }).then((res) => {
+        if (!res.ok) throw new Error("Failed to update repair company");
+        return res.json();
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["repair-companies"] });
-      toast({ title: "Repair Company updated successfully" });
-      setIsEditDialogOpen(false); // Close the dialog
+      toast({ title: "Repair company updated successfully" });
+      setIsEditDialogOpen(false);
     },
     onError: () => {
       toast({ title: "Failed to update repair company", variant: "destructive" });
@@ -107,23 +137,25 @@ export default function RepairCompaniesPage() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: (id: number) => apiClient.delete(`/repair-companies/${id}`),
+    mutationFn: (id: string) =>
+      fetch(`/api/admin/repair-companies/${id}`, { method: "DELETE" }).then((res) => {
+        if (!res.ok) throw new Error("Failed to delete repair company");
+        return res.json();
+      }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["repair-companies"] });
-      toast({ title: "Repair Company deleted successfully" });
+      toast({ title: "Repair company deleted successfully" });
     },
     onError: () => {
       toast({ title: "Failed to delete repair company", variant: "destructive" });
     },
   });
 
-
-
   if (isLoading) return <div className="p-6 text-center text-gray-500">Loading...</div>;
 
   return (
     <div className="min-h-screen bg-white p-6 font-sans text-gray-900">
-      <h2 className="text-xl font-bold uppercase tracking-wide mb-6">Repairer Company</h2>
+      <h2 className="text-xl font-bold uppercase tracking-wide mb-6">Repair Companies</h2>
       <div className="flex space-x-6 mb-6 border-b border-gray-200 pb-2">
         <button
           onClick={() => setTab("total")}
@@ -132,16 +164,16 @@ export default function RepairCompaniesPage() {
           TOTAL COMPANY ({totalCount})
         </button>
         <button
-          onClick={() => setTab("active")}
-          className={`text-sm font-medium ${tab === "active" ? "text-gray-900 border-b-2 border-blue-500" : "text-gray-500"}`}
+          onClick={() => setTab("verified")}
+          className={`text-sm font-medium ${tab === "verified" ? "text-gray-900 border-b-2 border-blue-500" : "text-gray-500"}`}
         >
-          ACTIVE COMPANY ({activeCount})
+          VERIFIED COMPANY ({verifiedCount})
         </button>
         <button
-          onClick={() => setTab("inactive")}
-          className={`text-sm font-medium ${tab === "inactive" ? "text-gray-900 border-b-2 border-blue-500" : "text-gray-500"}`}
+          onClick={() => setTab("unverified")}
+          className={`text-sm font-medium ${tab === "unverified" ? "text-gray-900 border-b-2 border-blue-500" : "text-gray-500"}`}
         >
-          INACTIVE COMPANY ({inactiveCount})
+          UNVERIFIED COMPANY ({unverifiedCount})
         </button>
       </div>
 
@@ -153,28 +185,29 @@ export default function RepairCompaniesPage() {
               <th className="px-4 py-3">Email</th>
               <th className="px-4 py-3">Phone Number</th>
               <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Last Login</th>
+              <th className="px-4 py-3">Joined</th>
               <th className="px-4 py-3">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-200">
-            {paginatedRepairers.map((repairer) => (
-              <tr key={repairer.id} className="hover:bg-gray-50">
+            {paginatedCompanies.map((company) => (
+              <tr key={company.id} className="hover:bg-gray-50">
                 <td className="px-4 py-3 text-sm font-medium text-gray-900">
-                  <Link href={`/repairers/${repairer.id}`} className="hover:underline hover:text-blue-300">
-                    {repairer.name}
+                  <Link href={`/repair-companies/${company.id}`} className="hover:underline hover:text-blue-300">
+                    {company.name}
                   </Link>
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-500">{repairer.email}</td>
-                <td className="px-4 py-3 text-sm text-gray-900">{repairer.phone}</td>
-                <td className={`px-4 py-3 text-sm ${repairer.status === "Active" ? "text-green-600" : "text-orange-500"}`}>
-                  {repairer.status}
+                <td className="px-4 py-3 text-sm text-gray-500">{company.email}</td>
+                <td className="px-4 py-3 text-sm text-gray-900">{company.phone}</td>
+                <td className={`px-4 py-3 text-sm capitalize ${company.status === "verified" ? "text-green-600" : "text-orange-500"}`}>
+                  {company.status}
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-500">{repairer.lastLogin}</td>
+                <td className="px-4 py-3 text-sm text-gray-500">
+                  {new Date(company.joined).toLocaleDateString()}
+                </td>
                 <td className="px-4 py-3 text-sm">
                   <div className="flex space-x-2">
                     <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-
                       <DialogTrigger asChild>
                         <Button
                           variant="outline"
@@ -187,22 +220,22 @@ export default function RepairCompaniesPage() {
                       <DialogContent className="sm:max-w-md">
                         <DialogHeader>
                           <DialogTitle className="text-lg font-semibold">
-                            Edit Vendor
+                            Edit Repair Company
                           </DialogTitle>
                         </DialogHeader>
                         <form
                           onSubmit={handleSubmit((data) => {
-                            editMutation.mutate({ ...repairer, ...data });
+                            editMutation.mutate({ ...company, ...data });
                           })}
                           className="space-y-4"
                         >
                           <div>
                             <Label htmlFor="name" className="text-sm font-medium">
-                              Name
+                              Company Name
                             </Label>
                             <Input
                               id="name"
-                              defaultValue={repairer.name}
+                              defaultValue={company.name}
                               {...register("name")}
                               className="mt-1"
                             />
@@ -213,7 +246,7 @@ export default function RepairCompaniesPage() {
                             </Label>
                             <Input
                               id="email"
-                              defaultValue={repairer.email}
+                              defaultValue={company.email}
                               {...register("email")}
                               className="mt-1"
                             />
@@ -229,7 +262,7 @@ export default function RepairCompaniesPage() {
                             </Label>
                             <Input
                               id="phone"
-                              defaultValue={repairer.phone}
+                              defaultValue={company.phone}
                               {...register("phone")}
                               className="mt-1"
                             />
@@ -245,12 +278,13 @@ export default function RepairCompaniesPage() {
                             </Label>
                             <select
                               id="status"
-                              defaultValue={repairer.status}
+                              defaultValue={company.status}
                               {...register("status")}
                               className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                             >
-                              <option value="Active">Active</option>
-                              <option value="Inactive">Inactive</option>
+                              <option value="verified">Verified</option>
+                              <option value="unverified">Unverified</option>
+                              <option value="pending">Pending</option>
                             </select>
                           </div>
                           <Button
@@ -267,8 +301,8 @@ export default function RepairCompaniesPage() {
                       size="sm"
                       className="text-red-500 hover:text-red-700"
                       onClick={() => {
-                        if (confirm("Are you sure you want to delete this repairer?")) {
-                          deleteMutation.mutate(repairer.id);
+                        if (confirm("Are you sure you want to delete this repair company?")) {
+                          deleteMutation.mutate(company.id);
                         }
                       }}
                     >
@@ -288,7 +322,3 @@ export default function RepairCompaniesPage() {
     </div>
   );
 }
-
-{/*
-  
-  */}

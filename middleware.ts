@@ -8,6 +8,7 @@ const PUBLIC_PATHS = [
   "/register",
   "/forgot-password",
   "/email-verification",
+  "/api/auth/grant-admin",
 ];
 
 export async function middleware(request: NextRequest) {

@@ -1,9 +1,9 @@
 //components/auth/login-page.tsx
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -37,6 +37,7 @@ export function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
+  const searchParams = useSearchParams();
 
   const {
     register,
@@ -45,6 +46,14 @@ export function LoginPage() {
   } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
   });
+
+  useEffect(() => {
+    if (searchParams.get("error") === "unauthorized") {
+      toast.error(
+        "Your account doesn't have admin access yet. Contact an existing admin to get access."
+      );
+    }
+  }, [searchParams]);
 
   const onSubmit = async (data: LoginForm) => {
     setIsLoading(true);

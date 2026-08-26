@@ -50,11 +50,21 @@ export function RegisterPage() {
     setIsLoading(true);
 
     try {
-      await authService.register({
+      const { user } = await authService.register({
         name: data.name,
         email: data.email,
         password: data.password,
       });
+
+      if (user) {
+        try {
+          await authService.grantAdminAccess(user.id);
+        } catch {
+          toast.error(
+            "Account created, but admin access couldn't be granted automatically. Contact an existing admin."
+          );
+        }
+      }
 
       toast.success("Registration successful! Please verify your email.");
       router.push(`/email-verification?email=${encodeURIComponent(data.email)}`);

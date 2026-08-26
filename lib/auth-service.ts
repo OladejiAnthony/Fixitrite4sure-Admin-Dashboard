@@ -48,6 +48,21 @@ export const authService = {
     return { user: data.user, session: data.session };
   },
 
+  async grantAdminAccess(userId: string) {
+    const response = await fetch("/api/auth/grant-admin", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId }),
+    });
+
+    if (!response.ok) {
+      const { error } = await response
+        .json()
+        .catch(() => ({ error: "Failed to grant admin access" }));
+      throw new Error(error);
+    }
+  },
+
   async verifyEmail(payload: z.infer<typeof verifyEmailSchema>) {
     const { email, token } = verifyEmailSchema.parse(payload);
     const supabase = createClient();

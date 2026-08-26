@@ -3,7 +3,6 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiClient } from "@/lib/api-client";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store"; // Assuming store is configured with the pagination slice
@@ -21,37 +20,39 @@ import { Label } from "@/components/ui/label";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Trash2, Pencil, Filter } from "lucide-react";
+import { Trash2, Pencil } from "lucide-react";
 import Link from "next/link";
 import { toast } from "@/components/ui/use-toast"; // Assuming shadcn toast is available
 
 interface Admin {
-  id: number;
+  id: string;
   name: string;
   email: string;
   role: string;
   status: "Active" | "Inactive";
-  lastLogin: string;
+  lastLogin: string | null;
 }
 
 const fetchAdmins = async (): Promise<Admin[]> => {
-  const { data } = await apiClient.get("/superAdmins");
-  return data;
+  const res = await fetch("/api/admin/super-admins");
+  if (!res.ok) throw new Error("Failed to load admins");
+  return res.json();
 };
 
-const adminSchema = z.object({
+const editSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  email: z.string().email("Invalid email address"),
-  role: z.string().min(1, "Role is required"),
   status: z.enum(["Active", "Inactive"]),
 });
 const inviteSchema = z.object({
   email: z.string().email("Invalid email address"),
 });
 
-type AdminForm = z.infer<typeof adminSchema>;
+type EditForm = z.infer<typeof editSchema>;
 type InviteForm = z.infer<typeof inviteSchema>;
 
+function formatLastLogin(lastLogin: string | null) {
+  return lastLogin ? new Date(lastLogin).toLocaleString() : "Never";
+}
 
 export default function SuperAdminPage() {
   const [tab, setTab] = useState<"total" | "active" | "inactive">("total");
@@ -88,9 +89,12 @@ export default function SuperAdminPage() {
   const inactiveCount =
     admins?.filter((a) => a.status === "Inactive").length || 0;
 
-  // Update your useForm hook
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<AdminForm>({
-    resolver: zodResolver(adminSchema),
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<EditForm>({
+    resolver: zodResolver(editSchema),
   });
   const {
     register: registerInvite,
@@ -101,47 +105,67 @@ export default function SuperAdminPage() {
     resolver: zodResolver(inviteSchema),
   });
 
-
   const inviteMutation = useMutation({
-    mutationFn: (data: InviteForm) =>
-      apiClient.post("/superAdmins", {
-        ...data,
-        name: "Invited Admin",
-        role: "Admin",
-        status: "Inactive",
-        lastLogin: new Date().toLocaleString()
-      }),
+    mutationFn: async (data: InviteForm) => {
+      const res = await fetch("/api/admin/super-admins", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) {
+        const { error } = await res.json().catch(() => ({ error: "Failed to send invite" }));
+        throw new Error(error);
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["superAdmins"] });
       toast({ title: "Invite sent successfully" });
       resetInvite();
       setIsInviteDialogOpen(false);
     },
-    onError: () => {
-      toast({ title: "Failed to send invite", variant: "destructive" });
+    onError: (error: Error) => {
+      toast({ title: error.message || "Failed to send invite", variant: "destructive" });
     },
   });
 
   const editMutation = useMutation({
-    mutationFn: (admin: Admin) => apiClient.put(`/superAdmins/${admin.id}`, admin),
+    mutationFn: async ({ id, ...data }: EditForm & { id: string }) => {
+      const res = await fetch(`/api/admin/super-admins/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) {
+        const { error } = await res.json().catch(() => ({ error: "Failed to update admin" }));
+        throw new Error(error);
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["superAdmins"] });
       toast({ title: "Admin updated successfully" });
-      setIsEditDialogOpen(false); // Close the dialog
+      setIsEditDialogOpen(false);
     },
-    onError: () => {
-      toast({ title: "Failed to update admin", variant: "destructive" });
+    onError: (error: Error) => {
+      toast({ title: error.message || "Failed to update admin", variant: "destructive" });
     },
   });
 
-  const deleteMutation = useMutation({
-    mutationFn: (id: number) => apiClient.delete(`/superAdmins/${id}`),
+  const revokeMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const res = await fetch(`/api/admin/super-admins/${id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        const { error } = await res.json().catch(() => ({ error: "Failed to revoke admin access" }));
+        throw new Error(error);
+      }
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["superAdmins"] });
-      toast({ title: "Admin deleted successfully" });
+      toast({ title: "Admin access revoked" });
     },
-    onError: () => {
-      toast({ title: "Failed to delete admin", variant: "destructive" });
+    onError: (error: Error) => {
+      toast({ title: error.message || "Failed to revoke admin access", variant: "destructive" });
     },
   });
 
@@ -234,7 +258,7 @@ export default function SuperAdminPage() {
                 <td className={`px-4 py-3 text-sm ${admin.status === "Active" ? "text-green-600" : "text-orange-500"}`}>
                   {admin.status}
                 </td>
-                <td className="px-4 py-3 text-sm text-gray-500">{admin.lastLogin}</td>
+                <td className="px-4 py-3 text-sm text-gray-500">{formatLastLogin(admin.lastLogin)}</td>
                 <td className="px-4 py-3 text-sm">
                   <div className="flex space-x-2">
                     <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
@@ -256,7 +280,7 @@ export default function SuperAdminPage() {
                         </DialogHeader>
                         <form
                           onSubmit={handleSubmit((data) => {
-                            editMutation.mutate({ ...admin, ...data });
+                            editMutation.mutate({ id: admin.id, ...data });
                           })}
                           className="space-y-4"
                         >
@@ -270,38 +294,11 @@ export default function SuperAdminPage() {
                               {...register("name")}
                               className="mt-1"
                             />
-                          </div>
-                          <div>
-                            <Label htmlFor="email" className="text-sm font-medium">
-                              Email
-                            </Label>
-                            <Input
-                              id="email"
-                              defaultValue={admin.email}
-                              {...register("email")}
-                              className="mt-1"
-                            />
-                            {errors.email && (
+                            {errors.name && (
                               <p className="text-red-500 text-xs mt-1">
-                                {errors.email.message}
+                                {errors.name.message}
                               </p>
                             )}
-                          </div>
-                          <div>
-                            <Label htmlFor="role" className="text-sm font-medium">
-                              Role
-                            </Label>
-                            <select
-                              id="role"
-                              defaultValue={admin.role}
-                              {...register("role")}
-                              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                            >
-                              <option value="Super Admin">Super Admin</option>
-                              <option value="Moderator">Moderator</option>
-                              <option value="Editor">Editor</option>
-                              <option value="Customer Agent">Customer Agent</option>
-                            </select>
                           </div>
                           <div>
                             <Label htmlFor="status" className="text-sm font-medium">
@@ -320,8 +317,9 @@ export default function SuperAdminPage() {
                           <Button
                             type="submit"
                             className="w-full bg-blue-500 hover:bg-blue-600"
+                            disabled={editMutation.isPending}
                           >
-                            Save Changes
+                            {editMutation.isPending ? "Saving..." : "Save Changes"}
                           </Button>
                         </form>
                       </DialogContent>
@@ -330,9 +328,10 @@ export default function SuperAdminPage() {
                       variant="outline"
                       size="sm"
                       className="text-red-500 hover:text-red-700"
+                      title="Revoke admin access"
                       onClick={() => {
-                        if (confirm("Are you sure you want to delete this admin?")) {
-                          deleteMutation.mutate(admin.id);
+                        if (confirm("Revoke this admin's dashboard access? Their account itself won't be deleted.")) {
+                          revokeMutation.mutate(admin.id);
                         }
                       }}
                     >
@@ -352,7 +351,3 @@ export default function SuperAdminPage() {
     </div>
   );
 }
-
-{/*
-  
-  */}

@@ -17,6 +17,7 @@ export async function GET() {
       "id, first_name, last_name, email, phone_number, verification_status, created_at"
     )
     .eq("user_type", "customer")
+    .eq("is_admin", false)
     .order("created_at", { ascending: false });
 
   if (error) {

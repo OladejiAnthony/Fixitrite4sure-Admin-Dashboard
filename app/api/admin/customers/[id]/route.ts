@@ -20,6 +20,7 @@ export async function GET(
     )
     .eq("id", id)
     .eq("user_type", "customer")
+    .eq("is_admin", false)
     .single();
 
   if (error) {
@@ -51,6 +52,7 @@ export async function PUT(
     })
     .eq("id", id)
     .eq("user_type", "customer")
+    .eq("is_admin", false)
     .select()
     .single();
 
@@ -75,7 +77,8 @@ export async function DELETE(
     .from("profiles")
     .delete()
     .eq("id", id)
-    .eq("user_type", "customer");
+    .eq("user_type", "customer")
+    .eq("is_admin", false);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

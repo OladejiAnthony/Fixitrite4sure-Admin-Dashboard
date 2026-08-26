@@ -1,8 +1,14 @@
 // middleware.ts
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import { createAdminClient } from "@/lib/supabase/admin";
 
+// Middleware runs on the Edge runtime, which can't load the service-role
+// admin client (Vercel's Edge bundler rejects it as an unsupported
+// module). So middleware only does the cheap, Edge-safe check — is there
+// a session at all — using the anon key. The actual profiles.is_admin
+// check (which needs the service-role client to bypass owner-scoped RLS)
+// lives in app/(dashboard)/layout.tsx, a Server Component that runs on
+// the regular Node.js runtime.
 const PUBLIC_PATHS = [
   "/login",
   "/register",
@@ -49,23 +55,6 @@ export async function middleware(request: NextRequest) {
   }
 
   if (!user) {
-    return redirectToLogin(request);
-  }
-
-  // RLS on profiles is owner-scoped, so a plain client-side/session read
-  // isn't sufficient to safely gate access — check via service_role.
-  try {
-    const admin = createAdminClient();
-    const { data: profile, error } = await admin
-      .from("profiles")
-      .select("is_admin")
-      .eq("id", user.id)
-      .single();
-
-    if (error || !profile?.is_admin) {
-      return redirectToLogin(request);
-    }
-  } catch {
     return redirectToLogin(request);
   }
 

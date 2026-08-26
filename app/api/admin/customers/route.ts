@@ -1,10 +1,14 @@
 // app/api/admin/customers/route.ts
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAdmin } from "@/lib/supabase/require-admin";
 
 // Admin needs every customer's row; profiles RLS is owner-scoped, so this
 // goes through the service_role client rather than the caller's session.
 export async function GET() {
+  const denied = await requireAdmin();
+  if (denied) return denied;
+
   const admin = createAdminClient();
 
   const { data, error } = await admin

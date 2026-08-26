@@ -3,6 +3,11 @@
 # dependencies
 /node_modules
 
+# npm is canonical (package-lock.json). pnpm-lock.yaml is a stale stub —
+# committing it makes Vercel auto-detect pnpm and resolve different
+# dependency versions than what's tested locally.
+pnpm-lock.yaml
+
 # next.js
 /.next/
 /out/

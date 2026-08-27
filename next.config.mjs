@@ -9,6 +9,7 @@ const nextConfig = {
   images: {
     domains: ["localhost"],
     unoptimized: true,
+    remotePatterns: [{ protocol: "https", hostname: "**.supabase.co" }],
   },
 };
 

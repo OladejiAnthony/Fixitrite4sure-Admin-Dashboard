@@ -2,8 +2,6 @@
 "use client";
 
 import React, { useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { apiClient } from "@/lib/api-client";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -12,15 +10,35 @@ import { useSelector } from "react-redux";
 import type { RootState } from "@/store/store";
 import { Pagination } from "@/components/common/pagination";
 import { format } from "date-fns";
+import { useAdverts } from "@/hooks/use-adverts";
 
 type Advert = {
-  id: number;
-  dateTime: string; // ISO
-  advertiser: string;
-  category: string;
-  amountPaid: number;
-  status: "Pending" | "Approved" | "Rejected";
+  id: string;
+  created_at: string;
+  media_type: "image" | "video";
+  review_status: "pending" | "approved" | "rejected";
+  author: { first_name: string | null; last_name: string | null } | null;
+  tier: { label: string; amount: number; currency: string } | null;
+  transaction: { amount: number; currency: string } | null;
 };
+
+const REVIEW_TO_DISPLAY: Record<Advert["review_status"], "Pending" | "Approved" | "Rejected"> = {
+  pending: "Pending",
+  approved: "Approved",
+  rejected: "Rejected",
+};
+
+function advertiserName(a: Advert) {
+  const name = [a.author?.first_name, a.author?.last_name].filter(Boolean).join(" ");
+  return name || "Unknown advertiser";
+}
+
+function advertAmount(a: Advert) {
+  const amount = a.transaction?.amount ?? a.tier?.amount;
+  const currency = a.transaction?.currency ?? a.tier?.currency ?? "NGN";
+  if (amount == null) return "—";
+  return `${currency} ${amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
 
 const FiltersSchema = z.object({
   search: z.string().optional(),
@@ -53,19 +71,12 @@ export default function AdvertisementBannerPage() {
 
   const watched = watch();
 
-  // fetch adverts (db.json -> /adverts)
+  // fetch adverts (bearing_posts where is_advert = true, via Supabase)
   const {
     data: adverts = [] as Advert[],
     isLoading,
     isError,
-  } = useQuery<Advert[]>({
-    queryKey: ["adverts"],
-    queryFn: async () => {
-      const res = await apiClient.get<Advert[]>("/adverts");
-      return res.data;
-    },
-    staleTime: 1000 * 60 * 2,
-  });
+  } = useAdverts();
 
   // client-side filtering
   const filtered = useMemo(() => {
@@ -76,22 +87,21 @@ export default function AdvertisementBannerPage() {
 
     return ((adverts as Advert[]) || []).filter((a) => {
       if (s) {
-        const hay =
-          `${a.advertiser} ${a.category} ${a.amountPaid}`.toLowerCase();
+        const hay = `${advertiserName(a)} ${a.tier?.label ?? ""} ${advertAmount(a)}`.toLowerCase();
         if (!hay.includes(s)) return false;
       }
 
       if (status && status !== "All") {
-        if (a.status !== status) return false;
+        if (REVIEW_TO_DISPLAY[a.review_status] !== status) return false;
       }
 
       if (from) {
-        const d = new Date(a.dateTime);
+        const d = new Date(a.created_at);
         if (d < from) return false;
       }
 
       if (to) {
-        const d = new Date(a.dateTime);
+        const d = new Date(a.created_at);
         const endOfTo = new Date(to);
         endOfTo.setHours(23, 59, 59, 999);
         if (d > endOfTo) return false;
@@ -126,7 +136,7 @@ export default function AdvertisementBannerPage() {
             </label>
             <input
               {...register("search")}
-              placeholder="Search by advertiser, category or amount"
+              placeholder="Search by advertiser, tier or amount"
               className="w-full bg-white border border-[#D1D5DB] rounded-[6px] px-[12px] py-[10px] text-[13px] leading-[18px] outline-none focus:ring-2 focus:ring-[#93C5FD]"
             />
             {errors.search ? (
@@ -205,7 +215,7 @@ export default function AdvertisementBannerPage() {
                   Advertiser
                 </th>
                 <th className="text-left px-[24px] py-[14px] text-[12px] leading-[14px] text-[#6B7280] font-medium uppercase tracking-[0.02em]">
-                  Advert Category
+                  Tier
                 </th>
                 <th className="text-left px-[24px] py-[14px] text-[12px] leading-[14px] text-[#6B7280] font-medium uppercase tracking-[0.02em]">
                   Amount Paid
@@ -251,28 +261,28 @@ export default function AdvertisementBannerPage() {
                 pageItems.map((adv) => (
                   <tr key={adv.id} className="hover:bg-[#FBFDFF]">
                     <td className="px-[24px] py-[16px] text-[13px] leading-[18px] text-[#4B5563] whitespace-nowrap">
-                      {format(new Date(adv.dateTime), "dd-MM-yyyy HH:mm:ss")}
+                      {format(new Date(adv.created_at), "dd-MM-yyyy HH:mm:ss")}
                     </td>
                     <td className="px-[24px] py-[16px] text-[13px] leading-[18px] text-[#111827]">
-                      {adv.advertiser}
+                      {advertiserName(adv)}
                     </td>
                     <td className="px-[24px] py-[16px] text-[13px] leading-[18px] text-[#4B5563]">
-                      {adv.category}
+                      {adv.tier?.label ?? "—"}
                     </td>
                     <td className="px-[24px] py-[16px] text-[13px] leading-[18px] text-[#111827]">
-                      ${adv.amountPaid.toFixed(3)}
+                      {advertAmount(adv)}
                     </td>
                     <td className="px-[24px] py-[16px] text-[13px] leading-[18px]">
                       <span
                         className={`inline-block text-[12px] leading-[14px] font-medium px-[10px] py-[6px] rounded-[18px] ${
-                          adv.status === "Pending"
+                          adv.review_status === "pending"
                             ? "bg-[#FFFBEB] text-[#92400E] border border-[#FDE68A]"
-                            : adv.status === "Approved"
+                            : adv.review_status === "approved"
                             ? "bg-[#ECFDF5] text-[#065F46] border border-[#34D399]"
                             : "bg-[#FEF2F2] text-[#991B1B] border border-[#FCA5A5]"
                         }`}
                       >
-                        {adv.status}
+                        {REVIEW_TO_DISPLAY[adv.review_status]}
                       </span>
                     </td>
                     <td className="px-[24px] py-[16px] text-center">

@@ -174,6 +174,51 @@ type VerificationCodesRow = {
   created_at: string;
 }
 
+type AdvertTiersRow = {
+  id: string;
+  label: string;
+  description: string | null;
+  amount: number;
+  currency: string;
+  active: boolean;
+}
+
+type AdvertTransactionsRow = {
+  id: string;
+  user_id: string;
+  advert_tier: string;
+  amount: number;
+  currency: string;
+  flutterwave_tx_ref: string;
+  flutterwave_transaction_id: string | null;
+  status: "pending" | "successful" | "failed" | "abandoned";
+  raw_response: Json | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// `review_status`/`review_reason`/`reviewed_by`/`reviewed_at` are included
+// ahead of the migration that adds them (owned by fixit-app-mobile, see the
+// admin-dashboard plan's Phase B) so the moderation code compiles against
+// the target shape now — same convention as `profiles.is_admin` above.
+type BearingPostsRow = {
+  id: string;
+  author_id: string;
+  caption: string | null;
+  media_url: string;
+  media_type: "image" | "video";
+  like_count: number;
+  is_advert: boolean;
+  advert_tier: string | null;
+  advert_transaction_id: string | null;
+  review_status: "pending" | "approved" | "rejected";
+  review_reason: string | null;
+  reviewed_by: string | null;
+  reviewed_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 type TableDef<Row extends { id?: string }> = {
   Row: Row;
   Insert: Partial<Row>;
@@ -199,6 +244,9 @@ export type Database = {
       addresses: TableDef<AddressesRow>;
       notifications: TableDef<NotificationsRow>;
       verification_codes: TableDef<VerificationCodesRow>;
+      advert_tiers: TableDef<AdvertTiersRow>;
+      advert_transactions: TableDef<AdvertTransactionsRow>;
+      bearing_posts: TableDef<BearingPostsRow>;
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

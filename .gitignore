@@ -36,4 +36,7 @@ CLAUDE.md
 .claude/
 .claudeignore
 
+# foglamp codebase scan (contains a secret edit token)
+.foglamp/
+
 .vercel

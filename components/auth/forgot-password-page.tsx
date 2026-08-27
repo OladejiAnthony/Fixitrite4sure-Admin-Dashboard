@@ -56,12 +56,12 @@ export function ForgotPasswordPage() {
 
   if (isSubmitted) {
     return (
-      <Card className="h-full">
-        <CardHeader>
-          <CardTitle className="text-center text-[#202224] font-nunito-sans text-[32px] font-bold tracking-[-0.114px]">
+      <Card>
+        <CardHeader className="space-y-1 pb-4">
+          <CardTitle className="text-center text-[#202224] font-nunito-sans text-[28px] font-bold tracking-[-0.114px]">
             Check Your Email
           </CardTitle>
-          <CardDescription className="mt-5 text-center text-prmary font-nunito-sans text-[18px] font-medium tracking-[-0.064px]">
+          <CardDescription className="text-center text-primary font-nunito-sans text-[16px] tracking-[-0.064px]">
             We've sent password reset instructions to your email address.
           </CardDescription>
         </CardHeader>
@@ -74,12 +74,12 @@ export function ForgotPasswordPage() {
             <Button
               variant="outline"
               onClick={() => setIsSubmitted(false)}
-              className="w-full"
+              className="w-full h-12 text-[15px] font-medium rounded-xl"
             >
               Try Again
             </Button>
-            <div className="text-center text-sm">
-              <Link href="/login" className="text-primary hover:underline">
+            <div className="text-center text-[14px] font-nunito-sans">
+              <Link href="/login" className="text-primary hover:underline font-medium">
                 Back to Sign In
               </Link>
             </div>
@@ -90,22 +90,22 @@ export function ForgotPasswordPage() {
   }
 
   return (
-    <Card className="h-[60vh]">
-      <CardHeader className="mt-3">
-        <CardTitle className="text-center text-[#202224] font-nunito-sans text-[32px] font-bold tracking-[-0.114px]">
+    <Card>
+      <CardHeader className="space-y-1 pb-4">
+        <CardTitle className="text-center text-[#202224] font-nunito-sans text-[28px] font-bold tracking-[-0.114px]">
           Forgot Password
         </CardTitle>
-        <CardDescription className="text-center text-primary font-nunito-sans text-[18px]  tracking-[-0.064px]">
+        <CardDescription className="text-center text-primary font-nunito-sans text-[16px] tracking-[-0.064px]">
           Enter your email address and we'll send you instructions to reset your
           password.
         </CardDescription>
       </CardHeader>
-      <CardContent className="mt-10">
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
-          <div className="space-y-4">
+      <CardContent>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          <div className="space-y-1.5">
             <Label
               htmlFor="email"
-              className="font-nunito-sans text-[18px]  font-semibold tracking-[-0.064px] leading-normal"
+              className="font-nunito-sans text-[15px] font-medium tracking-[-0.064px] leading-normal"
             >
               Email
             </Label>
@@ -114,6 +114,7 @@ export function ForgotPasswordPage() {
               type="email"
               placeholder="Enter your email address"
               {...register("email")}
+              className="h-11 rounded-lg border border-[#D8D8D8] bg-[#F2F2F2] text-primary font-nunito-sans text-[15px] tracking-[-0.064px]"
             />
             {errors.email && (
               <p className="text-sm text-destructive">{errors.email.message}</p>
@@ -122,16 +123,16 @@ export function ForgotPasswordPage() {
 
           <Button
             type="submit"
-            className="w-full bg-[#0586CF] text-white hover:bg-[#046FA2] transition-colors rounded-xl py-6 "
+            className="w-full bg-[#0586CF] text-white hover:bg-[#046FA2] transition-colors rounded-xl h-12 text-[15px] font-medium"
             disabled={isLoading}
           >
             {isLoading ? "Sending..." : "Send Reset Instructions"}
           </Button>
         </form>
 
-        <div className="mt-5 text-center text-sm">
+        <div className="mt-5 text-center text-[14px] font-nunito-sans">
           Remember your password?{" "}
-          <Link href="/login" className="text-primary hover:underline">
+          <Link href="/login" className="text-primary tracking-[-0.064px] hover:underline font-medium">
             Sign in
           </Link>
         </div>

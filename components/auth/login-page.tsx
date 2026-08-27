@@ -83,21 +83,21 @@ export function LoginPage() {
   };
 
   return (
-    <Card className="h-[90vh]">
-      <CardHeader>
-        <CardTitle className="text-center text-[#202224] font-nunito-sans text-[32px] font-bold tracking-[-0.114px]">
+    <Card>
+      <CardHeader className="space-y-1 pb-4">
+        <CardTitle className="text-center text-[#202224] font-nunito-sans text-[28px] font-bold tracking-[-0.114px]">
           Login
         </CardTitle>
-        <CardDescription className="text-center text-primary font-nunito-sans text-[18px]  tracking-[-0.064px]">
-          Please enter your email and password to Log in
+        <CardDescription className="text-center text-primary font-nunito-sans text-[16px] tracking-[-0.064px]">
+          Please enter your email and password to log in
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <div className="space-y-2">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+          <div className="space-y-1.5">
             <Label
               htmlFor="email"
-              className=" font-nunito-sans text-[18px] font-medium tracking-[-0.064px] leading-normal"
+              className="font-nunito-sans text-[15px] font-medium tracking-[-0.064px] leading-normal"
             >
               Email
             </Label>
@@ -106,17 +106,17 @@ export function LoginPage() {
               type="email"
               placeholder="admin@fixit.com"
               {...register("email")}
-              className="bg-[#F2F2F2] h-[40px] rounded-lg border border-[#D8D8D8] text-primary font-nunito-sans text-[18px]  tracking-[-0.064px]"
+              className="bg-[#F2F2F2] h-11 rounded-lg border border-[#D8D8D8] text-primary font-nunito-sans text-[15px] tracking-[-0.064px]"
             />
             {errors.email && (
               <p className="text-sm text-destructive">{errors.email.message}</p>
             )}
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <Label
               htmlFor="password"
-              className=" font-nunito-sans text-[18px] font-medium tracking-[-0.064px] leading-normal"
+              className="font-nunito-sans text-[15px] font-medium tracking-[-0.064px] leading-normal"
             >
               Password
             </Label>
@@ -125,60 +125,42 @@ export function LoginPage() {
               type="password"
               placeholder="Enter your password"
               {...register("password")}
-              className="h-[40px] rounded-lg border border-[#D8D8D8] bg-[#F2F2F2] text-primary font-nunito-sans text-[18px]  tracking-[-0.064px]"
+              className="h-11 rounded-lg border border-[#D8D8D8] bg-[#F2F2F2] text-primary font-nunito-sans text-[15px] tracking-[-0.064px]"
             />
             {errors.password && (
               <p className="text-sm text-destructive">
                 {errors.password.message}
               </p>
             )}
+
+            <div className="flex justify-end pt-0.5">
+              <Link
+                href="/forgot-password"
+                className="text-primary hover:underline font-nunito-sans text-[14px] font-medium tracking-[-0.064px]"
+              >
+                Forgot your password?
+              </Link>
+            </div>
           </div>
 
           <Button
             type="submit"
-            className="w-full bg-[#0586CF] text-white hover:bg-[#046FA2] transition-colors rounded-xl py-6"
+            className="w-full bg-[#0586CF] text-white hover:bg-[#046FA2] transition-colors rounded-xl h-12 text-[15px] font-medium"
             disabled={isLoading}
           >
             {isLoading ? "Signing in..." : "Sign In"}
           </Button>
         </form>
 
-        <div className="flex justify-between items-center mt-4">
-          <div className="mt-4 text-center text-sm">
-            <p className=" font-nunito-sans text-primary text-[18px] font-medium tracking-[-0.064px]">
-              Remember Password
-            </p>
-          </div>
-          <div className="mt-4 text-center text-sm">
-            <Link
-              href="/forgot-password"
-              className="text-primary hover:underline  font-nunito-sans text-[18px] font-medium tracking-[-0.064px]"
-            >
-              Forgot your password?
-            </Link>
-          </div>
-        </div>
-
-        <div className="mt-6 text-center text-[16px]">
+        <div className="mt-5 text-center text-[14px] font-nunito-sans">
           {"Don't have an account? "}
           <Link
             href="/register"
-            className=" text-primary font-nunito-sans text-[18px]  tracking-[-0.064px] hover:underline"
+            className="text-primary tracking-[-0.064px] hover:underline font-medium"
           >
             Sign up
           </Link>
         </div>
-
-        {/* <div className="mt-4 p-3 bg-muted rounded-md">
-          <p className="text-xs text-muted-foreground">
-            <strong>Demo credentials:</strong>
-            <br />
-            Email: admin@fixit.com
-            <br />
-            Password: password123
-          </p>
-        </div>
-         */}
       </CardContent>
     </Card>
   );

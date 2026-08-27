@@ -1,11 +1,21 @@
 // app\(dashboard)\advertisement-banners\[id]\page.tsx
 "use client";
 
+import { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 import { format } from "date-fns";
 import { ChevronLeft } from "lucide-react";
 import { useAdvert } from "@/hooks/use-advert";
+
+const reasonSchema = z.object({
+  reason: z.string().min(1, "Reason is required"),
+});
+type ReasonForm = z.infer<typeof reasonSchema>;
 
 type AdvertDetails = {
   id: string;
@@ -41,9 +51,38 @@ const STATUS_COLOR: Record<AdvertDetails["review_status"], string> = {
 export default function AdvertDetailsPage() {
   const router = useRouter();
   const params = useParams();
+  const queryClient = useQueryClient();
   const advertId = params?.id as string;
+  const [showRejectForm, setShowRejectForm] = useState(false);
 
   const { data: advert, isLoading } = useAdvert(advertId);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ReasonForm>({ resolver: zodResolver(reasonSchema) });
+
+  const reviewMutation = useMutation({
+    mutationFn: async (payload: { review_status: "approved" | "rejected"; review_reason?: string }) => {
+      const res = await fetch(`/api/admin/adverts/${advertId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error("Failed to update advert");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["advert", advertId] });
+      queryClient.invalidateQueries({ queryKey: ["adverts"] });
+      setShowRejectForm(false);
+    },
+  });
+
+  const onReject = (data: ReasonForm) => {
+    reviewMutation.mutate({ review_status: "rejected", review_reason: data.reason });
+  };
 
   if (isLoading) {
     return <div className="p-6 text-gray-600">Loading advert details...</div>;
@@ -115,10 +154,47 @@ export default function AdvertDetailsPage() {
             {a.review_reason}
           </p>
         )}
-        <p className="mt-4 text-xs text-gray-500">
-          Approve/reject actions are unavailable until the moderation columns are added to
-          bearing_posts in fixit-app-mobile — see the admin-dashboard plan&apos;s Phase B.
-        </p>
+
+        {a.review_status === "pending" && (
+          <>
+            <div className="mt-6 flex gap-3">
+              <button
+                onClick={() => reviewMutation.mutate({ review_status: "approved" })}
+                disabled={reviewMutation.isPending}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 text-xs font-medium rounded disabled:opacity-50"
+              >
+                Approve advert
+              </button>
+              <button
+                onClick={() => setShowRejectForm((v) => !v)}
+                disabled={reviewMutation.isPending}
+                className="text-blue-600 border border-blue-600 hover:bg-blue-50 px-4 py-2 text-xs font-medium rounded disabled:opacity-50"
+              >
+                Reject advert
+              </button>
+            </div>
+
+            {showRejectForm && (
+              <form onSubmit={handleSubmit(onReject)} className="mt-4">
+                <textarea
+                  {...register("reason")}
+                  placeholder="Enter the reason for rejection"
+                  className="block w-full max-w-2xl border border-gray-300 rounded-md shadow-sm p-2 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 h-[66px]"
+                />
+                {errors.reason && (
+                  <p className="mt-1 text-sm text-red-600">{errors.reason.message}</p>
+                )}
+                <button
+                  type="submit"
+                  disabled={reviewMutation.isPending}
+                  className="mt-2 bg-red-600 hover:bg-red-700 text-white px-4 py-2 text-xs font-medium rounded disabled:opacity-50"
+                >
+                  Submit rejection
+                </button>
+              </form>
+            )}
+          </>
+        )}
       </div>
 
       {/* Advert Details Card */}

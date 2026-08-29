@@ -15,6 +15,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { z } from "zod";
@@ -74,6 +84,7 @@ type AdminForm = z.infer<typeof adminSchema>;
 export default function CustomerPage() {
   const [tab, setTab] = useState<"total" | "verified" | "unverified">("total");
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<Admin | null>(null);
 
   const queryClient = useQueryClient();
   const { data: admins, isLoading } = useQuery({
@@ -150,6 +161,7 @@ export default function CustomerPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
       toast({ title: "Admin deleted successfully" });
+      setDeleteTarget(null);
     },
     onError: () => {
       toast({ title: "Failed to delete admin", variant: "destructive" });
@@ -308,11 +320,7 @@ export default function CustomerPage() {
                       variant="outline"
                       size="sm"
                       className="text-red-500 hover:text-red-700"
-                      onClick={() => {
-                        if (confirm("Are you sure you want to delete this admin?")) {
-                          deleteMutation.mutate(admin.id);
-                        }
-                      }}
+                      onClick={() => setDeleteTarget(admin)}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -327,6 +335,34 @@ export default function CustomerPage() {
         <p>Showing {startItem}-{endItem} of {totalItems}</p>
         <Pagination totalItems={totalItems} />
       </div>
+
+      <AlertDialog
+        open={deleteTarget !== null}
+        onOpenChange={(open) => !open && setDeleteTarget(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete customer?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete{" "}
+              <span className="font-medium text-gray-900">{deleteTarget?.name}</span>{" "}
+              ({deleteTarget?.email}). This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
+              disabled={deleteMutation.isPending}
+              onClick={() => {
+                if (deleteTarget) deleteMutation.mutate(deleteTarget.id);
+              }}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

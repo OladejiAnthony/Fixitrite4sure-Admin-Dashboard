@@ -15,6 +15,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { z } from "zod";
@@ -77,6 +87,7 @@ type VendorForm = z.infer<typeof vendorSchema>;
 export default function VendorsPage() {
   const [tab, setTab] = useState<"total" | "verified" | "unverified">("total");
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<Vendor | null>(null);
 
   const queryClient = useQueryClient();
   const { data: vendors, isLoading } = useQuery({
@@ -145,6 +156,7 @@ export default function VendorsPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["vendors"] });
       toast({ title: "Vendor deleted successfully" });
+      setDeleteTarget(null);
     },
     onError: () => {
       toast({ title: "Failed to delete vendor", variant: "destructive" });
@@ -300,11 +312,7 @@ export default function VendorsPage() {
                       variant="outline"
                       size="sm"
                       className="text-red-500 hover:text-red-700"
-                      onClick={() => {
-                        if (confirm("Are you sure you want to delete this vendor?")) {
-                          deleteMutation.mutate(vendor.id);
-                        }
-                      }}
+                      onClick={() => setDeleteTarget(vendor)}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -319,6 +327,34 @@ export default function VendorsPage() {
         <p>Showing {startItem}-{endItem} of {totalItems}</p>
         <Pagination totalItems={totalItems} />
       </div>
+
+      <AlertDialog
+        open={deleteTarget !== null}
+        onOpenChange={(open) => !open && setDeleteTarget(null)}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete vendor?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete{" "}
+              <span className="font-medium text-gray-900">{deleteTarget?.name}</span>{" "}
+              ({deleteTarget?.email}). This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
+              disabled={deleteMutation.isPending}
+              onClick={() => {
+                if (deleteTarget) deleteMutation.mutate(deleteTarget.id);
+              }}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

@@ -101,12 +101,11 @@ function ImagePlaceholder({ label, text }: { label: string; text: string }) {
     );
 }
 
-// Supabase Storage upload isn't wired into the mobile app's signup flow
-// yet, so most of these values are still local device file:// paths from
-// ImagePicker/DocumentPicker — not fetchable from a browser. We render a
-// real <img> whenever the value is an http(s) URL (so this works
-// automatically once the mobile app starts uploading), and an honest
-// explanation otherwise instead of a broken image icon.
+// identity-documents is a private bucket, so the API route signs these
+// paths into short-lived https URLs before they reach us — a value that
+// still isn't an http(s) URL here means the field is genuinely empty or
+// unsigned. We render a real <img> whenever the value is an http(s) URL,
+// and an honest explanation otherwise instead of a broken image icon.
 function ImageField({ label, value }: { label: string; value: unknown }) {
     const { uri, name } = extractFileValue(value);
     const [imgFailed, setImgFailed] = useState(false);

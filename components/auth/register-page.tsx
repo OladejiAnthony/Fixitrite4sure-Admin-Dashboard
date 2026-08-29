@@ -1,9 +1,9 @@
 //components/auth/register-page.tsx
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/card";
 import { toast } from "sonner";
 import { authService } from "@/lib/auth-service";
+import { createClient } from "@/lib/supabase/client";
 
 const registerSchema = z
   .object({
@@ -37,19 +38,56 @@ type RegisterForm = z.infer<typeof registerSchema>;
 export function RegisterPage() {
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const invitedEmail = searchParams.get("email");
+
+  const [inviteUserId, setInviteUserId] = useState<string | null>(null);
 
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
   } = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
   });
 
+  useEffect(() => {
+    if (!invitedEmail) return;
+    setValue("email", invitedEmail);
+
+    const supabase = createClient();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) setInviteUserId(session.user.id);
+    });
+  }, [invitedEmail, setValue]);
+
   const onSubmit = async (data: RegisterForm) => {
     setIsLoading(true);
 
     try {
+      if (inviteUserId) {
+        await authService.acceptInvite({
+          password: data.password,
+          name: data.name,
+        });
+
+        const res = await fetch(`/api/admin/super-admins/${inviteUserId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: data.name }),
+        });
+        if (!res.ok) {
+          toast.error(
+            "Account activated, but your name couldn't be saved. You can update it from the admin table."
+          );
+        }
+
+        toast.success("Welcome! Your admin account is ready.");
+        router.push("/dashboard");
+        return;
+      }
+
       const { user } = await authService.register({
         name: data.name,
         email: data.email,
@@ -120,6 +158,7 @@ export function RegisterPage() {
               id="email"
               type="email"
               placeholder="Enter your email"
+              readOnly={Boolean(invitedEmail)}
               {...register("email")}
               className={inputClass}
             />

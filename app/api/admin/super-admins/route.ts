@@ -70,8 +70,14 @@ export async function POST(request: Request) {
 
   const admin = createAdminClient();
 
+  const redirectTo = new URL(
+    `/register?email=${encodeURIComponent(parsed.data.email)}`,
+    request.url
+  ).toString();
+
   const { data, error } = await admin.auth.admin.inviteUserByEmail(
-    parsed.data.email
+    parsed.data.email,
+    { redirectTo }
   );
 
   if (error) {

@@ -48,6 +48,19 @@ export const authService = {
     return { user: data.user, session: data.session };
   },
 
+  async acceptInvite({ password, name }: { password: string; name: string }) {
+    const supabase = createClient();
+
+    const { data, error } = await supabase.auth.updateUser({
+      password,
+      data: { name },
+    });
+
+    if (error) throw new Error(error.message);
+
+    return { user: data.user };
+  },
+
   async grantAdminAccess(userId: string) {
     const response = await fetch("/api/auth/grant-admin", {
       method: "POST",

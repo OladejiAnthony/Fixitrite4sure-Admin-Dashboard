@@ -292,7 +292,8 @@ export default function CustomerPage() {
                               </p>
                             )}
                           </div>
-                          <div>
+                          <div className="mb-4">
+
                             <Label htmlFor="status" className="text-sm font-medium">
                               Status
                             </Label>

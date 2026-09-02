@@ -7,7 +7,7 @@ import { requireAdmin } from "@/lib/supabase/require-admin";
 // tier the advertiser paid for and the Flutterwave transaction that paid it.
 const ADVERT_SELECT =
   "id, caption, media_url, media_type, like_count, is_advert, review_status, review_reason, reviewed_at, created_at, " +
-  "author:profiles(id, first_name, last_name, email), " +
+  "author:profiles!author_id(id, first_name, last_name, email), " +
   "tier:advert_tiers(id, label, amount, currency), " +
   "transaction:advert_transactions(id, status, amount, currency, flutterwave_tx_ref, flutterwave_transaction_id)";
 

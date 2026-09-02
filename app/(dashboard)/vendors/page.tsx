@@ -338,7 +338,8 @@ export default function VendorsPage() {
             <AlertDialogDescription>
               This will permanently delete{" "}
               <span className="font-medium text-gray-900">{deleteTarget?.name}</span>{" "}
-              ({deleteTarget?.email}). This action cannot be undone.
+              ({deleteTarget?.email}), their login, and all of their bookings,
+              orders, invoices, payments, and reviews. This cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

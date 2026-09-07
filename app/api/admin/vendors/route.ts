@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/supabase/require-admin";
+import { dedupeProfilesByIdentity } from "@/lib/dedupe-profiles";
 
 export async function GET() {
   const denied = await requireAdmin();
@@ -22,5 +23,5 @@ export async function GET() {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json(data);
+  return NextResponse.json(dedupeProfilesByIdentity(data));
 }

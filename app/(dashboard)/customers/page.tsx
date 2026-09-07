@@ -3,7 +3,7 @@
 "use client";
 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store"; // Assuming store is configured with the pagination slice
 import { Pagination } from "@/components/common/pagination";
@@ -13,7 +13,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   AlertDialog,
@@ -83,7 +82,7 @@ type AdminForm = z.infer<typeof adminSchema>;
 
 export default function CustomerPage() {
   const [tab, setTab] = useState<"total" | "verified" | "unverified">("total");
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [editTarget, setEditTarget] = useState<Admin | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<Admin | null>(null);
 
   const queryClient = useQueryClient();
@@ -116,14 +115,22 @@ export default function CustomerPage() {
   const unverifiedCount = admins?.filter((c) => c.status !== "verified").length || 0;
 
 
-  // Update your useForm hook
   const { register, handleSubmit, formState: { errors }, reset } = useForm<AdminForm>({
     resolver: zodResolver(adminSchema),
   });
 
-
-
-
+  // Re-seed the shared form whenever a different row is opened for editing,
+  // since the dialog and form are mounted once and reused across rows.
+  useEffect(() => {
+    if (editTarget) {
+      reset({
+        name: editTarget.name,
+        email: editTarget.email,
+        phone: editTarget.phone,
+        status: editTarget.status,
+      });
+    }
+  }, [editTarget, reset]);
   const editMutation = useMutation({
     mutationFn: (admin: Admin) => {
       const [first_name, ...rest] = admin.name.split(" ");
@@ -145,7 +152,7 @@ export default function CustomerPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["customers"] });
       toast({ title: "Admin updated successfully" });
-      setIsEditDialogOpen(false); // Close the dialog
+      setEditTarget(null); // Close the dialog
     },
     onError: () => {
       toast({ title: "Failed to update admin", variant: "destructive" });
@@ -226,97 +233,14 @@ export default function CustomerPage() {
                 </td>
                 <td className="px-4 py-3 text-sm">
                   <div className="flex space-x-2">
-                    <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-
-                      <DialogTrigger asChild>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="text-blue-500 hover:text-blue-700"
-                        >
-                          <Pencil className="h-4 w-4" />
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="sm:max-w-md">
-                        <DialogHeader>
-                          <DialogTitle className="text-lg font-semibold">
-                            Edit Customer
-                          </DialogTitle>
-                        </DialogHeader>
-                        <form
-                          onSubmit={handleSubmit((data) => {
-                            editMutation.mutate({ ...admin, ...data });
-                          })}
-                          className="space-y-4"
-                        >
-                          <div>
-                            <Label htmlFor="name" className="text-sm font-medium">
-                              Name
-                            </Label>
-                            <Input
-                              id="name"
-                              defaultValue={admin.name}
-                              {...register("name")}
-                              className="mt-1"
-                            />
-                          </div>
-                          <div>
-                            <Label htmlFor="email" className="text-sm font-medium">
-                              Email
-                            </Label>
-                            <Input
-                              id="email"
-                              defaultValue={admin.email}
-                              {...register("email")}
-                              className="mt-1"
-                            />
-                            {errors.email && (
-                              <p className="text-red-500 text-xs mt-1">
-                                {errors.email.message}
-                              </p>
-                            )}
-                          </div>
-                          <div>
-                            <Label htmlFor="phone" className="text-sm font-medium">
-                              Phone Number
-                            </Label>
-                            <Input
-                              id="phone"
-                              defaultValue={admin.phone}
-                              {...register("phone")}
-                              className="mt-1"
-                            />
-                            {errors.phone && (
-                              <p className="text-red-500 text-xs mt-1">
-                                {errors.phone.message}
-                              </p>
-                            )}
-                          </div>
-                          <div className="mb-4">
-
-                            <Label htmlFor="status" className="text-sm font-medium">
-                              Status
-                            </Label>
-                            <select
-                              id="status"
-                              defaultValue={admin.status}
-                              {...register("status")}
-                              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                            >
-                              <option value="verified">Verified</option>
-                              <option value="unverified">Unverified</option>
-                              <option value="pending">Pending</option>
-                            </select>
-                          </div>
-                          <Button
-                            type="submit"
-                            className="w-full bg-blue-500 hover:bg-blue-600"
-                          >
-                            Save Changes
-                          </Button>
-                        </form>
-                      </DialogContent>
-                    </Dialog>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="text-blue-500 hover:text-blue-700"
+                      onClick={() => setEditTarget(admin)}
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
                     <Button
                       variant="outline"
                       size="sm"
@@ -336,6 +260,74 @@ export default function CustomerPage() {
         <p>Showing {startItem}-{endItem} of {totalItems}</p>
         <Pagination totalItems={totalItems} />
       </div>
+
+      <Dialog
+        open={editTarget !== null}
+        onOpenChange={(open) => !open && setEditTarget(null)}
+      >
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-semibold">
+              Edit Customer
+            </DialogTitle>
+          </DialogHeader>
+          <form
+            onSubmit={handleSubmit((data) => {
+              if (editTarget) editMutation.mutate({ ...editTarget, ...data });
+            })}
+            className="space-y-4"
+          >
+            <div>
+              <Label htmlFor="name" className="text-sm font-medium">
+                Name
+              </Label>
+              <Input id="name" {...register("name")} className="mt-1" />
+            </div>
+            <div>
+              <Label htmlFor="email" className="text-sm font-medium">
+                Email
+              </Label>
+              <Input id="email" {...register("email")} className="mt-1" />
+              {errors.email && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.email.message}
+                </p>
+              )}
+            </div>
+            <div>
+              <Label htmlFor="phone" className="text-sm font-medium">
+                Phone Number
+              </Label>
+              <Input id="phone" {...register("phone")} className="mt-1" />
+              {errors.phone && (
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.phone.message}
+                </p>
+              )}
+            </div>
+            <div className="mb-4">
+              <Label htmlFor="status" className="text-sm font-medium">
+                Status
+              </Label>
+              <select
+                id="status"
+                {...register("status")}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              >
+                <option value="verified">Verified</option>
+                <option value="unverified">Unverified</option>
+                <option value="pending">Pending</option>
+              </select>
+            </div>
+            <Button
+              type="submit"
+              className="w-full bg-blue-500 hover:bg-blue-600"
+            >
+              Save Changes
+            </Button>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       <AlertDialog
         open={deleteTarget !== null}

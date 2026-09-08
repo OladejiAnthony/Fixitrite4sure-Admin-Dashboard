@@ -322,15 +322,15 @@ export default function OnboardingDetailsPage() {
                 <div className="flex gap-4 justify-end pt-4 border-t border-gray-200">
                     <button
                         onClick={() => updateStatusMutation.mutate("approved")}
-                        disabled={updateStatusMutation.isPending}
-                        className={`bg-blue-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors ${updateStatusMutation.isPending ? "opacity-50 cursor-not-allowed" : ""}`}
+                        disabled={updateStatusMutation.isPending || data.verification_status === "verified"}
+                        className={`bg-blue-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-blue-600 transition-colors ${updateStatusMutation.isPending || data.verification_status === "verified" ? "opacity-50 cursor-not-allowed" : ""}`}
                     >
                         {updateStatusMutation.isPending ? "Processing..." : "Accept User"}
                     </button>
                     <button
                         onClick={() => updateStatusMutation.mutate("rejected")}
-                        disabled={updateStatusMutation.isPending}
-                        className={`bg-red-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-red-600 transition-colors ${updateStatusMutation.isPending ? "opacity-50 cursor-not-allowed" : ""}`}
+                        disabled={updateStatusMutation.isPending || data.verification_status === "rejected"}
+                        className={`bg-red-500 text-white px-6 py-2 rounded-md text-sm font-medium hover:bg-red-600 transition-colors ${updateStatusMutation.isPending || data.verification_status === "rejected" ? "opacity-50 cursor-not-allowed" : ""}`}
                     >
                         {updateStatusMutation.isPending ? "Processing..." : "Reject User"}
                     </button>

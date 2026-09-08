@@ -4,12 +4,13 @@ import { z } from "zod";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/supabase/require-admin";
 
-// id_front_image/id_back_image and the business_details document fields are
-// saved by the mobile app as bare identity-documents storage paths, not
-// public URLs - that bucket is owner-only, so uploadUserFile() there can't
-// hand back anything fetchable from a browser. Sign them here with the
-// service-role client (the only client allowed to read another user's file
-// in that bucket) before the JSON response reaches the dashboard.
+// profile_image, id_front_image/id_back_image, and the business_details
+// document fields are saved by the mobile app as bare identity-documents
+// storage paths, not public URLs - that bucket is owner-only, so
+// uploadUserFile() there can't hand back anything fetchable from a browser.
+// Sign them here with the service-role client (the only client allowed to
+// read another user's file in that bucket) before the JSON response reaches
+// the dashboard.
 const IDENTITY_DOCUMENTS_BUCKET = "identity-documents";
 const SIGNED_URL_TTL_SECONDS = 60 * 60; // covers a single admin review session
 
@@ -34,6 +35,7 @@ async function withSignedDocumentUrls(
   const proofOfInsurance = businessDetails?.proof_of_insurance;
 
   const paths = [
+    profile.profile_image,
     profile.id_front_image,
     profile.id_back_image,
     typeof certificationImage === "string" ? certificationImage : null,
@@ -54,6 +56,10 @@ async function withSignedDocumentUrls(
 
   return {
     ...profile,
+    profile_image:
+      typeof profile.profile_image === "string"
+        ? signedUrlByPath.get(profile.profile_image) ?? null
+        : profile.profile_image,
     id_front_image:
       typeof profile.id_front_image === "string"
         ? signedUrlByPath.get(profile.id_front_image) ?? null

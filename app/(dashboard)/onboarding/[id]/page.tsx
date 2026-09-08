@@ -94,7 +94,7 @@ function ImagePlaceholder({ label, text }: { label: string; text: string }) {
     return (
         <div>
             <label className="block text-xs font-medium text-gray-600 mb-1">{label}</label>
-            <div className="w-32 h-24 rounded-md border border-dashed border-gray-300 bg-gray-50 flex items-center justify-center p-2">
+            <div className="w-32 h-32 rounded-md border border-dashed border-gray-300 bg-gray-50 flex items-center justify-center p-2">
                 <p className="text-[11px] text-gray-500 text-center leading-tight">{text}</p>
             </div>
         </div>
@@ -141,7 +141,7 @@ function ImageField({ label, value }: { label: string; value: unknown }) {
                         src={uri}
                         alt={label}
                         onError={() => setImgFailed(true)}
-                        className="w-32 h-24 object-cover rounded-md border border-gray-300 hover:opacity-80 transition-opacity"
+                        className="w-32 h-32 object-cover rounded-md border border-gray-300 hover:opacity-80 transition-opacity"
                     />
                 </a>
             )}

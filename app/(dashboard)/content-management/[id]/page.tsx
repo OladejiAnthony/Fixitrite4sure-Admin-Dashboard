@@ -1,24 +1,31 @@
 //app/(dashboard)/content-management/[id]/page.tsx
 "use client";
-import { useState, useMemo, useEffect } from "react";
+import { useState } from "react";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { apiClient } from "@/lib/api-client";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
+import { useContentPost } from "@/hooks/use-content-post";
 
 interface ContentItem {
   id: string;
-  name: string;
-  datePosted: string;
-  status: "approved" | "pending" | "rejected";
-  contentText?: string;
-  imageUrl?: string;
-  reason?: string;
-  adminName?: string; // Added for the admin who disapproved
+  created_at: string;
+  caption: string | null;
+  media_url: string;
+  media_type: "image" | "video";
+  review_status: "approved" | "pending" | "rejected";
+  review_reason: string | null;
+  author: { first_name: string | null; last_name: string | null } | null;
+}
+
+function postedByName(item: ContentItem): string {
+  const name = [item.author?.first_name, item.author?.last_name]
+    .filter(Boolean)
+    .join(" ");
+  return name || "Unknown";
 }
 
 const reasonSchema = z.object({
@@ -48,77 +55,63 @@ function getDisplayStatus(status: string): string {
   return status.charAt(0).toUpperCase() + status.slice(1);
 }
 
+function getStatusColor(status: string): string {
+  switch (status) {
+    case "approved":
+      return "bg-green-100 text-green-800";
+    case "pending":
+      return "bg-yellow-100 text-yellow-800";
+    case "rejected":
+      return "bg-red-100 text-red-800";
+    default:
+      return "bg-gray-100 text-gray-800";
+  }
+}
+
 export default function ContentManagementDetail() {
   const params = useParams();
   const id = params.id as string;
   const queryClient = useQueryClient();
+  const [showRejectForm, setShowRejectForm] = useState(false);
 
-  const {
-    data: content,
-    isLoading,
-    error,
-  } = useQuery<ContentItem>({
-    queryKey: ["content", id],
-    queryFn: () => apiClient.get(`/content/${id}`).then((res) => res.data),
-  });
+  const { data, isLoading, error } = useContentPost(id);
+  const content = data as ContentItem | undefined;
 
-  const approveMutation = useMutation({
-    mutationFn: () => apiClient.patch(`/content/${id}`, { status: "approved" }),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["content", id] }),
-  });
-
-  const disapproveMutation = useMutation({
-    mutationFn: () => apiClient.patch(`/content/${id}`, { status: "rejected" }),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["content", id] }),
-  });
-
-  const updateReasonMutation = useMutation({
-    mutationFn: (reason: string) =>
-      apiClient.patch(`/content/${id}`, { reason }),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["content", id] }),
+  const reviewMutation = useMutation({
+    mutationFn: async (payload: {
+      review_status: "approved" | "rejected";
+      review_reason?: string;
+    }) => {
+      const res = await fetch(`/api/admin/content/${id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error("Failed to update content");
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["content-post", id] });
+      queryClient.invalidateQueries({ queryKey: ["content-posts"] });
+      setShowRejectForm(false);
+    },
   });
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
   } = useForm<ReasonForm>({
     resolver: zodResolver(reasonSchema),
   });
 
-  // Reset form with content data when it's loaded
-  useEffect(() => {
-    if (content) {
-      reset({
-        reason: content.reason || "",
-      });
-    }
-  }, [content, reset]);
-
-  const onSubmit = (data: ReasonForm) => {
-    updateReasonMutation.mutate(data.reason);
+  const onReject = (data: ReasonForm) => {
+    reviewMutation.mutate({ review_status: "rejected", review_reason: data.reason });
   };
 
   if (isLoading) return <div className="p-6">Loading...</div>;
   if (error || !content)
     return <div className="p-6">Error loading content</div>;
-
-  function getStatusColor(status: string): string {
-    switch (status) {
-      case "approved":
-        return "bg-green-100 text-green-800";
-      case "pending":
-        return "bg-yellow-100 text-yellow-800";
-      case "rejected":
-        return "bg-red-100 text-red-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  }
 
   return (
     <div className="p-6 bg-white min-h-screen">
@@ -131,90 +124,46 @@ export default function ContentManagementDetail() {
           Content Posted
         </h2>
         <div className="flex gap-4">
-          {content.imageUrl && (
+          {content.media_type === "video" ? (
+            // eslint-disable-next-line jsx-a11y/media-has-caption
+            <video
+              src={content.media_url}
+              controls
+              className="w-[360px] h-[200px] object-cover bg-black"
+            />
+          ) : (
             <img
-              src={content.imageUrl}
+              src={content.media_url}
               alt="Content image"
               className="w-[360px] h-[200px] object-cover"
             />
           )}
           <p className="text-sm text-gray-600 leading-5 flex-1">
-            {content.contentText || "No content text available"}
+            {content.caption || "No content text available"}
           </p>
         </div>
-        {content.status === "pending" && (
-          <div className="flex justify-center gap-4 mt-6">
-            <button
-              onClick={() => approveMutation.mutate()}
-              className="bg-blue-500 text-white px-6 py-2 text-sm font-medium rounded-md hover:bg-blue-600"
-              disabled={approveMutation.isPending}
-            >
-              Approve content
-            </button>
-            <button
-              onClick={() => disapproveMutation.mutate()}
-              className="border border-blue-500 text-blue-500 px-6 py-2 text-sm font-medium rounded-md hover:bg-blue-50"
-              disabled={disapproveMutation.isPending}
-            >
-              Disapprove content
-            </button>
-          </div>
-        )}
-      </div>
-
-      <div className="bg-white  p-4">
-        <div className="bg-[#D1D8E233] p-4 rounded-md mb-4">
-          <h2 className="text-base font-medium text-gray-900 mb-4">
-            CONTENT DETAILS
-          </h2>
-        </div>
-        <dl className="grid grid-cols-1 gap-y-2 text-sm w-[50%]">
-          <div className="flex justify-between">
-            <dt className="font-medium text-gray-700">Posted by</dt>
-            <dd className="text-gray-900">{content.name}</dd>
-          </div>
-          <div className="flex justify-between">
-            <dt className="font-medium text-gray-700">Date and Time</dt>
-            <dd className="text-gray-900">
-              {formatDate(content.datePosted)} {formatTime(content.datePosted)}
-            </dd>
-          </div>
-          <div className="flex justify-between">
-            <dt className="font-medium text-gray-700">Status</dt>
-            <dd className="text-gray-900">
-              <span
-                className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                  content.status
-                )}`}
+        {content.review_status === "pending" && (
+          <>
+            <div className="flex justify-center gap-4 mt-6">
+              <button
+                onClick={() => reviewMutation.mutate({ review_status: "approved" })}
+                className="bg-blue-500 text-white px-6 py-2 text-sm font-medium rounded-md hover:bg-blue-600"
+                disabled={reviewMutation.isPending}
               >
-                {getDisplayStatus(content.status)}
-              </span>
-            </dd>
-          </div>
-        </dl>
-        {content.status === "rejected" && (
-          <div className="mt-6">
-            <div className="bg-[#D1D8E233] p-4 rounded-md mb-4">
-              <h2 className="text-sm font-medium text-gray-700">
-                REASON FOR DISAPPROVAL
-              </h2>
+                Approve content
+              </button>
+              <button
+                onClick={() => setShowRejectForm((v) => !v)}
+                className="border border-blue-500 text-blue-500 px-6 py-2 text-sm font-medium rounded-md hover:bg-blue-50"
+                disabled={reviewMutation.isPending}
+              >
+                Disapprove content
+              </button>
             </div>
 
-            {content.reason ? (
-              // Show the existing reason as display text
-              <div className="mt-1 block w-full  p-2 text-sm text-gray-900 bg-gray-50 h-[66px]">
-                {content.reason}
-                {content.adminName && (
-                  <p className="mt-2 text-xs text-gray-500">
-                    Admin: {content.adminName}
-                  </p>
-                )}
-              </div>
-            ) : (
-              // Show the form to submit a reason if none exists
-              <form onSubmit={handleSubmit(onSubmit)}>
+            {showRejectForm && (
+              <form onSubmit={handleSubmit(onReject)} className="mt-4">
                 <textarea
-                  id="reason"
                   {...register("reason")}
                   placeholder="Enter the reason for disapproval"
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 h-[66px]"
@@ -227,12 +176,56 @@ export default function ContentManagementDetail() {
                 <button
                   type="submit"
                   className="mt-2 bg-blue-500 text-white px-4 py-2 text-sm font-medium rounded-md self-end hover:bg-blue-600"
-                  disabled={updateReasonMutation.isPending}
+                  disabled={reviewMutation.isPending}
                 >
                   Submit
                 </button>
               </form>
             )}
+          </>
+        )}
+      </div>
+
+      <div className="bg-white  p-4">
+        <div className="bg-[#D1D8E233] p-4 rounded-md mb-4">
+          <h2 className="text-base font-medium text-gray-900 mb-4">
+            CONTENT DETAILS
+          </h2>
+        </div>
+        <dl className="grid grid-cols-1 gap-y-2 text-sm w-[50%]">
+          <div className="flex justify-between">
+            <dt className="font-medium text-gray-700">Posted by</dt>
+            <dd className="text-gray-900">{postedByName(content)}</dd>
+          </div>
+          <div className="flex justify-between">
+            <dt className="font-medium text-gray-700">Date and Time</dt>
+            <dd className="text-gray-900">
+              {formatDate(content.created_at)} {formatTime(content.created_at)}
+            </dd>
+          </div>
+          <div className="flex justify-between">
+            <dt className="font-medium text-gray-700">Status</dt>
+            <dd className="text-gray-900">
+              <span
+                className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                  content.review_status
+                )}`}
+              >
+                {getDisplayStatus(content.review_status)}
+              </span>
+            </dd>
+          </div>
+        </dl>
+        {content.review_status === "rejected" && content.review_reason && (
+          <div className="mt-6">
+            <div className="bg-[#D1D8E233] p-4 rounded-md mb-4">
+              <h2 className="text-sm font-medium text-gray-700">
+                REASON FOR DISAPPROVAL
+              </h2>
+            </div>
+            <div className="mt-1 block w-full  p-2 text-sm text-gray-900 bg-gray-50 h-[66px]">
+              {content.review_reason}
+            </div>
           </div>
         )}
       </div>

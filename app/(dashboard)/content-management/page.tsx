@@ -1,21 +1,27 @@
 //app/(dashboard)/content-management/page.tsx
 "use client";
-import { useState, useMemo } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { apiClient } from "@/lib/api-client";
+import { useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import type { RootState } from "@/store/store";
 import { Pagination } from "@/components/common/pagination";
+import { useContentPosts } from "@/hooks/use-content-posts";
 
-// app/(dashboard)/content-management/page.tsx
 interface ContentItem {
   id: string;
-  name: string;
-  datePosted: string;
-  status: "approved" | "pending" | "rejected";
-  contentText?: string; // Add this
-  imageUrl?: string; // Add this
-  reason?: string;
+  created_at: string;
+  caption: string | null;
+  media_url: string;
+  media_type: "image" | "video";
+  review_status: "approved" | "pending" | "rejected";
+  review_reason: string | null;
+  author: { first_name: string | null; last_name: string | null } | null;
+}
+
+function postedByName(item: ContentItem): string {
+  const name = [item.author?.first_name, item.author?.last_name]
+    .filter(Boolean)
+    .join(" ");
+  return name || "Unknown";
 }
 
 function formatDate(isoString: string): string {
@@ -56,20 +62,18 @@ export default function ContentManagementPage() {
     "all" | "pending" | "approved" | "disapproved"
   >("all");
 
-  const { data = [], isLoading } = useQuery<ContentItem[]>({
-    queryKey: ["content"],
-    queryFn: () => apiClient.get("/content").then((res) => res.data),
-  });
+  const { data = [], isLoading } = useContentPosts();
+  const items = data as ContentItem[];
 
   const filteredData = useMemo(() => {
-    if (currentTab === "all") return data;
-    return data.filter((item) => {
-      if (currentTab === "pending") return item.status === "pending";
-      if (currentTab === "approved") return item.status === "approved";
-      if (currentTab === "disapproved") return item.status === "rejected";
+    if (currentTab === "all") return items;
+    return items.filter((item) => {
+      if (currentTab === "pending") return item.review_status === "pending";
+      if (currentTab === "approved") return item.review_status === "approved";
+      if (currentTab === "disapproved") return item.review_status === "rejected";
       return false;
     });
-  }, [data, currentTab]);
+  }, [items, currentTab]);
 
   const { currentPage, itemsPerPage } = useSelector(
     (state: RootState) => state.pagination
@@ -156,21 +160,21 @@ export default function ContentManagementPage() {
             {paginatedData.map((item) => (
               <tr key={item.id}>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {formatDate(item.datePosted)}
+                  {formatDate(item.created_at)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {formatTime(item.datePosted)}
+                  {formatTime(item.created_at)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {item.name}
+                  {postedByName(item)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span
                     className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                      item.status
+                      item.review_status
                     )}`}
                   >
-                    {getDisplayStatus(item.status)}
+                    {getDisplayStatus(item.review_status)}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">

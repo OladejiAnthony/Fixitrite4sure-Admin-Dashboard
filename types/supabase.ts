@@ -219,6 +219,19 @@ type BearingPostsRow = {
   updated_at: string;
 }
 
+// Added by fixit-app-mobile migration 20261111120000_admin_activity_log.sql.
+type AdminActivityLogRow = {
+  id: string;
+  admin_id: string | null;
+  admin_name: string;
+  action: string;
+  description: string;
+  target_type: string | null;
+  target_id: string | null;
+  status: "success" | "failed";
+  created_at: string;
+}
+
 type TableDef<Row extends { id?: string }> = {
   Row: Row;
   Insert: Partial<Row>;
@@ -247,6 +260,7 @@ export type Database = {
       advert_tiers: TableDef<AdvertTiersRow>;
       advert_transactions: TableDef<AdvertTransactionsRow>;
       bearing_posts: TableDef<BearingPostsRow>;
+      admin_activity_log: TableDef<AdminActivityLogRow>;
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

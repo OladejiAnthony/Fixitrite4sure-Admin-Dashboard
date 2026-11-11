@@ -1,9 +1,8 @@
 //components/dashboard/dashboard-home.tsx
 "use client"
 
-import { useQuery } from "@tanstack/react-query"
-import { apiClient } from "@/lib/api-client"
 import * as z from "zod"
+import { useAdminActivities } from "@/hooks/use-admin-activities"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
@@ -12,17 +11,17 @@ import { useSelector } from "react-redux"
 import type { RootState } from "@/store/store"
 
 
+// Row shape of public.admin_activity_log, served by /api/admin/activities.
 const ActivitySchema = z.object({
-  id: z.number(),
-  adminName: z.string(),
-  activityDescription: z.string(),
-  dateTime: z.string(),
+  id: z.string(),
+  admin_name: z.string(),
+  action: z.string(),
+  description: z.string(),
+  target_type: z.string().nullable(),
+  target_id: z.string().nullable(),
   status: z.string(),
-  accountType: z.string().optional(),
-  activityType: z.string().optional(),
+  created_at: z.string(),
 })
-
-type Activity = z.infer<typeof ActivitySchema>
 
 function formatDate(dateStr: string): string {
   const date = new Date(dateStr)
@@ -54,6 +53,7 @@ function getStatusColor(status: string): string {
     case "success":
     case "approved":
       return "bg-green-100 text-green-800"
+    case "failed":
     case "rejected":
       return "bg-red-100 text-red-800"
     case "pending":
@@ -63,28 +63,22 @@ function getStatusColor(status: string): string {
   }
 }
 
-export function useDashboardActivities() {
-  return useQuery({
-    queryKey: ["activities"],
-    queryFn: async () => {
-      const { data } = await apiClient.get("/activities")
-      return z.array(ActivitySchema).parse(data)
-    },
-  })
-}
-
 export function DashboardHome() {
-  const { data: activities, isLoading } = useDashboardActivities()
+  const { data, isLoading, isError } = useAdminActivities()
   const { currentPage, itemsPerPage } = useSelector((state: RootState) => state.pagination)
 
   if (isLoading) {
     return <div className="flex items-center justify-center h-screen text-lg text-gray-600">Loading...</div>
   }
 
-  const totalItems = activities?.length || 0
+  const parsed = z.array(ActivitySchema).safeParse(data)
+  const activities = parsed.success ? parsed.data : []
+  const loadFailed = isError || (data !== undefined && !parsed.success)
+
+  const totalItems = activities.length
   const start = (currentPage - 1) * itemsPerPage
   const end = start + itemsPerPage
-  const paginatedActivities = activities?.slice(start, end) || []
+  const paginatedActivities = activities.slice(start, end)
 
   return (
     <div className="min-h-screen bg-gray-50 p-6 space-y-8">
@@ -114,11 +108,18 @@ export function DashboardHome() {
               </TableRow>
             </TableHeader>
             <TableBody>
+              {paginatedActivities.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={5} className="px-4 py-8 text-center text-sm text-gray-500">
+                    {loadFailed ? "Could not load recent activity. Please refresh the page." : "No admin activity yet."}
+                  </TableCell>
+                </TableRow>
+              )}
               {paginatedActivities.map((activity) => (
                 <TableRow key={activity.id} className="border-b border-gray-200 last:border-b-0">
-                  <TableCell className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">{formatDate(activity.dateTime)}</TableCell>
-                  <TableCell className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">{formatTime(activity.dateTime)}</TableCell>
-                  <TableCell className="px-4 py-3 text-sm text-gray-900">{activity.activityType || activity.activityDescription}</TableCell>
+                  <TableCell className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">{formatDate(activity.created_at)}</TableCell>
+                  <TableCell className="px-4 py-3 text-sm text-gray-900 whitespace-nowrap">{formatTime(activity.created_at)}</TableCell>
+                  <TableCell className="px-4 py-3 text-sm text-gray-900">{activity.description}</TableCell>
                   <TableCell className="px-4 py-3">
                     <span
                       className={`inline-flex px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(activity.status)}`}
@@ -126,7 +127,7 @@ export function DashboardHome() {
                       {activity.status}
                     </span>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-sm text-gray-900">{activity.adminName}</TableCell>
+                  <TableCell className="px-4 py-3 text-sm text-gray-900">{activity.admin_name}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -138,7 +139,3 @@ export function DashboardHome() {
   )
 }
 
-
-{/*
-   GET /activities
-  */}

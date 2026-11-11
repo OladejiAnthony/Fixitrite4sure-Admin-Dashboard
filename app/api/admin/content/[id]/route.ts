@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/supabase/require-admin";
+import { displayName, logAdminActivity } from "@/lib/supabase/log-admin-activity";
 
 const CONTENT_SELECT =
   "id, caption, media_url, media_type, like_count, review_status, review_reason, reviewed_at, created_at, " +
@@ -83,6 +84,22 @@ export async function PATCH(
     .eq("is_advert", false)
     .select("id, author_id, review_status, review_reason")
     .single();
+
+  const { data: author } = data
+    ? await admin
+        .from("profiles")
+        .select("first_name, last_name, business_name, company_name, email")
+        .eq("id", data.author_id)
+        .maybeSingle()
+    : { data: null };
+
+  await logAdminActivity({
+    action: `content.${reviewStatus === "approved" ? "approve" : "reject"}`,
+    description: `${reviewStatus === "approved" ? "Approved" : "Rejected"} post by ${displayName(author)}`,
+    targetType: "post",
+    targetId: id,
+    status: error ? "failed" : "success",
+  });
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

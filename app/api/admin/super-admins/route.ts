@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/supabase/require-admin";
+import { logAdminActivity } from "@/lib/supabase/log-admin-activity";
 
 // profiles.is_admin is the only real admin concept in the schema — there's
 // no separate "role" tiering, so every row here is just "an admin".
@@ -80,7 +81,17 @@ export async function POST(request: Request) {
     { redirectTo }
   );
 
+  const logInvite = (failed: boolean) =>
+    logAdminActivity({
+      action: "admin.invite",
+      description: `Invited ${parsed.data.email} as an admin`,
+      targetType: "admin",
+      targetId: data?.user?.id ?? null,
+      status: failed ? "failed" : "success",
+    });
+
   if (error) {
+    await logInvite(true);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
@@ -88,6 +99,8 @@ export async function POST(request: Request) {
     .from("profiles")
     .update({ is_admin: true })
     .eq("id", data.user.id);
+
+  await logInvite(Boolean(promoteError));
 
   if (promoteError) {
     return NextResponse.json(

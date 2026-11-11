@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/supabase/require-admin";
 import { deleteUserCascade } from "@/lib/supabase/delete-user-cascade";
+import { displayName, logAdminActivity } from "@/lib/supabase/log-admin-activity";
 
 export async function GET(
   _request: Request,
@@ -65,6 +66,14 @@ export async function PUT(
     .select()
     .single();
 
+  await logAdminActivity({
+    action: "repairer.update",
+    description: `Updated repairer ${displayName(data ?? body)}`,
+    targetType: "repairer",
+    targetId: id,
+    status: error ? "failed" : "success",
+  });
+
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
@@ -84,7 +93,7 @@ export async function DELETE(
 
   const { data: existing, error: lookupError } = await admin
     .from("profiles")
-    .select("id")
+    .select("id, first_name, last_name, business_name, email")
     .eq("id", id)
     .eq("user_type", "repairer")
     .maybeSingle();
@@ -97,6 +106,14 @@ export async function DELETE(
   }
 
   const { error } = await deleteUserCascade(admin, id);
+
+  await logAdminActivity({
+    action: "repairer.delete",
+    description: `Deleted repairer ${displayName(existing)}`,
+    targetType: "repairer",
+    targetId: id,
+    status: error ? "failed" : "success",
+  });
 
   if (error) {
     return NextResponse.json({ error }, { status: 500 });

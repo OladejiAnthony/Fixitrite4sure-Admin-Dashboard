@@ -2,9 +2,8 @@
 // components/dashboard/analytics.tsx
 "use client";
 import React from "react";
-import { useQuery } from "@tanstack/react-query";
 import { z } from "zod";
-import { apiClient } from "@/lib/api-client";
+import { useAdminAnalytics } from "@/hooks/use-admin-analytics";
 import { Users, Building2, Store, ShoppingBag, Wrench } from "lucide-react";
 import dynamic from "next/dynamic";
 
@@ -31,25 +30,32 @@ const analyticsSchema = z.object({
   })),
 });
 
-type AnalyticsData = z.infer<typeof analyticsSchema>;
-
+// Live data from /api/admin/analytics (Supabase profiles, orders, bookings).
 export function Analytics() {
-  const { data, isLoading } = useQuery<AnalyticsData>({
-    queryKey: ["analytics"],
-    queryFn: async () => {
-      const res = await apiClient.get("/analytics");
-      return analyticsSchema.parse(res.data);
-    },
-  });
+  const { data: raw, isLoading, isError } = useAdminAnalytics();
 
-  if (isLoading || !data) {
-    return <div className="p-6 text-white">Loading...</div>;
+  if (isLoading) {
+    return <div className="p-6 text-gray-600">Loading...</div>;
   }
 
+  const parsed = analyticsSchema.safeParse(raw);
+  if (isError || !parsed.success) {
+    return (
+      <div className="p-6 text-gray-600">
+        Could not load analytics. Please refresh the page.
+      </div>
+    );
+  }
+  const data = parsed.data;
+
   const formatNumber = (num: number) => num.toLocaleString();
+  const changeColor = (change: string) =>
+    change.startsWith("-") ? "text-red-500" : change.startsWith("+") ? "text-green-500" : "text-gray-400";
 
   const chartData = data.totalOrdersChart;
   const months = chartData.map((d) => d.month);
+  const firstPoint = chartData[0];
+  const lastIndex = chartData.length - 1;
 
   const series = [
     {
@@ -132,11 +138,11 @@ export function Analytics() {
         fontFamily: "inherit",
       },
     },
-    annotations: {
+    annotations: firstPoint ? {
       texts: [
         {
           x: 0,  // Use index instead of month string
-          y: chartData[0].service,
+          y: firstPoint.service,
           text: "Service order",
           foreColor: "#3B82F6",
           fontSize: "13px",
@@ -148,7 +154,7 @@ export function Analytics() {
         },
         {
           x: 0,  // Use index instead of month string
-          y: chartData[0].product,
+          y: firstPoint.product,
           text: "Product order",
           foreColor: "#F97316",
           fontSize: "13px",
@@ -161,8 +167,8 @@ export function Analytics() {
       ],
       points: [
         {
-          x: 6,  // Use index instead of month string
-          y: chartData[6].product,
+          x: lastIndex,  // latest month
+          y: chartData[lastIndex].product,
           marker: {
             size: 5,
             fillColor: "#F97316",
@@ -172,7 +178,7 @@ export function Analytics() {
           },
         },
       ],
-    }
+    } : undefined,
 
   };
 
@@ -241,7 +247,7 @@ export function Analytics() {
       </div>
 
       <div className="mb-6">
-        <h3 className="mb-4 text-lg font-medium">Order Analytics</h3>
+        <h3 className="mb-4 text-lg font-medium text-black">Order Analytics</h3>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div className="rounded-lg bg-white p-4 shadow">
             <div className="mb-2 inline-block w-full">
@@ -255,7 +261,7 @@ export function Analytics() {
             </div>
             <div className="text-3xl font-bold text-black">{formatNumber(data.orders.product)}</div>
 
-            <div className="mt-2 text-sm text-green-500">{data.orders.productChange}</div>
+            <div className={`mt-2 text-sm ${changeColor(data.orders.productChange)}`}>{data.orders.productChange}</div>
           </div>
           <div className="rounded-lg bg-white p-4 shadow">
             <div className="mb-2 inline-block w-full">
@@ -269,7 +275,7 @@ export function Analytics() {
             </div>
             <div className="text-3xl font-bold text-black">{formatNumber(data.orders.service)}</div>
 
-            <div className="mt-2 text-sm text-red-500">{data.orders.serviceChange}</div>
+            <div className={`mt-2 text-sm ${changeColor(data.orders.serviceChange)}`}>{data.orders.serviceChange}</div>
           </div>
         </div>
       </div>
@@ -278,7 +284,7 @@ export function Analytics() {
         <div className="mb-4 flex items-center justify-between">
           <h3 className="text-lg font-medium text-black">Total Orders</h3>
           <div className="text-sm text-gray-500">
-            From {chartData[0].month} · To {chartData[chartData.length - 1].month} ·
+            {firstPoint ? `From ${firstPoint.month} · To ${chartData[lastIndex].month}` : "No data"}
           </div>
         </div>
         <div className="relative h-64 w-full">
@@ -289,7 +295,3 @@ export function Analytics() {
   );
 }
 
-
-{/*
-  GET /analytics 
-  */}

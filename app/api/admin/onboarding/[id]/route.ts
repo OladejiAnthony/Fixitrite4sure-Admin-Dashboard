@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { requireAdmin } from "@/lib/supabase/require-admin";
+import { displayName, logAdminActivity } from "@/lib/supabase/log-admin-activity";
 
 // id_front_image/id_back_image and the business_details document fields are
 // saved by the mobile app as bare identity-documents storage paths, not
@@ -155,6 +156,16 @@ export async function PATCH(
     .eq("id", id)
     .select()
     .single();
+
+  const approved = parsed.data.status === "approved";
+  const accountType = data?.user_type === "company" ? "repair company" : data?.user_type ?? "account";
+  await logAdminActivity({
+    action: `onboarding.${approved ? "approve" : "reject"}`,
+    description: `${approved ? "Approved" : "Rejected"} ${accountType} onboarding for ${displayName(data)}`,
+    targetType: data?.user_type ?? "profile",
+    targetId: id,
+    status: error ? "failed" : "success",
+  });
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

@@ -4,6 +4,16 @@ import { z } from "zod";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/supabase/require-admin";
+import { displayName, logAdminActivity } from "@/lib/supabase/log-admin-activity";
+
+async function adminLabel(admin: ReturnType<typeof createAdminClient>, id: string) {
+  const { data } = await admin
+    .from("profiles")
+    .select("first_name, last_name, email")
+    .eq("id", id)
+    .maybeSingle();
+  return displayName(data, "an admin");
+}
 
 export async function GET(
   _request: Request,
@@ -65,6 +75,21 @@ export async function PUT(
 
   const admin = createAdminClient();
 
+  const changes = [
+    parsed.data.name ? "renamed" : null,
+    parsed.data.status === "Inactive" ? "deactivated" : null,
+    parsed.data.status === "Active" ? "activated" : null,
+  ].filter(Boolean).join(" and ") || "updated";
+
+  const logUpdate = async (failed: boolean) =>
+    logAdminActivity({
+      action: "admin.update",
+      description: `Admin ${await adminLabel(admin, id)} ${changes}`,
+      targetType: "admin",
+      targetId: id,
+      status: failed ? "failed" : "success",
+    });
+
   if (parsed.data.name) {
     const [first_name, ...rest] = parsed.data.name.trim().split(/\s+/);
     const { error } = await admin
@@ -74,6 +99,7 @@ export async function PUT(
       .eq("is_admin", true);
 
     if (error) {
+      await logUpdate(true);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
   }
@@ -84,9 +110,12 @@ export async function PUT(
     });
 
     if (error) {
+      await logUpdate(true);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
   }
+
+  await logUpdate(false);
 
   return NextResponse.json({ success: true });
 }
@@ -120,6 +149,14 @@ export async function DELETE(
     .from("profiles")
     .update({ is_admin: false })
     .eq("id", id);
+
+  await logAdminActivity({
+    action: "admin.revoke",
+    description: `Revoked admin access for ${await adminLabel(admin, id)}`,
+    targetType: "admin",
+    targetId: id,
+    status: error ? "failed" : "success",
+  });
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

@@ -25,7 +25,8 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Pagination } from "@/components/common/pagination";
 import { useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setCurrentPage } from "@/store/slices/pagination-slice";
 import type { RootState } from "@/store/store";
 import { Search, Filter, X } from "lucide-react";
 import { format, parse, isValid } from "date-fns";
@@ -53,8 +54,14 @@ type OrderStatusFilter = (typeof ORDER_STATUSES)[number];
 const formatNaira = (amount: number | null | undefined) =>
   `₦${(amount || 0).toLocaleString("en-US")}`;
 
+// Order ids are UUIDs. Accept a full or partial id, case-insensitive, and
+// ignore surrounding spaces or a leading "#" an admin may paste in.
+const normalizeOrderId = (value: string) =>
+  value.trim().replace(/^#/, "").toLowerCase();
+
 const filterSchema = z.object({
   search: z.string().optional(),
+  orderId: z.string().optional(),
   orderStatus: z.enum(ORDER_STATUSES).optional(),
   dateInput: z.string().optional(),
 });
@@ -131,11 +138,25 @@ export default function ECommercePage() {
     resolver: zodResolver(filterSchema),
     defaultValues: {
       search: "",
+      orderId: "",
       orderStatus: "All",
       dateInput: "",
     },
   });
   const filters = form.watch();
+
+  // A new search or filter can shrink the list below the current page, so
+  // start from page 1 whenever one changes.
+  const dispatch = useDispatch();
+  React.useEffect(() => {
+    dispatch(setCurrentPage(1));
+  }, [
+    dispatch,
+    filters.search,
+    filters.orderId,
+    filters.orderStatus,
+    filters.dateInput,
+  ]);
 
   // Fetch all data for each tab from Supabase (via /api/admin/e-commerce)
   const ordersQuery = useEcommerceList<Order>("orders");
@@ -191,6 +212,12 @@ export default function ECommercePage() {
               o.customerName.toLowerCase().includes(filters.search!.toLowerCase()) ||
               o.id.includes(filters.search!)
           );
+        }
+        if (filters.orderId) {
+          const idQuery = normalizeOrderId(filters.orderId);
+          if (idQuery) {
+            data = data.filter((o) => o.id.toLowerCase().includes(idQuery));
+          }
         }
         if (filters.orderStatus && filters.orderStatus !== "All") {
           data = data.filter((o) => o.orderStatus === filters.orderStatus);
@@ -649,6 +676,47 @@ export default function ECommercePage() {
           </div>
         </div>
         <TabsContent value="order" className="mt-0">
+          <div className="mb-3 flex items-center space-x-2">
+            <label
+              htmlFor="order-id-search"
+              className="text-sm font-medium text-gray-700"
+            >
+              Order ID
+            </label>
+            <div className="relative w-[380px]">
+              <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+              <Input
+                id="order-id-search"
+                placeholder="Search by order ID (full or partial)"
+                className="h-8 pl-8 pr-8 text-sm"
+                autoComplete="off"
+                spellCheck={false}
+                {...form.register("orderId")}
+                onKeyDown={(e) => {
+                  // Enter on an id that matches exactly one order opens it.
+                  if (e.key !== "Enter") return;
+                  const q = normalizeOrderId(e.currentTarget.value);
+                  if (!q) return;
+                  const matches = (allOrders ?? []).filter((o) =>
+                    o.id.toLowerCase().includes(q)
+                  );
+                  if (matches.length === 1) {
+                    router.push(`/e-commerce/order/${matches[0].id}`);
+                  }
+                }}
+              />
+              {filters.orderId ? (
+                <button
+                  type="button"
+                  aria-label="Clear order ID search"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  onClick={() => form.setValue("orderId", "")}
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              ) : null}
+            </div>
+          </div>
           <div className="mb-4 flex items-end space-x-2">
             <div className="flex items-center space-x-2">
               <label className="text-sm font-medium text-gray-700">

@@ -106,6 +106,19 @@ type ProductsRow = {
   updated_at: string;
 }
 
+type ProductMediaRow = {
+  id: string;
+  product_id: string;
+  media_type: "image" | "video";
+  url: string;
+  thumb_url: string | null;
+  storage_path: string | null;
+  thumb_storage_path: string | null;
+  variant: string | null;
+  sort_order: number;
+  created_at: string;
+}
+
 type OrderItemsRow = {
   id: string;
   order_id: string;
@@ -322,6 +335,7 @@ export type Database = {
       orders: TableDef<OrdersRow>;
       order_items: TableDef<OrderItemsRow>;
       products: TableDef<ProductsRow>;
+      product_media: TableDef<ProductMediaRow>;
       product_reviews: TableDef<ProductReviewsRow>;
       invoices: TableDef<InvoicesRow>;
       payments: TableDef<PaymentsRow>;

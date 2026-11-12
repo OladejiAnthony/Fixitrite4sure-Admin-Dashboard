@@ -294,8 +294,35 @@ export async function loadProducts(admin: Admin) {
   return rows.map((p) => mapProduct(p, ratings.get(p.id)));
 }
 
+type MediaRow = {
+  id: string;
+  media_type: "image" | "video";
+  url: string;
+  thumb_url: string | null;
+  variant: string | null;
+};
+
+// Photos/videos for one product, in the seller's chosen order. URLs point at
+// the public product-media storage bucket, so the browser can load them.
+async function loadProductMedia(admin: Admin, productId: string) {
+  const { data, error } = await admin
+    .from("product_media")
+    .select("id, media_type, url, thumb_url, variant")
+    .eq("product_id", productId)
+    .order("sort_order")
+    .order("created_at");
+  if (error) throw new Error(error.message);
+  return ((data ?? []) as MediaRow[]).map((m) => ({
+    id: m.id,
+    type: m.media_type,
+    url: m.url,
+    thumbUrl: m.thumb_url ?? undefined,
+    variant: m.variant ?? undefined,
+  }));
+}
+
 export async function loadProduct(admin: Admin, id: string) {
-  const [{ data, error }, reviews] = await Promise.all([
+  const [{ data, error }, reviews, media] = await Promise.all([
     admin.from("products").select(PRODUCT_SELECT).eq("id", id).maybeSingle(),
     fetchAll<ReviewRow>((from, to) =>
       admin
@@ -305,10 +332,14 @@ export async function loadProduct(admin: Admin, id: string) {
         .order("id")
         .range(from, to)
     ),
+    loadProductMedia(admin, id),
   ]);
   if (error) throw new Error(error.message);
   if (!data) return null;
-  return mapProduct(data as unknown as ProductRow, ratingByProduct(reviews).get(id));
+  return {
+    ...mapProduct(data as unknown as ProductRow, ratingByProduct(reviews).get(id)),
+    media,
+  };
 }
 
 // ---------------------------------------------------------------------------

@@ -1,8 +1,12 @@
 // app/(dashboard)/e-repair/page.tsx
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { apiClient } from "@/lib/api-client";
+import { useERepairList } from "@/hooks/use-admin-e-repair";
+import type {
+  ERepairBooking,
+  ERepairDiscovery,
+  ERepairReport,
+} from "@/lib/e-repair";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -44,68 +48,11 @@ const filterSchema = z.object({
 
 type FilterForm = z.infer<typeof filterSchema>;
 
-interface Booking {
-  id: string;
-  repairId: string;
-  customerName: string;
-  category: string;
-  bookingDate: string;
-  serviceType: string;
-  technician: string;
-  bookingStatus: string;
-  initialCost: number;
-  paymentStatus: string;
-  customerPhone: string;
-  customerAddress: string;
-  deviceType: string;
-  issueDescription: string;
-  scheduledTime: string;
-  priority: string;
-}
-
-interface Repair {
-  id: string;
-  repairId: string;
-  technician: string;
-  repairStatus: string;
-  startDate: string;
-  completionDate: string;
-  totalCost: number;
-  paymentStatus: string;
-  repairConfirmation: string;
-  partsUsed: string[];
-  laborHours: number;
-  warranty: string;
-  notes: string;
-}
-
-interface Discovery {
-  id: string;
-  repairId: string;
-  discovery: string;
-  description: string;
-  discoveryDate: string;
-  invoiceAmount: number;
-  paymentStatus: string;
-  technician: string;
-  images: string[];
-  priority: string;
-  customerApproval: string;
-}
-
-interface ERepairReport {
-  id: string;
-  reportName: string;
-  type: string;
-  period: string;
-  generatedDate: string;
-  totalRevenue: number;
-  status: string;
-  downloads: number;
-  repairsCompleted: number;
-  averageCompletionTime: string;
-  customerSatisfaction: string;
-}
+// Shapes come from lib/e-repair.ts (Supabase, via /api/admin/e-repair).
+// Repairs are the bookings a repairer has accepted, so they share a shape.
+type Booking = ERepairBooking;
+type Repair = ERepairBooking;
+type Discovery = ERepairDiscovery;
 
 export default function ERepairPage() {
   const router = useRouter();
@@ -129,39 +76,22 @@ export default function ERepairPage() {
   });
   const filters = form.watch();
 
-  // Fetch all data for each tab
-  const { data: allBookings } = useQuery<Booking[]>({
-    queryKey: ["all-bookings"],
-    queryFn: async () => {
-      const res = await apiClient.get("/e-repairBookings");
-      return res.data as Booking[];
-    },
-    refetchInterval: 30000, // Refetch every 30 seconds
-  });
+  // Fetch all data for each tab from Supabase (via /api/admin/e-repair)
+  const bookingsQuery = useERepairList<Booking>("bookings");
+  const repairsQuery = useERepairList<Repair>("repairs");
+  const discoveryQuery = useERepairList<Discovery>("discovery");
+  const reportsQuery = useERepairList<ERepairReport>("reports");
+  const allBookings = bookingsQuery.data;
+  const allRepairs = repairsQuery.data;
+  const allDiscoveries = discoveryQuery.data;
+  const allReports = reportsQuery.data;
 
-  const { data: allRepairs } = useQuery<Repair[]>({
-    queryKey: ["all-repairs"],
-    queryFn: async () => {
-      const res = await apiClient.get("/e-repairRepairs");
-      return res.data as Repair[];
-    },
-  });
-
-  const { data: allDiscoveries } = useQuery<Discovery[]>({
-    queryKey: ["all-discoveries"],
-    queryFn: async () => {
-      const res = await apiClient.get("/e-repairDiscovery");
-      return res.data as Discovery[];
-    },
-  });
-
-  const { data: allReports } = useQuery<ERepairReport[]>({
-    queryKey: ["all-e-repair-reports"],
-    queryFn: async () => {
-      const res = await apiClient.get("/e-repairReports");
-      return res.data as ERepairReport[];
-    },
-  });
+  const activeQuery = {
+    bookings: bookingsQuery,
+    repairs: repairsQuery,
+    discovery: discoveryQuery,
+    reports: reportsQuery,
+  }[activeTab as "bookings" | "repairs" | "discovery" | "reports"];
 
   // Filter and paginate data based on active tab
   const getFilteredData = () => {
@@ -234,13 +164,13 @@ export default function ERepairPage() {
           const targetDate = normalizeDate(filters.dateInput);
           if (targetDate) {
             data = data.filter((r: Repair) => {
-              const repairDate = normalizeDate(r.startDate);
+              const repairDate = normalizeDate(r.scheduledDate);
               return repairDate === targetDate;
             });
           }
         }
         if (filters.statuses && filters.statuses.length > 0) {
-          data = data.filter((r: Repair) => filters.statuses!.includes(r.repairStatus));
+          data = data.filter((r: Repair) => filters.statuses!.includes(r.bookingStatus));
         }
         break;
       case "discovery":
@@ -295,20 +225,47 @@ export default function ERepairPage() {
   const { data, filteredData } = getFilteredData();
   const totalItems = data.length;
 
+  // Loading / error / empty row shown in place of table rows.
+  const renderStateRow = (colSpan: number) => {
+    let message: string | null = null;
+    if (activeQuery?.isLoading) message = "Loading...";
+    else if (activeQuery?.isError)
+      message = `Could not load data: ${(activeQuery.error as Error).message}`;
+    else if (filteredData.length === 0) message = "No records found.";
+    if (!message) return null;
+    return (
+      <TableRow>
+        <TableCell
+          colSpan={colSpan}
+          className={cn(
+            "px-4 py-6 text-center text-sm",
+            activeQuery?.isError ? "text-red-600" : "text-gray-500"
+          )}
+        >
+          {message}
+        </TableCell>
+      </TableRow>
+    );
+  };
+
   const getStatusColor = (
     status: string,
     type: "status" | "payment" | "confirmation" | "report"
   ) => {
     if (type === "status") {
+      if (status === "Pending") return "bg-[#FFF3E0] text-[#EF6C00]";
+      if (status === "Confirmed") return "bg-[#CEE0FC] text-[#0D47A1]";
       if (status === "In Progress") return "bg-[#E5D9F2] text-[#6A1B9A]";
       if (status === "Completed") return "bg-[#D4F4E2] text-[#1B5E20]";
       if (status === "Cancelled") return "bg-[#FFEBEE] text-[#B71C1C]";
     } else if (type === "payment") {
       if (status === "Paid") return "bg-[#D4F4E2] text-[#1B5E20]";
       if (status === "Unpaid") return "bg-[#FFEBEE] text-[#B71C1C]";
+      if (status === "Failed") return "bg-[#FFEBEE] text-[#B71C1C]";
       if (status === "Partial") return "bg-[#FFF3E0] text-[#EF6C00]";
       if (status === "Pending") return "bg-[#E5D9F2] text-[#6A1B9A]";
       if (status === "Refunded") return "bg-[#E0E0E0] text-[#424242]";
+      if (status === "Not invoiced") return "bg-[#E0E0E0] text-[#424242]";
     } else if (type === "confirmation") {
       if (status === "Confirmed") return "bg-[#D4F4E2] text-[#1B5E20]";
       if (status === "Pending") return "bg-[#E5D9F2] text-[#6A1B9A]";
@@ -448,7 +405,7 @@ export default function ERepairPage() {
 
   const StatusModal = () => {
     const [selected, setSelected] = React.useState<string[]>(filters.statuses || []);
-    const options = ["In Progress", "Completed", "Cancelled"];
+    const options = ["Pending", "Confirmed", "In Progress", "Completed", "Cancelled"];
 
     const toggle = (value: string) => {
       setSelected((prev) =>
@@ -536,6 +493,7 @@ export default function ERepairPage() {
         </TableRow>
       </TableHeader>
       <TableBody>
+        {renderStateRow(9)}
         {filteredData.map((booking: Booking) => (
           <TableRow
             key={booking.id}
@@ -603,7 +561,7 @@ export default function ERepairPage() {
             REPAIR STATUS
           </TableHead>
           <TableHead className="h-10 px-4 py-2 text-left text-xs font-medium uppercase text-gray-900">
-            START DATE
+            SCHEDULED DATE
           </TableHead>
           <TableHead className="h-10 px-4 py-2 text-left text-xs font-medium uppercase text-gray-900">
             COMPLETION DATE
@@ -620,6 +578,7 @@ export default function ERepairPage() {
         </TableRow>
       </TableHeader>
       <TableBody>
+        {renderStateRow(8)}
         {filteredData.map((repair: Repair) => (
           <TableRow
             key={repair.id}
@@ -635,15 +594,15 @@ export default function ERepairPage() {
             <TableCell className="px-4 py-3 text-sm">
               <span
                 className={`inline-flex rounded-full px-2 py-1 text-xs font-medium ${getStatusColor(
-                  repair.repairStatus,
+                  repair.bookingStatus,
                   "status"
                 )}`}
               >
-                {repair.repairStatus}
+                {repair.bookingStatus}
               </span>
             </TableCell>
             <TableCell className="px-4 py-3 text-sm text-gray-900">
-              {repair.startDate}
+              {repair.scheduledDate || "-"}
             </TableCell>
             <TableCell className="px-4 py-3 text-sm text-gray-900">
               {repair.completionDate || "-"}
@@ -703,6 +662,7 @@ export default function ERepairPage() {
         </TableRow>
       </TableHeader>
       <TableBody>
+        {renderStateRow(6)}
         {filteredData.map((discovery: Discovery) => (
           <TableRow
             key={discovery.id}
@@ -766,11 +726,12 @@ export default function ERepairPage() {
             Status
           </TableHead>
           <TableHead className="h-10 px-4 py-2 text-left text-xs font-medium uppercase text-gray-900">
-            Downloads
+            Bookings
           </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
+        {renderStateRow(8)}
         {filteredData.map((report: ERepairReport) => (
           <TableRow
             key={report.id}
@@ -806,7 +767,7 @@ export default function ERepairPage() {
               </span>
             </TableCell>
             <TableCell className="px-4 py-3 text-sm text-gray-900">
-              {report.downloads}
+              {report.totalBookings}
             </TableCell>
           </TableRow>
         ))}

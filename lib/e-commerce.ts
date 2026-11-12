@@ -12,28 +12,9 @@
 //                                               exists; these are derived)
 import "server-only";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { fetchAll } from "@/lib/supabase/fetch-all";
 
 type Admin = ReturnType<typeof createAdminClient>;
-
-// PostgREST caps every response (1000 rows by default), so page until a
-// short page comes back.
-const PAGE_SIZE = 1000;
-
-async function fetchAll<T>(
-  query: (
-    from: number,
-    to: number
-  ) => PromiseLike<{ data: unknown; error: { message: string } | null }>
-): Promise<T[]> {
-  const rows: T[] = [];
-  for (let from = 0; ; from += PAGE_SIZE) {
-    const { data, error } = await query(from, from + PAGE_SIZE - 1);
-    if (error) throw new Error(error.message);
-    const page = (data ?? []) as T[];
-    rows.push(...page);
-    if (page.length < PAGE_SIZE) return rows;
-  }
-}
 
 // ---------------------------------------------------------------------------
 // Shared helpers

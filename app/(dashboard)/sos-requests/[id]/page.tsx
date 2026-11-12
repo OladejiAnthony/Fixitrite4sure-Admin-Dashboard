@@ -1,141 +1,58 @@
-//app/(dashboard)/sos-requests/[id]/page.tsx
+// app/(dashboard)/sos-requests/[id]/page.tsx
 "use client";
 
-import { useQuery, useMutation } from "@tanstack/react-query";
-import { apiClient } from "@/lib/api-client";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { useState, use } from "react"; // <-- import `use` from React
-import { useRouter } from "next/navigation";
+import { use, useEffect, useRef } from "react";
+import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-
-// Zod schema for request data validation
-const requestSchema = z.object({
-  id: z.string(),
-  username: z.string(),
-  location: z.string(),
-  time: z.string(),
-  status: z.enum(["Pending", "In Progress", "Resolved", "Closed"]),
-  issueDescription: z.string(),
-  attachedFile: z.string().optional(),
-});
-
-type Request = z.infer<typeof requestSchema>;
-
-// Status update schema
-const statusUpdateSchema = z.object({
-  status: z.enum(["Pending", "In Progress", "Resolved", "Closed"]),
-});
+import {
+  displayName,
+  formatDateTime,
+  type SupportMessage,
+  type SupportThread,
+} from "@/lib/support-requests";
 
 interface PageProps {
-  params: Promise<{ id: string }>; // ✅ make it a Promise now
+  params: Promise<{ id: string }>;
+}
+
+function senderLabel(message: SupportMessage, userName: string) {
+  if (message.from_user) return userName;
+  const s = message.sender;
+  const name = s ? [s.first_name, s.last_name].filter(Boolean).join(" ") : "";
+  return name ? `${name} (Support)` : "FixIt Support";
 }
 
 export default function SosDetailsPage({ params }: PageProps) {
-  const { id } = use(params); // ✅ unwrap params with `use()`
-  const router = useRouter();
-  const [isEditingStatus, setIsEditingStatus] = useState(false);
+  const { id } = use(params);
+  const bottomRef = useRef<HTMLDivElement>(null);
 
-  // Fetch request details
   const {
-    data: request,
+    data: thread,
     isLoading,
     error,
-  } = useQuery<Request>({
-    queryKey: ["sos-request", id], // ✅ use unwrapped `id`
+  } = useQuery<SupportThread>({
+    queryKey: ["support-request", id],
     queryFn: async () => {
-      const response = await apiClient.get(`/sosRequests/${id}`);
-      return requestSchema.parse(response.data);
+      const res = await fetch(`/api/admin/support-requests/${id}`);
+      if (res.status === 404) throw new Error("Request not found");
+      if (!res.ok) throw new Error("Failed to load request");
+      return res.json();
     },
+    // Signed media URLs last an hour; refetching keeps them fresh and picks
+    // up new messages.
+    refetchInterval: 15_000,
   });
 
-  // Status update mutation
-  const { mutate: updateStatus } = useMutation({
-    mutationFn: async (newStatus: string) => {
-      const response = await apiClient.patch(`/sosRequests/${id}`, {
-        status: newStatus,
-      });
-      return response.data;
-    },
-    onSuccess: () => {
-      router.refresh();
-      setIsEditingStatus(false);
-    },
-  });
-
-  // Form for status update
-  const { handleSubmit } = useForm({
-    resolver: zodResolver(statusUpdateSchema),
-  });
-
-  const handleViewFile = () => {
-    if (request?.attachedFile) {
-      window.open(request.attachedFile, "_blank");
-    }
-  };
+  const messageCount = thread?.messages.length ?? 0;
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ block: "end" });
+  }, [messageCount]);
 
   if (isLoading) return <div>Loading...</div>;
-  if (error)
-    return <div>Error loading request: {(error as Error).message}</div>;
-  if (!request) return <div>Request not found</div>;
+  if (error) return <div>Error loading request: {(error as Error).message}</div>;
+  if (!thread) return <div>Request not found</div>;
 
-  // Determine which buttons to show based on status
-  const renderButtons = () => {
-    switch (request.status) {
-      case "Pending":
-        return (
-          <div className="mt-4 flex gap-4">
-            <Button variant="outline" className="bg-[#0586CF] text-white">
-              Assign to responder
-            </Button>
-            <Button
-              variant="outline"
-              className="text-[#0586CF] border border-[#0586CF] bg-white"
-            >
-              Message customer
-            </Button>
-            <Button
-              variant="outline"
-              className="text-[#0586CF] border border-[#0586CF] bg-white"
-              onClick={() => setIsEditingStatus(true)}
-            >
-              Change request status
-            </Button>
-          </div>
-        );
-      case "In Progress":
-        return (
-          <>
-            <Button variant="outline">Message customer</Button>
-            <Button variant="outline" onClick={() => setIsEditingStatus(true)}>
-              Change request status
-            </Button>
-          </>
-        );
-      case "Resolved":
-        return (
-          <>
-            <Button variant="outline" onClick={() => setIsEditingStatus(true)}>
-              Change request status
-            </Button>
-            <Button variant="outline">Message customer</Button>
-          </>
-        );
-      case "Closed":
-        return <Button variant="outline">Message customer</Button>;
-      default:
-        return null;
-    }
-  };
+  const userName = displayName(thread.user);
 
   return (
     <div className="space-y-6">
@@ -149,94 +66,108 @@ export default function SosDetailsPage({ params }: PageProps) {
         <div className="space-y-4">
           <div className="flex items-start">
             <span className="w-48 font-medium">Request ID:</span>
-            <span>{request.id}</span>
+            <span className="font-mono text-sm">{thread.id}</span>
           </div>
-
           <div className="flex items-start">
-            <span className="w-48 font-medium">Customer's Name:</span>
-            <span>{request.username}</span>
+            <span className="w-48 font-medium">Name:</span>
+            <span>{userName}</span>
           </div>
-
           <div className="flex items-start">
-            <span className="w-48 font-medium">Customer's Location:</span>
-            <span>{request.location}</span>
+            <span className="w-48 font-medium">Account type:</span>
+            <span className="capitalize">{thread.user?.user_type ?? "-"}</span>
           </div>
-
           <div className="flex items-start">
-            <span className="w-48 font-medium">Date and Time:</span>
-            <span>{request.time}</span>
+            <span className="w-48 font-medium">Phone:</span>
+            <span>{thread.user?.phone_number || "-"}</span>
           </div>
-
           <div className="flex items-start">
-            <span className="w-48 font-medium">Issue Description:</span>
-            <span>{request.issueDescription}</span>
+            <span className="w-48 font-medium">Email:</span>
+            <span>{thread.user?.email || "-"}</span>
           </div>
-
-          {request.attachedFile && (
-            <div className="flex items-start">
-              <span className="w-48 font-medium">Attached File:</span>
-              <Button
-                variant="link"
-                className="p-0 h-auto"
-                onClick={handleViewFile}
-              >
-                View File
-              </Button>
-            </div>
-          )}
-
           <div className="flex items-start">
-            <span className="w-48 font-medium">Request Status:</span>
-            {isEditingStatus ? (
-              <form
-                onSubmit={handleSubmit((data) => updateStatus(data.status))}
-                className="flex items-center gap-2"
-              >
-                <Select
-                  name="status"
-                  defaultValue={request.status}
-                  onValueChange={(value) => updateStatus(value)}
-                >
-                  <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Pending">Pending</SelectItem>
-                    <SelectItem value="In Progress">In Progress</SelectItem>
-                    <SelectItem value="Resolved">Resolved</SelectItem>
-                    <SelectItem value="Closed">Closed</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setIsEditingStatus(false)}
-                >
-                  Cancel
-                </Button>
-              </form>
-            ) : (
-              <div className="flex items-center gap-2">
-                <span
-                  className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                    request.status === "Pending"
-                      ? "bg-yellow-100 text-yellow-800"
-                      : request.status === "In Progress"
-                      ? "bg-blue-100 text-blue-800"
-                      : request.status === "Resolved"
-                      ? "bg-green-100 text-green-800"
-                      : "bg-gray-100 text-gray-800"
-                  }`}
-                >
-                  {request.status}
-                </span>
-              </div>
-            )}
+            <span className="w-48 font-medium">Opened:</span>
+            <span>{formatDateTime(thread.created_at)}</span>
+          </div>
+          <div className="flex items-start">
+            <span className="w-48 font-medium">Last activity:</span>
+            <span>{formatDateTime(thread.last_message_at)}</span>
+          </div>
+          <div className="flex items-start">
+            <span className="w-48 font-medium">Status:</span>
+            <span
+              className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                thread.awaiting_reply
+                  ? "bg-yellow-100 text-yellow-800"
+                  : "bg-green-100 text-green-800"
+              }`}
+            >
+              {thread.awaiting_reply ? "Awaiting reply" : "Replied"}
+            </span>
           </div>
         </div>
+      </div>
 
-        {/* Buttons section */}
-        <div className="mt-6 flex gap-4">{renderButtons()}</div>
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h2 className="text-lg font-semibold mb-4">
+          CHAT ({thread.messages.length})
+        </h2>
+
+        {thread.messages.length === 0 ? (
+          <p className="text-sm text-gray-500">No messages yet.</p>
+        ) : (
+          <div className="max-h-[600px] overflow-y-auto space-y-3 pr-2">
+            {thread.messages.map((m) => (
+              <div
+                key={m.id}
+                className={`flex ${m.from_user ? "justify-start" : "justify-end"}`}
+              >
+                <div
+                  className={`max-w-[70%] rounded-lg px-4 py-2 ${
+                    m.from_user
+                      ? "bg-gray-100 text-gray-900"
+                      : "bg-[#0586CF] text-white"
+                  }`}
+                >
+                  <div
+                    className={`text-xs mb-1 ${
+                      m.from_user ? "text-gray-500" : "text-blue-100"
+                    }`}
+                  >
+                    {senderLabel(m, userName)} · {formatDateTime(m.created_at)}
+                  </div>
+
+                  {m.media_url && m.media_type === "image" && (
+                    <a href={m.media_url} target="_blank" rel="noreferrer">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={m.media_url}
+                        alt="Attachment"
+                        className="mb-2 max-h-64 rounded"
+                      />
+                    </a>
+                  )}
+                  {m.media_url && m.media_type === "video" && (
+                    <video
+                      src={m.media_url}
+                      controls
+                      className="mb-2 max-h-64 rounded"
+                    />
+                  )}
+                  {m.media_type && !m.media_url && (
+                    <p className="text-xs italic">Attachment unavailable</p>
+                  )}
+
+                  {m.body && (
+                    <p className="whitespace-pre-wrap break-words text-sm">
+                      {m.body}
+                    </p>
+                  )}
+                </div>
+              </div>
+            ))}
+            <div ref={bottomRef} />
+          </div>
+        )}
       </div>
 
       <div className="px-6 py-6 mt-10 border-t border-gray-100 flex items-center justify-between gap-4">

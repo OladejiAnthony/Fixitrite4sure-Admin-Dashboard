@@ -3,57 +3,57 @@
 
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { apiClient } from "@/lib/api-client";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useDispatch, useSelector } from "react-redux";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Pagination } from "@/components/common/pagination";
-import Link from "next/link";
+import { setCurrentPage } from "@/store/slices/pagination-slice";
+import type { RootState } from "@/store/store";
+import {
+  displayName,
+  formatDateTime,
+  type SupportRequest,
+} from "@/lib/support-requests";
 
-// Zod schema for request data validation
-const requestSchema = z.object({
-  id: z.string(),
-  username: z.string(),
-  location: z.string(),
-  time: z.string(),
-  status: z.enum(["Pending", "In Progress", "Resolved", "Closed"]),
-});
+type TabType = "all" | "awaiting" | "replied";
 
-type Request = z.infer<typeof requestSchema>;
-
-// Tab types
-type TabType = "all" | "pending" | "in-progress" | "resolved" | "closed";
+const tabs: { id: TabType; label: string }[] = [
+  { id: "all", label: "ALL REQUESTS" },
+  { id: "awaiting", label: "AWAITING REPLY" },
+  { id: "replied", label: "REPLIED" },
+];
 
 export default function SosRequestPage() {
   const [activeTab, setActiveTab] = useState<TabType>("all");
-  const { register, handleSubmit } = useForm({
-    resolver: zodResolver(requestSchema),
-  });
+  const dispatch = useDispatch();
+  const { currentPage, itemsPerPage } = useSelector(
+    (state: RootState) => state.pagination
+  );
 
-  // Fetch requests data
-  const { data: requests = [], isLoading } = useQuery<Request[]>({
-    queryKey: ["sos-requests"],
+  const {
+    data: requests = [],
+    isLoading,
+    error,
+  } = useQuery<SupportRequest[]>({
+    queryKey: ["support-requests"],
     queryFn: async () => {
-      const response = await apiClient.get("/sosRequests");
-      return response.data;
+      const res = await fetch("/api/admin/support-requests");
+      if (!res.ok) throw new Error("Failed to load support requests");
+      return res.json();
     },
+    refetchInterval: 30_000,
   });
 
-  // Filter requests based on active tab
-  const filteredRequests = requests.filter((request) => {
-    if (activeTab === "all") return true;
-    return request.status.toLowerCase().replace(" ", "-") === activeTab;
+  const filteredRequests = requests.filter((r) => {
+    if (activeTab === "awaiting") return r.awaiting_reply;
+    if (activeTab === "replied") return !r.awaiting_reply;
+    return true;
   });
 
-  // Tab configuration
-  const tabs = [
-    { id: "all", label: "ALL REQUESTS" },
-    { id: "pending", label: "PENDING REQUESTS" },
-    { id: "in-progress", label: "IN PROGRESS REQUESTS" },
-    { id: "resolved", label: "RESOLVED REQUESTS" },
-    { id: "closed", label: "CLOSED REQUESTS" },
-  ];
+  const start = (currentPage - 1) * itemsPerPage;
+  const pageRequests = filteredRequests.slice(start, start + itemsPerPage);
+
+  const awaitingCount = requests.filter((r) => r.awaiting_reply).length;
 
   return (
     <div className="flex flex-col gap-4">
@@ -72,9 +72,17 @@ export default function SosRequestPage() {
                   ? "text-blue-600 border-b-2 border-blue-600 bg-blue-50"
                   : "text-gray-600 hover:text-gray-800 hover:bg-gray-50"
               }`}
-              onClick={() => setActiveTab(tab.id as TabType)}
+              onClick={() => {
+                setActiveTab(tab.id);
+                dispatch(setCurrentPage(1));
+              }}
             >
               {tab.label}
+              {tab.id === "awaiting" && awaitingCount > 0 && (
+                <span className="ml-2 rounded-full bg-yellow-100 px-2 text-xs text-yellow-800">
+                  {awaitingCount}
+                </span>
+              )}
             </button>
           ))}
         </div>
@@ -84,73 +92,64 @@ export default function SosRequestPage() {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-[#202224] uppercase tracking-wider">
-                  REQUEST ID
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-[#202224] uppercase tracking-wider">
-                  USERNAME
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-[#202224] uppercase tracking-wider">
-                  LOCATION
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-[#202224] uppercase tracking-wider">
-                  TIME
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-[#202224] uppercase tracking-wider">
-                  STATUS
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-[#202224] uppercase tracking-wider">
-                  ACTION
-                </th>
+                {["USER", "ACCOUNT TYPE", "CONTACT", "LAST MESSAGE", "LAST ACTIVITY", "STATUS", "ACTION"].map(
+                  (h) => (
+                    <th
+                      key={h}
+                      className="px-6 py-3 text-left text-xs font-medium text-[#202224] uppercase tracking-wider"
+                    >
+                      {h}
+                    </th>
+                  )
+                )}
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {isLoading ? (
                 <tr>
-                  <td
-                    colSpan={6}
-                    className="px-6 py-4 text-center text-sm text-gray-500"
-                  >
+                  <td colSpan={7} className="px-6 py-4 text-center text-sm text-gray-500">
                     Loading...
                   </td>
                 </tr>
-              ) : filteredRequests.length === 0 ? (
+              ) : error ? (
                 <tr>
-                  <td
-                    colSpan={6}
-                    className="px-6 py-4 text-center text-sm text-gray-500"
-                  >
+                  <td colSpan={7} className="px-6 py-4 text-center text-sm text-red-600">
+                    {(error as Error).message}
+                  </td>
+                </tr>
+              ) : pageRequests.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="px-6 py-4 text-center text-sm text-gray-500">
                     No requests found
                   </td>
                 </tr>
               ) : (
-                filteredRequests.map((request) => (
+                pageRequests.map((request) => (
                   <tr key={request.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {request.id}
+                      {displayName(request.user)}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 capitalize">
+                      {request.user?.user_type ?? "-"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {request.username}
+                      {request.user?.phone_number || request.user?.email || "-"}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-gray-500 max-w-xs truncate">
+                      {request.last_message_preview ?? "-"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {request.location}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {request.time}
+                      {formatDateTime(request.last_message_at)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
                         className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          request.status === "Pending"
+                          request.awaiting_reply
                             ? "bg-yellow-100 text-yellow-800"
-                            : request.status === "In Progress"
-                            ? "bg-blue-100 text-blue-800"
-                            : request.status === "Resolved"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-gray-100 text-gray-800"
+                            : "bg-green-100 text-green-800"
                         }`}
                       >
-                        {request.status}
+                        {request.awaiting_reply ? "Awaiting reply" : "Replied"}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
@@ -160,7 +159,7 @@ export default function SosRequestPage() {
                           size="sm"
                           className="text-white bg-[#5D92E4]"
                         >
-                          View Details
+                          View Chat
                         </Button>
                       </Link>
                     </td>

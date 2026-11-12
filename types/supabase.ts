@@ -232,6 +232,32 @@ type AdminActivityLogRow = {
   created_at: string;
 }
 
+// Added by fixit-app-mobile migrations 20261104190000_chat.sql and
+// 20261104200000_store_likes_and_support_chat.sql. A support conversation
+// (kind = 'support') belongs to subject_user_id, who is its only
+// participant; admins read it without being participants.
+type ConversationsRow = {
+  id: string;
+  pair_key: string;
+  kind: "direct" | "support";
+  subject_user_id: string | null;
+  last_message_at: string | null;
+  last_message_preview: string | null;
+  last_message_sender_id: string | null;
+  created_at: string;
+}
+
+type MessagesRow = {
+  id: string;
+  conversation_id: string;
+  sender_id: string;
+  body: string | null;
+  media_type: "image" | "video" | null;
+  // Object path in the private chat-media bucket; serve via signed URL.
+  media_path: string | null;
+  created_at: string;
+}
+
 type TableDef<Row extends { id?: string }> = {
   Row: Row;
   Insert: Partial<Row>;
@@ -261,6 +287,8 @@ export type Database = {
       advert_transactions: TableDef<AdvertTransactionsRow>;
       bearing_posts: TableDef<BearingPostsRow>;
       admin_activity_log: TableDef<AdminActivityLogRow>;
+      conversations: TableDef<ConversationsRow>;
+      messages: TableDef<MessagesRow>;
     };
     Views: Record<string, never>;
     Functions: Record<string, never>;

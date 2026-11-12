@@ -49,7 +49,7 @@ update public.profiles set is_admin = true where id = '<auth.users uuid>';
 | `transaction-details` | `api/admin/transactions` | `payments` → `invoices` → `bookings` / `orders` |
 | `reviews-feedbacks` | `api/admin/reviews` | `reviews` and related tables |
 | `e-commerce` (orders, stores, products, reports) | `api/admin/e-commerce/[resource]` | `orders`, `order_items`, `products`, `product_reviews`, `invoices`, `payments` (`lib/e-commerce.ts`) |
-| `e-repair` (bookings, repairs, discovery, reports) | `api/admin/e-repair/[resource]` | `bookings`, `repair_requests`, `invoices`, `invoice_items`, `payments`, `staff` (`lib/e-repair.ts`) |
+| `e-repair` (bookings, repairs, discovery, reports), `bookings` | `api/admin/e-repair/[resource]` | `bookings`, `repair_requests`, `invoices`, `invoice_items`, `payments`, `staff` (`lib/e-repair.ts`) |
 | `advertisement-banners` | `api/admin/adverts` | adverts tables |
 | `content-management` | `api/admin/content` | content tables |
 | `onboarding` | `api/admin/onboarding` | onboarding content |
@@ -65,7 +65,6 @@ Backing tables already exist for these, so they can be wired now:
 - `repair-bookings` (`hooks/use-repair-bookings.ts`). Overlaps with E-Repair; reuse `lib/e-repair.ts`.
 - `product-orders` (`hooks/use-product-orders.ts`). Overlaps with E-Commerce orders; reuse `lib/e-commerce.ts`.
 - `invoices` (`hooks/use-invoices.ts`) → `invoices`, `invoice_items`.
-- `bookings` page, which currently renders the vendors component through `hooks/use-vendors.ts`. Confirm what this page is meant to show before wiring it.
 - `notifications` (`hooks/useNotifications.ts`) → `notifications`.
 - Dashboard stats (`hooks/use-dashboard-stats.ts`). Probably derivable from existing tables, the same way `analytics` is.
 - `profile`, `account-usage`. Should read the signed-in admin's own profile and `admin_activity_log`.

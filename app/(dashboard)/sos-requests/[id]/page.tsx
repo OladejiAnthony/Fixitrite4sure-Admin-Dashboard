@@ -100,6 +100,12 @@ export default function SosDetailsPage({ params }: PageProps) {
 
   return (
     <div className="space-y-6">
+      <div className="text-sm">
+        <Link href="/sos-requests" className="text-sky-600 hover:underline">
+          ← Request Overview
+        </Link>
+      </div>
+
       <h1 className="text-2xl font-bold text-gray-900">
         SOS REQUEST MANAGEMENT
       </h1>
@@ -246,14 +252,6 @@ export default function SosDetailsPage({ params }: PageProps) {
             </p>
           )}
         </form>
-      </div>
-
-      <div className="px-6 py-6 mt-10 border-t border-gray-100 flex items-center justify-between gap-4">
-        <div className="text-sm">
-          <Link href="/sos-requests" className="text-sky-600 hover:underline">
-            ← Request Overview
-          </Link>
-        </div>
       </div>
     </div>
   );

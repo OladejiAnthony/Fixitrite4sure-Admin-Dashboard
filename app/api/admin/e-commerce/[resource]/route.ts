@@ -1,0 +1,41 @@
+// app/api/admin/e-commerce/[resource]/route.ts
+// GET /api/admin/e-commerce/{orders|stores|products|reports}
+import { NextResponse } from "next/server";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { requireAdmin } from "@/lib/supabase/require-admin";
+import {
+  loadOrders,
+  loadProducts,
+  loadReports,
+  loadStores,
+} from "@/lib/e-commerce";
+
+const LOADERS = {
+  orders: loadOrders,
+  stores: loadStores,
+  products: loadProducts,
+  reports: loadReports,
+} as const;
+
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ resource: string }> }
+) {
+  const denied = await requireAdmin();
+  if (denied) return denied;
+
+  const { resource } = await params;
+  const load = LOADERS[resource as keyof typeof LOADERS];
+  if (!load) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
+  try {
+    return NextResponse.json(await load(createAdminClient()));
+  } catch (err) {
+    return NextResponse.json(
+      { error: err instanceof Error ? err.message : "Failed to load data" },
+      { status: 500 }
+    );
+  }
+}

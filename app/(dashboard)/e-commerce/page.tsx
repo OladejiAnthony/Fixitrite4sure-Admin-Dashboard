@@ -1,8 +1,7 @@
 // app/(dashboard)/e-commerce/page.tsx
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
-import { apiClient } from "@/lib/api-client";
+import { useEcommerceList } from "@/hooks/use-admin-ecommerce";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -40,9 +39,23 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
+// Mirrors the order_status enum in Supabase (public.orders.status).
+const ORDER_STATUSES = [
+  "All",
+  "Pending",
+  "Processing",
+  "Shipped",
+  "Delivered",
+  "Cancelled",
+] as const;
+type OrderStatusFilter = (typeof ORDER_STATUSES)[number];
+
+const formatNaira = (amount: number | null | undefined) =>
+  `₦${(amount || 0).toLocaleString("en-US")}`;
+
 const filterSchema = z.object({
   search: z.string().optional(),
-  orderStatus: z.enum(["All", "Pending", "Completed"]).optional(),
+  orderStatus: z.enum(ORDER_STATUSES).optional(),
   dateInput: z.string().optional(),
 });
 
@@ -77,7 +90,7 @@ interface Store {
   id: string;
   storeName: string;
   totalProducts: number;
-  rating: number;
+  rating: number | null;
   lastOrderDate: string;
   status: string;
   location: string;
@@ -91,6 +104,7 @@ interface Product {
   price: number;
   status: string;
   storeId: string;
+  storeName: string;
   dateAdded: string;
 }
 
@@ -102,7 +116,7 @@ interface Report {
   generatedDate: string;
   totalRevenue: number;
   status: string;
-  downloads: number;
+  totalOrders: number;
 }
 
 export default function ECommercePage() {
@@ -123,38 +137,45 @@ export default function ECommercePage() {
   });
   const filters = form.watch();
 
-  // Fetch all data for each tab
-  const { data: allOrders } = useQuery<Order[]>({
-    queryKey: ["all-orders"],
-    queryFn: async () => {
-      const res = await apiClient.get("/orders");
-      return res.data as Order[];
-    },
-  });
+  // Fetch all data for each tab from Supabase (via /api/admin/e-commerce)
+  const ordersQuery = useEcommerceList<Order>("orders");
+  const storesQuery = useEcommerceList<Store>("stores");
+  const productsQuery = useEcommerceList<Product>("products");
+  const reportsQuery = useEcommerceList<Report>("reports");
+  const allOrders = ordersQuery.data;
+  const allStores = storesQuery.data;
+  const allProducts = productsQuery.data;
+  const allReports = reportsQuery.data;
 
-  const { data: allStores } = useQuery<Store[]>({
-    queryKey: ["all-stores"],
-    queryFn: async () => {
-      const res = await apiClient.get("/stores");
-      return res.data as Store[];
-    },
-  });
+  const activeQuery = {
+    order: ordersQuery,
+    store: storesQuery,
+    product: productsQuery,
+    reports: reportsQuery,
+  }[activeTab as "order" | "store" | "product" | "reports"];
 
-  const { data: allProducts } = useQuery<Product[]>({
-    queryKey: ["all-products"],
-    queryFn: async () => {
-      const res = await apiClient.get("/products");
-      return res.data as Product[];
-    },
-  });
-
-  const { data: allReports } = useQuery<Report[]>({
-    queryKey: ["all-reports"],
-    queryFn: async () => {
-      const res = await apiClient.get("/reports");
-      return res.data as Report[];
-    },
-  });
+  // Loading / error / empty row shown in place of table rows.
+  const renderStateRow = (colSpan: number) => {
+    let message: string | null = null;
+    if (activeQuery?.isLoading) message = "Loading...";
+    else if (activeQuery?.isError)
+      message = `Could not load data: ${(activeQuery.error as Error).message}`;
+    else if (filteredData.length === 0) message = "No records found.";
+    if (!message) return null;
+    return (
+      <TableRow>
+        <TableCell
+          colSpan={colSpan}
+          className={cn(
+            "px-4 py-6 text-center text-sm",
+            activeQuery?.isError ? "text-red-600" : "text-gray-500"
+          )}
+        >
+          {message}
+        </TableCell>
+      </TableRow>
+    );
+  };
 
   // Filter and paginate data based on active tab
   const getFilteredData = () => {
@@ -177,10 +198,9 @@ export default function ECommercePage() {
         if (filters.dateInput) {
           const parsedDate = parse(filters.dateInput, "yyyy-MM-dd", new Date());
           if (isValid(parsedDate)) {
+            // orderDate is already a yyyy-MM-dd string (UTC day) from the API.
             const targetDate = format(parsedDate, "yyyy-MM-dd");
-            data = data.filter(
-              (o) => format(new Date(o.orderDate), "yyyy-MM-dd") === targetDate
-            );
+            data = data.filter((o) => o.orderDate === targetDate);
           }
         }
         break;
@@ -230,10 +250,16 @@ export default function ECommercePage() {
   ) => {
     if (type === "order") {
       if (status === "Pending") return "bg-[#E5D9F2] text-[#6A1B9A]";
-      if (status === "Completed") return "bg-[#D4F4E2] text-[#1B5E20]";
+      if (status === "Processing") return "bg-[#FFF3E0] text-[#EF6C00]";
+      if (status === "Shipped") return "bg-[#E3F2FD] text-[#1565C0]";
+      if (status === "Delivered" || status === "Completed")
+        return "bg-[#D4F4E2] text-[#1B5E20]";
+      if (status === "Cancelled") return "bg-[#FFEBEE] text-[#B71C1C]";
     } else if (type === "payment") {
       if (status === "Paid") return "bg-[#D4F4E2] text-[#1B5E20]";
-      if (status === "Unpaid") return "bg-[#FFEBEE] text-[#B71C1C]";
+      if (status === "Unpaid" || status === "Failed")
+        return "bg-[#FFEBEE] text-[#B71C1C]";
+      if (status === "Refunded") return "bg-[#FFF3E0] text-[#EF6C00]";
     } else if (type === "shipping") {
       if (status === "Delivered") return "bg-[#FFF3E0] text-[#EF6C00]";
       if (status === "Shipped") return "bg-[#E3F2FD] text-[#1565C0]";
@@ -247,6 +273,8 @@ export default function ECommercePage() {
       if (status === "Available") return "bg-[#D4F4E2] text-[#1B5E20]";
       if (status === "Low Stock") return "bg-[#FFF3E0] text-[#EF6C00]";
       if (status === "Out of Stock") return "bg-[#FFEBEE] text-[#B71C1C]";
+      if (status === "Draft") return "bg-[#E5D9F2] text-[#6A1B9A]";
+      if (status === "Archived") return "bg-gray-100 text-gray-600";
     } else if (type === "report") {
       if (status === "Completed") return "bg-[#D4F4E2] text-[#1B5E20]";
       if (status === "Processing") return "bg-[#FFF3E0] text-[#EF6C00]";
@@ -258,7 +286,7 @@ export default function ECommercePage() {
     form.reset();
   };
 
-  const handleStatusSelect = (status: "All" | "Pending" | "Completed") => {
+  const handleStatusSelect = (status: OrderStatusFilter) => {
     form.setValue("orderStatus", status);
     setIsStatusModalOpen(false);
   };
@@ -314,7 +342,7 @@ export default function ECommercePage() {
               {order.orderDate}
             </TableCell>
             <TableCell className="px-4 py-3 text-sm text-gray-900">
-              &#8358;{(order.totalAmount || 0).toLocaleString("en-US")}
+              {formatNaira(order.totalAmount)}
             </TableCell>
 
             <TableCell className="px-4 py-3 text-sm">
@@ -352,6 +380,7 @@ export default function ECommercePage() {
             </TableCell>
           </TableRow>
         ))}
+        {renderStateRow(8)}
       </TableBody>
     </Table>
   );
@@ -400,7 +429,7 @@ export default function ECommercePage() {
               {store.totalProducts}
             </TableCell>
             <TableCell className="px-4 py-3 text-sm text-gray-900">
-              {store.rating}
+              {store.rating ?? "-"}
             </TableCell>
             <TableCell className="px-4 py-3 text-sm text-gray-900">
               {store.lastOrderDate}
@@ -420,6 +449,7 @@ export default function ECommercePage() {
             </TableCell>
           </TableRow>
         ))}
+        {renderStateRow(7)}
       </TableBody>
     </Table>
   );
@@ -447,7 +477,7 @@ export default function ECommercePage() {
             Status
           </TableHead>
           <TableHead className="h-10 px-4 py-2 text-left text-xs font-medium uppercase text-gray-900">
-            Store ID
+            Store
           </TableHead>
           <TableHead className="h-10 px-4 py-2 text-left text-xs font-medium uppercase text-gray-900">
             Date Added
@@ -474,7 +504,7 @@ export default function ECommercePage() {
               {product.quantity}
             </TableCell>
             <TableCell className="px-4 py-3 text-sm text-gray-900">
-              {product.price ? `&#8358;${product.price.toLocaleString("en-US")}` : '&#8358;0'}
+              {formatNaira(product.price)}
             </TableCell>
 
             <TableCell className="px-4 py-3 text-sm">
@@ -488,13 +518,14 @@ export default function ECommercePage() {
               </span>
             </TableCell>
             <TableCell className="px-4 py-3 text-sm text-gray-900">
-              {product.storeId}
+              {product.storeName}
             </TableCell>
             <TableCell className="px-4 py-3 text-sm text-gray-900">
               {product.dateAdded}
             </TableCell>
           </TableRow>
         ))}
+        {renderStateRow(8)}
       </TableBody>
     </Table>
   );
@@ -525,7 +556,7 @@ export default function ECommercePage() {
             Status
           </TableHead>
           <TableHead className="h-10 px-4 py-2 text-left text-xs font-medium uppercase text-gray-900">
-            Downloads
+            Orders
           </TableHead>
         </TableRow>
       </TableHeader>
@@ -552,7 +583,7 @@ export default function ECommercePage() {
               {report.generatedDate}
             </TableCell>
             <TableCell className="px-4 py-3 text-sm text-gray-900">
-              {report.totalRevenue ? `&#8358;${report.totalRevenue.toLocaleString("en-US")}` : '&#8358;0'}
+              {formatNaira(report.totalRevenue)}
             </TableCell>
 
             <TableCell className="px-4 py-3 text-sm">
@@ -566,10 +597,11 @@ export default function ECommercePage() {
               </span>
             </TableCell>
             <TableCell className="px-4 py-3 text-sm text-gray-900">
-              {report.downloads}
+              {report.totalOrders}
             </TableCell>
           </TableRow>
         ))}
+        {renderStateRow(8)}
       </TableBody>
     </Table>
   );
@@ -645,20 +677,16 @@ export default function ECommercePage() {
                   <DialogTitle className="text-left">Select Status</DialogTitle>
                 </DialogHeader>
                 <div className="flex flex-col space-y-2 py-2">
-                  <Button
-                    variant="ghost"
-                    className="justify-start font-normal hover:bg-[#0586CF] rounded-[17px] hover:text-white"
-                    onClick={() => handleStatusSelect("Completed")}
-                  >
-                    Completed
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    className="justify-start font-normal hover:bg-[#0586CF] rounded-[17px] hover:text-white"
-                    onClick={() => handleStatusSelect("Pending")}
-                  >
-                    Pending
-                  </Button>
+                  {ORDER_STATUSES.filter((s) => s !== "All").map((status) => (
+                    <Button
+                      key={status}
+                      variant="ghost"
+                      className="justify-start font-normal hover:bg-[#0586CF] rounded-[17px] hover:text-white"
+                      onClick={() => handleStatusSelect(status)}
+                    >
+                      {status}
+                    </Button>
+                  ))}
                 </div>
                 <div className="flex justify-end border-t pt-4">
                   <Button

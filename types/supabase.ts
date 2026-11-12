@@ -79,8 +79,55 @@ type OrdersRow = {
   customer_id: string;
   status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
   total_amount: number;
+  // Added by fixit-app-mobile 20261104160000_marketplace / 20261105090000.
+  delivery: Json | null;
+  payment_card_id: string | null;
+  paid_at: string | null;
   created_at: string;
   updated_at: string;
+}
+
+// Marketplace tables (fixit-app-mobile 20261104160000_marketplace.sql).
+type ProductsRow = {
+  id: string;
+  seller_id: string;
+  title: string;
+  description: string | null;
+  price: number;
+  discount_percent: number;
+  category: "auto" | "gadget" | "plumbing" | "electrical";
+  stock: number;
+  free_delivery: boolean;
+  delivery_fee: number;
+  delivery_days: number | null;
+  status: "active" | "draft" | "archived";
+  purchased_count: number;
+  created_at: string;
+  updated_at: string;
+}
+
+type OrderItemsRow = {
+  id: string;
+  order_id: string;
+  product_id: string | null;
+  seller_id: string;
+  title: string;
+  unit_price: number;
+  quantity: number;
+  variant: string;
+  fulfilment_status: "pending" | "shipped" | "delivered";
+  shipped_at: string | null;
+  delivered_at: string | null;
+  created_at: string;
+}
+
+type ProductReviewsRow = {
+  id: string;
+  product_id: string;
+  author_id: string;
+  rating: number;
+  body: string | null;
+  created_at: string;
 }
 
 type InvoicesRow = {
@@ -273,6 +320,9 @@ export type Database = {
       bookings: TableDef<BookingsRow>;
       repair_requests: TableDef<RepairRequestsRow>;
       orders: TableDef<OrdersRow>;
+      order_items: TableDef<OrderItemsRow>;
+      products: TableDef<ProductsRow>;
+      product_reviews: TableDef<ProductReviewsRow>;
       invoices: TableDef<InvoicesRow>;
       payments: TableDef<PaymentsRow>;
       payment_cards: TableDef<PaymentCardsRow>;

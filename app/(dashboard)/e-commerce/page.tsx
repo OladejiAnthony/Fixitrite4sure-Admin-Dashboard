@@ -327,13 +327,13 @@ export default function ECommercePage() {
       <TableHeader>
         <TableRow className="bg-[#CEE0FC] hover:bg-[#CEE0FC]">
           <TableHead className="h-10 px-4 py-2 text-left text-xs font-medium uppercase text-gray-900">
+            Order Date
+          </TableHead>
+          <TableHead className="h-10 px-4 py-2 text-left text-xs font-medium uppercase text-gray-900">
             Order Number
           </TableHead>
           <TableHead className="h-10 px-4 py-2 text-left text-xs font-medium uppercase text-gray-900">
             Customer Name
-          </TableHead>
-          <TableHead className="h-10 px-4 py-2 text-left text-xs font-medium uppercase text-gray-900">
-            Order Date
           </TableHead>
           <TableHead className="h-10 px-4 py-2 text-left text-xs font-medium uppercase text-gray-900">
             Total Amount
@@ -360,13 +360,13 @@ export default function ECommercePage() {
             className="cursor-pointer border-b border-gray-200 hover:bg-gray-50"
           >
             <TableCell className="px-4 py-3 text-sm text-gray-900">
+              {order.orderDate}
+            </TableCell>
+            <TableCell className="px-4 py-3 text-sm text-gray-900">
               {order.id}
             </TableCell>
             <TableCell className="px-4 py-3 text-sm text-gray-900">
               {order.customerName}
-            </TableCell>
-            <TableCell className="px-4 py-3 text-sm text-gray-900">
-              {order.orderDate}
             </TableCell>
             <TableCell className="px-4 py-3 text-sm text-gray-900">
               {formatNaira(order.totalAmount)}
@@ -417,6 +417,9 @@ export default function ECommercePage() {
       <TableHeader>
         <TableRow className="bg-[#CEE0FC] hover:bg-[#CEE0FC]">
           <TableHead className="h-10 px-4 py-2 text-left text-xs font-medium uppercase text-gray-900">
+            Last Order Date
+          </TableHead>
+          <TableHead className="h-10 px-4 py-2 text-left text-xs font-medium uppercase text-gray-900">
             Store ID
           </TableHead>
           <TableHead className="h-10 px-4 py-2 text-left text-xs font-medium uppercase text-gray-900">
@@ -427,9 +430,6 @@ export default function ECommercePage() {
           </TableHead>
           <TableHead className="h-10 px-4 py-2 text-left text-xs font-medium uppercase text-gray-900">
             Rating
-          </TableHead>
-          <TableHead className="h-10 px-4 py-2 text-left text-xs font-medium uppercase text-gray-900">
-            Last Order Date
           </TableHead>
           <TableHead className="h-10 px-4 py-2 text-left text-xs font-medium uppercase text-gray-900">
             Status
@@ -447,6 +447,9 @@ export default function ECommercePage() {
             className="cursor-pointer border-b border-gray-200 hover:bg-gray-50"
           >
             <TableCell className="px-4 py-3 text-sm text-gray-900">
+              {store.lastOrderDate}
+            </TableCell>
+            <TableCell className="px-4 py-3 text-sm text-gray-900">
               {store.id}
             </TableCell>
             <TableCell className="px-4 py-3 text-sm text-gray-900">
@@ -457,9 +460,6 @@ export default function ECommercePage() {
             </TableCell>
             <TableCell className="px-4 py-3 text-sm text-gray-900">
               {store.rating ?? "-"}
-            </TableCell>
-            <TableCell className="px-4 py-3 text-sm text-gray-900">
-              {store.lastOrderDate}
             </TableCell>
             <TableCell className="px-4 py-3 text-sm">
               <span
@@ -486,6 +486,9 @@ export default function ECommercePage() {
       <TableHeader>
         <TableRow className="bg-[#CEE0FC] hover:bg-[#CEE0FC]">
           <TableHead className="h-10 px-4 py-2 text-left text-xs font-medium uppercase text-gray-900">
+            Date Added
+          </TableHead>
+          <TableHead className="h-10 px-4 py-2 text-left text-xs font-medium uppercase text-gray-900">
             Product ID
           </TableHead>
           <TableHead className="h-10 px-4 py-2 text-left text-xs font-medium uppercase text-gray-900">
@@ -506,9 +509,6 @@ export default function ECommercePage() {
           <TableHead className="h-10 px-4 py-2 text-left text-xs font-medium uppercase text-gray-900">
             Store
           </TableHead>
-          <TableHead className="h-10 px-4 py-2 text-left text-xs font-medium uppercase text-gray-900">
-            Date Added
-          </TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -518,6 +518,9 @@ export default function ECommercePage() {
             onClick={() => handleRowClick(product.id)}
             className="cursor-pointer border-b border-gray-200 hover:bg-gray-50"
           >
+            <TableCell className="px-4 py-3 text-sm text-gray-900">
+              {product.dateAdded}
+            </TableCell>
             <TableCell className="px-4 py-3 text-sm text-gray-900">
               {product.id}
             </TableCell>
@@ -547,9 +550,6 @@ export default function ECommercePage() {
             <TableCell className="px-4 py-3 text-sm text-gray-900">
               {product.storeName}
             </TableCell>
-            <TableCell className="px-4 py-3 text-sm text-gray-900">
-              {product.dateAdded}
-            </TableCell>
           </TableRow>
         ))}
         {renderStateRow(8)}
@@ -562,6 +562,12 @@ export default function ECommercePage() {
       <TableHeader>
         <TableRow className="bg-[#CEE0FC] hover:bg-[#CEE0FC]">
           <TableHead className="h-10 px-4 py-2 text-left text-xs font-medium uppercase text-gray-900">
+            Period
+          </TableHead>
+          <TableHead className="h-10 px-4 py-2 text-left text-xs font-medium uppercase text-gray-900">
+            Generated Date
+          </TableHead>
+          <TableHead className="h-10 px-4 py-2 text-left text-xs font-medium uppercase text-gray-900">
             Report ID
           </TableHead>
           <TableHead className="h-10 px-4 py-2 text-left text-xs font-medium uppercase text-gray-900">
@@ -569,12 +575,6 @@ export default function ECommercePage() {
           </TableHead>
           <TableHead className="h-10 px-4 py-2 text-left text-xs font-medium uppercase text-gray-900">
             Type
-          </TableHead>
-          <TableHead className="h-10 px-4 py-2 text-left text-xs font-medium uppercase text-gray-900">
-            Period
-          </TableHead>
-          <TableHead className="h-10 px-4 py-2 text-left text-xs font-medium uppercase text-gray-900">
-            Generated Date
           </TableHead>
           <TableHead className="h-10 px-4 py-2 text-left text-xs font-medium uppercase text-gray-900">
             Total Revenue
@@ -595,6 +595,12 @@ export default function ECommercePage() {
             className="cursor-pointer border-b border-gray-200 hover:bg-gray-50"
           >
             <TableCell className="px-4 py-3 text-sm text-gray-900">
+              {report.period}
+            </TableCell>
+            <TableCell className="px-4 py-3 text-sm text-gray-900">
+              {report.generatedDate}
+            </TableCell>
+            <TableCell className="px-4 py-3 text-sm text-gray-900">
               {report.id}
             </TableCell>
             <TableCell className="px-4 py-3 text-sm text-gray-900">
@@ -602,12 +608,6 @@ export default function ECommercePage() {
             </TableCell>
             <TableCell className="px-4 py-3 text-sm text-gray-900">
               {report.type}
-            </TableCell>
-            <TableCell className="px-4 py-3 text-sm text-gray-900">
-              {report.period}
-            </TableCell>
-            <TableCell className="px-4 py-3 text-sm text-gray-900">
-              {report.generatedDate}
             </TableCell>
             <TableCell className="px-4 py-3 text-sm text-gray-900">
               {formatNaira(report.totalRevenue)}

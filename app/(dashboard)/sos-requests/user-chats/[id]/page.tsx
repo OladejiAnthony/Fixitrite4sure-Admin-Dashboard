@@ -13,6 +13,7 @@ import {
   displayName,
   formatDateTime,
   participantsLabel,
+  personName,
   type SupportUser,
   type UserChatMessage,
   type UserChatThread,
@@ -102,12 +103,9 @@ export default function UserChatDetailsPage({ params }: PageProps) {
   // The first participant's messages sit on the left, the other's on the right.
   const leftId = participants[0]?.id;
   const byId = new Map<string, SupportUser>(participants.map((p) => [p.id, p]));
-  const senderName = (m: UserChatMessage) => {
-    const p = byId.get(m.sender_id);
-    if (p) return displayName(p);
-    const s = m.sender;
-    return [s?.first_name, s?.last_name].filter(Boolean).join(" ") || "Deleted user";
-  };
+  // Prefer the participant record; fall back to the message's own sender
+  // embed if that participant row is gone.
+  const senderName = (m: UserChatMessage) => personName(byId.get(m.sender_id) ?? m.sender);
 
   return (
     <div className="space-y-6">
@@ -182,20 +180,30 @@ export default function UserChatDetailsPage({ params }: PageProps) {
           <div className="max-h-[600px] overflow-y-auto space-y-3 pr-2">
             {thread.messages.map((m) => {
               const left = m.sender_id === leftId;
+              const name = senderName(m);
               return (
                 <div key={m.id} className={`group flex items-start gap-2 ${left ? "justify-start" : "flex-row-reverse"}`}>
                   <div
-                    className={`max-w-[70%] rounded-lg px-4 py-2 ${
-                      left ? "bg-gray-100 text-gray-900" : "bg-[#0586CF] text-white"
+                    aria-hidden
+                    className={`mt-5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-semibold ${
+                      left ? "bg-gray-200 text-gray-700" : "bg-blue-100 text-[#0586CF]"
                     }`}
                   >
-                    <div className={`text-xs mb-1 ${left ? "text-gray-500" : "text-blue-100"}`}>
-                      {senderName(m)} · {formatDateTime(m.created_at)}
+                    {name.charAt(0).toUpperCase()}
+                  </div>
+                  <div className={`flex max-w-[70%] flex-col ${left ? "items-start" : "items-end"}`}>
+                    <p className="mb-1 text-sm font-semibold text-gray-900">{name}</p>
+                    <div
+                      className={`rounded-lg px-4 py-2 ${
+                        left ? "bg-gray-100 text-gray-900" : "bg-[#0586CF] text-white"
+                      }`}
+                    >
+                      <MessageMedia message={m} />
+                      {m.body && (
+                        <p className="whitespace-pre-wrap break-words text-sm">{m.body}</p>
+                      )}
                     </div>
-                    <MessageMedia message={m} />
-                    {m.body && (
-                      <p className="whitespace-pre-wrap break-words text-sm">{m.body}</p>
-                    )}
+                    <p className="mt-1 text-xs text-gray-500">{formatDateTime(m.created_at)}</p>
                   </div>
                   <button
                     type="button"

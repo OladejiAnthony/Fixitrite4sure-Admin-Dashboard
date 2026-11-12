@@ -36,6 +36,9 @@ export type SupportMessage = {
     id: string;
     first_name: string | null;
     last_name: string | null;
+    business_name?: string | null;
+    company_name?: string | null;
+    email?: string | null;
     is_admin: boolean;
   } | null;
 };
@@ -59,6 +62,24 @@ export type UserChatMessage = Omit<SupportMessage, "from_user">;
 export type UserChatThread = Omit<UserChat, "last_message_preview"> & {
   messages: UserChatMessage[];
 };
+
+// A person's own name for chat messages: "First Last", with the business or
+// company name after it when there is one, e.g. "Ada Obi (Ada's Repairs)".
+export function personName(
+  p: {
+    first_name: string | null;
+    last_name: string | null;
+    business_name?: string | null;
+    company_name?: string | null;
+    email?: string | null;
+  } | null | undefined
+) {
+  if (!p) return "Deleted user";
+  const person = [p.first_name, p.last_name].filter(Boolean).join(" ").trim();
+  const org = p.business_name || p.company_name;
+  if (person && org) return `${person} (${org})`;
+  return person || org || p.email || "Unnamed user";
+}
 
 export function participantsLabel(participants: SupportUser[]) {
   if (participants.length === 0) return "Deleted users";

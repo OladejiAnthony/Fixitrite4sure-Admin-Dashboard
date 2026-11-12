@@ -11,7 +11,7 @@ import {
 
 const MESSAGE_SELECT =
   "id, sender_id, body, media_type, media_path, created_at, " +
-  "sender:profiles!sender_id(id, first_name, last_name, is_admin)";
+  "sender:profiles!sender_id(id, first_name, last_name, business_name, company_name, email, is_admin)";
 
 // Newest N messages, returned oldest-first for display.
 const MESSAGE_LIMIT = 500;

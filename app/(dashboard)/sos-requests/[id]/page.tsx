@@ -2,14 +2,24 @@
 "use client";
 
 import { use, useEffect, useRef } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import {
   displayName,
   formatDateTime,
   type SupportMessage,
   type SupportThread,
 } from "@/lib/support-requests";
+
+const replySchema = z.object({
+  body: z.string().trim().min(1).max(4000),
+});
+type ReplyForm = z.infer<typeof replySchema>;
 
 interface PageProps {
   params: Promise<{ id: string }>;
@@ -42,6 +52,40 @@ export default function SosDetailsPage({ params }: PageProps) {
     // up new messages.
     refetchInterval: 15_000,
   });
+
+  const queryClient = useQueryClient();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    watch,
+  } = useForm<ReplyForm>({
+    resolver: zodResolver(replySchema),
+    defaultValues: { body: "" },
+  });
+  const draft = watch("body");
+
+  const replyMutation = useMutation({
+    mutationFn: async ({ body }: ReplyForm) => {
+      const res = await fetch(`/api/admin/support-requests/${id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ body }),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error ?? "Failed to send reply");
+      }
+      return res.json();
+    },
+    onSuccess: () => {
+      reset({ body: "" });
+      queryClient.invalidateQueries({ queryKey: ["support-request", id] });
+      queryClient.invalidateQueries({ queryKey: ["support-requests"] });
+    },
+  });
+
+  const onSubmit = handleSubmit((values) => replyMutation.mutate(values));
 
   const messageCount = thread?.messages.length ?? 0;
   useEffect(() => {
@@ -168,6 +212,40 @@ export default function SosDetailsPage({ params }: PageProps) {
             <div ref={bottomRef} />
           </div>
         )}
+
+        <form onSubmit={onSubmit} className="mt-6 border-t border-gray-100 pt-4">
+          <Textarea
+            {...register("body")}
+            rows={3}
+            maxLength={4000}
+            placeholder="Write a reply. Enter to send, Shift+Enter for a new line."
+            disabled={replyMutation.isPending}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                onSubmit();
+              }
+            }}
+          />
+          <div className="mt-2 flex items-center justify-between gap-4">
+            <p className="text-xs text-gray-500">
+              The user sees this from &quot;FixIt Support&quot; and gets a
+              notification.
+            </p>
+            <Button
+              type="submit"
+              className="bg-[#0586CF] text-white"
+              disabled={replyMutation.isPending || !draft?.trim()}
+            >
+              {replyMutation.isPending ? "Sending..." : "Send reply"}
+            </Button>
+          </div>
+          {replyMutation.error && (
+            <p className="mt-2 text-sm text-red-600">
+              {(replyMutation.error as Error).message}
+            </p>
+          )}
+        </form>
       </div>
 
       <div className="px-6 py-6 mt-10 border-t border-gray-100 flex items-center justify-between gap-4">

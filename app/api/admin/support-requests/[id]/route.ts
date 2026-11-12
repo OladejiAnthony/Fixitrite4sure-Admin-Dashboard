@@ -1,7 +1,18 @@
 // app/api/admin/support-requests/[id]/route.ts
 import { NextResponse } from "next/server";
+import { z } from "zod";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { createClient } from "@/lib/supabase/server";
 import { requireAdmin } from "@/lib/supabase/require-admin";
+import {
+  displayName,
+  logAdminActivity,
+} from "@/lib/supabase/log-admin-activity";
+
+// Matches the messages.body check constraint (char_length <= 4000).
+const replySchema = z.object({
+  body: z.string().trim().min(1, "Reply cannot be empty").max(4000),
+});
 
 const SUPPORT_SELECT =
   "id, created_at, last_message_at, last_message_sender_id, subject_user_id, " +
@@ -81,4 +92,67 @@ export async function GET(
       from_user: m.sender_id === c.subject_user_id,
     })),
   });
+}
+
+// Admin reply. The insert runs on the admin's own session (RLS applies):
+// the "Participants send messages as themselves" policy allows it because
+// is_conversation_participant() is true for admins on support conversations.
+// DB triggers then refresh the conversation preview and notify the user as
+// "FixIt Support".
+export async function POST(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  const denied = await requireAdmin();
+  if (denied) return denied;
+
+  const { id } = await params;
+
+  const parsed = replySchema.safeParse(await request.json().catch(() => null));
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: parsed.error.issues[0]?.message ?? "Invalid reply" },
+      { status: 400 }
+    );
+  }
+
+  const admin = createAdminClient();
+  const { data: conversation } = await admin
+    .from("conversations")
+    .select("id, user:profiles!subject_user_id(first_name, last_name, business_name, company_name, email)")
+    .eq("id", id)
+    .eq("kind", "support")
+    .maybeSingle();
+
+  if (!conversation) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const { data, error } = await supabase
+    .from("messages")
+    .insert({ conversation_id: id, sender_id: user.id, body: parsed.data.body })
+    .select("id, sender_id, body, media_type, media_path, created_at")
+    .single();
+
+  await logAdminActivity({
+    action: "support.reply",
+    description: `Replied to support request from ${displayName((conversation as any).user)}`,
+    targetType: "support_request",
+    targetId: id,
+    status: error ? "failed" : "success",
+  });
+
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+
+  return NextResponse.json(data, { status: 201 });
 }

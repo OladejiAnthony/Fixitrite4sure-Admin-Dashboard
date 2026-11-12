@@ -9,10 +9,34 @@ import {
   logAdminActivity,
 } from "@/lib/supabase/log-admin-activity";
 
-// Matches the messages.body check constraint (char_length <= 4000).
-const replySchema = z.object({
-  body: z.string().trim().min(1, "Reply cannot be empty").max(4000),
-});
+// Matches the messages check constraints: body char_length <= 4000, and a
+// message needs text, an attachment, or both. The attachment is uploaded to
+// chat-media by the browser first (admin's own session, own folder - see
+// uploadSupportAttachment) and only its path is sent here.
+// Admin replies may carry images only, no videos: the type must be "image"
+// and the file extension must be an image one. Keep in step with the
+// EXTENSIONS map in lib/support-attachments.ts.
+const SUPPORT_IMAGE_EXTENSIONS = ["png", "jpg", "webp", "heic", "heif", "gif"];
+
+const replySchema = z
+  .object({
+    body: z.string().trim().max(4000).optional().default(""),
+    media: z
+      .object({
+        path: z
+          .string()
+          .regex(/^[0-9a-f-]{36}\/[\w.-]+$/, "Invalid attachment")
+          .refine(
+            (p) => SUPPORT_IMAGE_EXTENSIONS.includes(p.split(".").pop()?.toLowerCase() ?? ""),
+            "Only photos can be sent"
+          ),
+        type: z.literal("image"),
+      })
+      .optional(),
+  })
+  .refine((v) => v.body.length > 0 || v.media, {
+    message: "Reply cannot be empty",
+  });
 
 const SUPPORT_SELECT =
   "id, created_at, last_message_at, last_message_sender_id, subject_user_id, " +
@@ -25,8 +49,11 @@ const MESSAGE_SELECT =
 // Newest N messages, returned oldest-first for display.
 const MESSAGE_LIMIT = 500;
 
-// chat-media is a private bucket; hand the browser short-lived signed URLs.
-const SIGNED_URL_TTL_SECONDS = 60 * 60;
+// chat-media is a private bucket. Attachments are served through the
+// ./media route, which keeps the URL stable across the page's 15s refetches
+// and redirects to a freshly signed URL.
+const mediaUrl = (conversationId: string, path: string) =>
+  `/api/admin/support-requests/${conversationId}/media?path=${encodeURIComponent(path)}`;
 
 export async function GET(
   _request: Request,
@@ -67,20 +94,6 @@ export async function GET(
 
   const ordered = ((messages ?? []) as any[]).reverse();
 
-  const paths = ordered
-    .map((m) => m.media_path)
-    .filter((p): p is string => Boolean(p));
-
-  const signed = new Map<string, string>();
-  if (paths.length > 0) {
-    const { data: urls } = await admin.storage
-      .from("chat-media")
-      .createSignedUrls(paths, SIGNED_URL_TTL_SECONDS);
-    for (const u of urls ?? []) {
-      if (u.path && u.signedUrl) signed.set(u.path, u.signedUrl);
-    }
-  }
-
   const c = conversation as any;
 
   return NextResponse.json({
@@ -88,7 +101,7 @@ export async function GET(
     awaiting_reply: c.last_message_sender_id === c.subject_user_id,
     messages: ordered.map((m) => ({
       ...m,
-      media_url: m.media_path ? signed.get(m.media_path) ?? null : null,
+      media_url: m.media_path ? mediaUrl(id, m.media_path) : null,
       from_user: m.sender_id === c.subject_user_id,
     })),
   });
@@ -136,15 +149,28 @@ export async function POST(
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
+  const { body, media } = parsed.data;
+  // The insert policy also enforces this; checking here gives a clear 400.
+  if (media && !media.path.startsWith(`${user.id}/`)) {
+    return NextResponse.json({ error: "Invalid attachment" }, { status: 400 });
+  }
+
   const { data, error } = await supabase
     .from("messages")
-    .insert({ conversation_id: id, sender_id: user.id, body: parsed.data.body })
+    .insert({
+      conversation_id: id,
+      sender_id: user.id,
+      body: body || null,
+      media_type: media?.type ?? null,
+      media_path: media?.path ?? null,
+    })
     .select("id, sender_id, body, media_type, media_path, created_at")
     .single();
 
+  const attachmentNote = media ? " (with a photo)" : "";
   await logAdminActivity({
     action: "support.reply",
-    description: `Replied to support request from ${displayName((conversation as any).user)}`,
+    description: `Replied to support request from ${displayName((conversation as any).user)}${attachmentNote}`,
     targetType: "support_request",
     targetId: id,
     status: error ? "failed" : "success",

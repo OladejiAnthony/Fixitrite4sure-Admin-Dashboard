@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Pagination } from "@/components/common/pagination";
+import { SosTabs } from "@/components/sos/sos-tabs";
 import { setCurrentPage } from "@/store/slices/pagination-slice";
 import type { RootState } from "@/store/store";
 import {
@@ -60,6 +61,8 @@ export default function SosRequestPage() {
       <h1 className="text-2xl font-bold text-gray-900">
         SOS REQUEST MANAGEMENT
       </h1>
+
+      <SosTabs active="requests" />
 
       <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
         {/* Tabs */}

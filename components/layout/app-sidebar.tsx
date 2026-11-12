@@ -273,6 +273,11 @@ const navigationItems: NavigationItem[] = [
         url: "sos-requests",
       },
       {
+        title: "User Chats",
+        icon: ShoppingBag,
+        url: "/sos-requests/user-chats",
+      },
+      {
         title: "Payment Request",
         icon: ShoppingBag,
         url: "payment-request",

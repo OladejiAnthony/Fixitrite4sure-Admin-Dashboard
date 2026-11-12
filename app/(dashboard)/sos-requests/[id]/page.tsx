@@ -1,12 +1,13 @@
 // app/(dashboard)/sos-requests/[id]/page.tsx
 "use client";
 
-import { use, useEffect, useRef } from "react";
+import { use, useEffect, useMemo, useRef, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import Link from "next/link";
+import { Paperclip, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -15,9 +16,18 @@ import {
   type SupportMessage,
   type SupportThread,
 } from "@/lib/support-requests";
+import {
+  SUPPORT_ATTACHMENT_ACCEPT,
+  removeSupportAttachment,
+  uploadSupportAttachment,
+  validateSupportAttachment,
+} from "@/lib/support-attachments";
+import { MessageMedia } from "@/components/sos/message-media";
 
+// Text is optional when an attachment is picked; that pairing is checked in
+// the submit handler since the file lives outside the form.
 const replySchema = z.object({
-  body: z.string().trim().min(1).max(4000),
+  body: z.string().trim().max(4000),
 });
 type ReplyForm = z.infer<typeof replySchema>;
 
@@ -48,8 +58,7 @@ export default function SosDetailsPage({ params }: PageProps) {
       if (!res.ok) throw new Error("Failed to load request");
       return res.json();
     },
-    // Signed media URLs last an hour; refetching keeps them fresh and picks
-    // up new messages.
+    // Picks up new messages from the user.
     refetchInterval: 15_000,
   });
 
@@ -65,14 +74,42 @@ export default function SosDetailsPage({ params }: PageProps) {
   });
   const draft = watch("body");
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [file, setFile] = useState<File | null>(null);
+  const [fileError, setFileError] = useState<string | null>(null);
+  const previewUrl = useMemo(() => (file ? URL.createObjectURL(file) : null), [file]);
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
+
+  const clearFile = () => {
+    setFile(null);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const onPickFile = (picked: File | undefined) => {
+    if (!picked) return;
+    const invalid = validateSupportAttachment(picked);
+    setFileError(invalid);
+    if (invalid) {
+      clearFile();
+      return;
+    }
+    setFile(picked);
+  };
+
   const replyMutation = useMutation({
-    mutationFn: async ({ body }: ReplyForm) => {
+    mutationFn: async ({ body, attachment }: { body: string; attachment: File | null }) => {
+      const media = attachment ? await uploadSupportAttachment(attachment) : undefined;
       const res = await fetch(`/api/admin/support-requests/${id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ body }),
+        body: JSON.stringify({ body, media }),
       });
       if (!res.ok) {
+        if (media) await removeSupportAttachment(media.path);
         const data = await res.json().catch(() => null);
         throw new Error(data?.error ?? "Failed to send reply");
       }
@@ -80,12 +117,17 @@ export default function SosDetailsPage({ params }: PageProps) {
     },
     onSuccess: () => {
       reset({ body: "" });
+      clearFile();
       queryClient.invalidateQueries({ queryKey: ["support-request", id] });
       queryClient.invalidateQueries({ queryKey: ["support-requests"] });
     },
   });
 
-  const onSubmit = handleSubmit((values) => replyMutation.mutate(values));
+  const canSend = !!draft?.trim() || !!file;
+  const onSubmit = handleSubmit(({ body }) => {
+    if (!canSend || replyMutation.isPending) return;
+    replyMutation.mutate({ body: body.trim(), attachment: file });
+  });
 
   const messageCount = thread?.messages.length ?? 0;
   useEffect(() => {
@@ -186,26 +228,7 @@ export default function SosDetailsPage({ params }: PageProps) {
                     {senderLabel(m, userName)} · {formatDateTime(m.created_at)}
                   </div>
 
-                  {m.media_url && m.media_type === "image" && (
-                    <a href={m.media_url} target="_blank" rel="noreferrer">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img
-                        src={m.media_url}
-                        alt="Attachment"
-                        className="mb-2 max-h-64 rounded"
-                      />
-                    </a>
-                  )}
-                  {m.media_url && m.media_type === "video" && (
-                    <video
-                      src={m.media_url}
-                      controls
-                      className="mb-2 max-h-64 rounded"
-                    />
-                  )}
-                  {m.media_type && !m.media_url && (
-                    <p className="text-xs italic">Attachment unavailable</p>
-                  )}
+                  <MessageMedia message={m} />
 
                   {m.body && (
                     <p className="whitespace-pre-wrap break-words text-sm">
@@ -220,6 +243,28 @@ export default function SosDetailsPage({ params }: PageProps) {
         )}
 
         <form onSubmit={onSubmit} className="mt-6 border-t border-gray-100 pt-4">
+          {file && previewUrl && (
+            <div className="relative mb-3 inline-block">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={previewUrl} alt="Attachment preview" className="h-24 rounded border" />
+              <button
+                type="button"
+                onClick={clearFile}
+                disabled={replyMutation.isPending}
+                aria-label="Remove attachment"
+                className="absolute -right-2 -top-2 rounded-full bg-gray-800 p-1 text-white"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </div>
+          )}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept={SUPPORT_ATTACHMENT_ACCEPT}
+            className="hidden"
+            onChange={(e) => onPickFile(e.target.files?.[0])}
+          />
           <Textarea
             {...register("body")}
             rows={3}
@@ -234,18 +279,34 @@ export default function SosDetailsPage({ params }: PageProps) {
             }}
           />
           <div className="mt-2 flex items-center justify-between gap-4">
-            <p className="text-xs text-gray-500">
-              The user sees this from &quot;FixIt Support&quot; and gets a
-              notification.
-            </p>
+            <div className="flex items-center gap-3">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => fileInputRef.current?.click()}
+                disabled={replyMutation.isPending}
+              >
+                <Paperclip className="mr-1 h-4 w-4" />
+                Photo
+              </Button>
+              <p className="text-xs text-gray-500">
+                The user sees this from &quot;FixIt Support&quot; and gets a
+                notification.
+              </p>
+            </div>
             <Button
               type="submit"
               className="bg-[#0586CF] text-white"
-              disabled={replyMutation.isPending || !draft?.trim()}
+              disabled={replyMutation.isPending || !canSend}
             >
-              {replyMutation.isPending ? "Sending..." : "Send reply"}
+              {replyMutation.isPending
+                ? file
+                  ? "Uploading..."
+                  : "Sending..."
+                : "Send reply"}
             </Button>
           </div>
+          {fileError && <p className="mt-2 text-sm text-red-600">{fileError}</p>}
           {replyMutation.error && (
             <p className="mt-2 text-sm text-red-600">
               {(replyMutation.error as Error).message}

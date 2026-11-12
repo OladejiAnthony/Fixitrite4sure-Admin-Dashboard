@@ -44,6 +44,27 @@ export type SupportThread = Omit<SupportRequest, "last_message_preview"> & {
   messages: SupportMessage[];
 };
 
+// Direct (user-to-user) chats from /api/admin/user-chats.
+export type UserChat = {
+  id: string;
+  created_at: string;
+  last_message_at: string;
+  last_message_preview: string | null;
+  last_message_sender_id: string | null;
+  participants: SupportUser[];
+};
+
+export type UserChatMessage = Omit<SupportMessage, "from_user">;
+
+export type UserChatThread = Omit<UserChat, "last_message_preview"> & {
+  messages: UserChatMessage[];
+};
+
+export function participantsLabel(participants: SupportUser[]) {
+  if (participants.length === 0) return "Deleted users";
+  return participants.map((p) => displayName(p)).join(" ↔ ");
+}
+
 export function displayName(user: SupportUser | null) {
   if (!user) return "Deleted user";
   const person = [user.first_name, user.last_name].filter(Boolean).join(" ");

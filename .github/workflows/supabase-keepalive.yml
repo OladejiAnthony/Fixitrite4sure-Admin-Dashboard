@@ -1,0 +1,47 @@
+# Keeps the Supabase project active by running a small query every 5 days.
+# Free-tier Supabase projects pause after 7 days without database activity.
+#
+# Required repository secrets (Settings > Secrets and variables > Actions):
+#   SUPABASE_URL       e.g. https://<project-ref>.supabase.co
+#   SUPABASE_ANON_KEY  the project's anon (public) key
+name: Supabase keepalive
+
+on:
+  schedule:
+    # 06:00 UTC on days 1, 6, 11, 16, 21, 26 and 31 of each month.
+    - cron: "0 6 */5 * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Query Supabase
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_ANON_KEY" ]; then
+            echo "::error::SUPABASE_URL and SUPABASE_ANON_KEY secrets must be set."
+            exit 1
+          fi
+
+          # A PostgREST select runs a real query against Postgres, which is
+          # what counts as activity. RLS may return an empty array; that's fine.
+          status=$(curl -sS -o response.json -w "%{http_code}" \
+            --retry 3 --retry-delay 10 \
+            "$SUPABASE_URL/rest/v1/profiles?select=id&limit=1" \
+            -H "apikey: $SUPABASE_ANON_KEY" \
+            -H "Authorization: Bearer $SUPABASE_ANON_KEY")
+
+          echo "HTTP $status"
+          if [ "$status" -lt 200 ] || [ "$status" -ge 300 ]; then
+            echo "::error::Supabase ping failed with HTTP $status"
+            cat response.json
+            exit 1
+          fi
+          echo "Supabase ping succeeded."

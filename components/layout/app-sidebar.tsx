@@ -270,7 +270,7 @@ const navigationItems: NavigationItem[] = [
       {
         title: "SOS Request Management",
         icon: ShoppingBag,
-        url: "sos-requests",
+        url: "/sos-requests",
       },
       {
         title: "User Chats",
@@ -280,7 +280,7 @@ const navigationItems: NavigationItem[] = [
       {
         title: "Payment Request",
         icon: ShoppingBag,
-        url: "payment-request",
+        url: "/sos-requests/payment-request",
       },
     ],
   },
